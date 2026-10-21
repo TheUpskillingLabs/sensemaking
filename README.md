@@ -40,7 +40,7 @@ Vercel Preview and Development env vars point at OLOS-dev, and Production points
 1. **Vercel:** create a new project from this repo with framework Vite and the root directory left as the repo root. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. `vercel.json` rewrites every path to the app so deep links work.
 2. **Supabase Auth, URL configuration:** add `https://<domain>/**` to the allowed redirect URLs. To sign in on Vercel previews, also add a wildcard for the preview URLs. **Don't change the Site URL**, because OLOS uses it.
 3. **Google provider:** this is already set up for OLOS, so no change is needed.
-4. **Migrations:** apply `supabase/migrations/*.sql` to the OLOS project. Do OLOS-dev first and run `supabase/tests/rls.sql` there, then do prod. The test script rolls itself back.
+4. **Migrations:** apply `supabase/migrations/*.sql` to the OLOS project, OLOS-dev first and then prod. Test the database rules with `supabase/tests/run-local.sh` against any local Postgres 16+ (it uses stand-ins for the OLOS tables), or paste `supabase/tests/rls.sql` into the OLOS-dev SQL editor. Both roll themselves back.
 5. **Config:** the `sensemaking_config` row for `C04` is edited in the Supabase dashboard. It has two fields: `required_profiles` (default 3) and `submissions_open`. Turn `submissions_open` off to stop all new profiles and edits.
 
 ## Who can do what
