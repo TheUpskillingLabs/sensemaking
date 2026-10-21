@@ -13,82 +13,83 @@ const TOPICS: Topic[] = [
     id: "ced",
     title: "Community economic development",
     body: [
-      "Community economic development is development done by and with a community rather than to it. Residents take part in the decisions, local assets are the starting point, and the goal is economic, social, ecological and cultural well-being together, not income alone.",
-      "It's the tradition The Labs works in. Upskilling isn't only about one person's next job. It also builds what a place can do for itself.",
+      "Community economic development (CED) means a neighborhood or town improving its own economy, with the people who live there making the decisions. It starts from what the place already has, like skills, buildings, groups and businesses, instead of waiting for help from outside.",
+      "The goal is bigger than money. It's also about health, culture, the environment and how people get along. The Labs works this way: helping people learn new skills also makes the whole community stronger.",
     ],
-    here: "When you profile a player, you're mapping part of the local economy The Labs belongs to: who holds which assets, and who decides.",
+    here: "Each profile you write maps one piece of the local economy around The Labs: who has what, and who gets to decide.",
     sources: [
-      { kind: "Start here", title: "Community Economic Development Key Concepts", by: "Roberto Gallardo, Mississippi State University Extension", href: "https://extension.msstate.edu/publications/community-economic-development-key-concepts", note: "Short and practical. Defines CED as a process that lets residents mobilize and build assets to improve their quality of life sustainably." },
-      { kind: "Go deeper", title: "Community economic development", by: "Wikipedia", href: "https://en.wikipedia.org/wiki/Community_economic_development", note: "An overview of principles and history, with references to follow." },
+      { kind: "Start here", title: "Community Economic Development Key Concepts", by: "Roberto Gallardo, Mississippi State University Extension", href: "https://extension.msstate.edu/publications/community-economic-development-key-concepts", note: "A short guide. It describes CED as residents building up what they have to make life better over the long run." },
+      { kind: "Go deeper", title: "Community economic development", by: "Wikipedia", href: "https://en.wikipedia.org/wiki/Community_economic_development", note: "A general overview with links to learn more." },
     ],
   },
   {
     id: "capitals",
-    title: "The Community Capitals Framework",
+    title: "The seven community capitals",
     body: [
-      "Cornelia and Jan Flora's Community Capitals Framework says a community's well-being rests on seven kinds of resources, or capitals: natural, cultural, human, social, political, financial and built. Each can be invested in or drawn down.",
-      "Their key finding is the “spiraling up” effect. Investing in one capital, often social capital, tends to build others, and losses can spiral down the same way. That's why the profiles ask about all seven, not just money.",
+      "Two researchers, Cornelia and Jan Flora, said a community has seven kinds of wealth, which they call capitals. Natural: land, water and parks. Cultural: traditions, language and identity. Human: people's skills, knowledge and health. Social: friendships, networks and trust. Political: having a say in decisions. Financial: money, loans and grants. Built: buildings, roads and technology.",
+      "Their big idea is called “spiraling up.” When a community builds one kind of capital, it often helps build the others. For example, stronger friendships between neighbors can lead to new skills and new jobs. It can also spiral down the same way.",
     ],
-    here: "The “What they bring” ratings in each profile use these seven capitals. Thin or strong capitals across everyone's profiles show where the field is rich and where it's starved.",
+    here: "The “What they bring” part of each profile asks you to rate these seven capitals. When we put everyone's ratings together, we can see which ones are strong in our area and which ones are missing.",
     sources: [
-      { kind: "Start here", title: "The Community Capitals Framework", by: "Lionel J. Beaulieu, Purdue University · NDSU Extension (2024)", href: "https://ndsu.edu/agriculture/sites/default/files/2024-06/cv2243.pdf", note: "A clear six-page introduction with a table defining each capital and examples. PDF." },
-      { kind: "Source", title: "Promoting Community Vitality & Sustainability: The Community Capitals Framework", by: "Lionel J. Beaulieu · Southern Rural Development Center (2014)", href: "https://srdc.msstate.edu/sites/default/files/2023-05/Community-Capitals-Framework-Writeup-Oct-2014.pdf", note: "The original write-up, including a section on spiraling up. PDF." },
-      { kind: "Go deeper", title: "Spiraling-Up: Mapping Community Transformation with Community Capitals Framework", by: "Mary Emery & Cornelia Butler Flora · Community Development 37(1), 2006", href: "https://vtechworks.lib.vt.edu/handle/10919/69153", note: "The paper behind spiraling up. This is a catalogue record; the full text is in the journal." },
+      { kind: "Start here", title: "The Community Capitals Framework", by: "Lionel J. Beaulieu, Purdue University · NDSU Extension (2024)", href: "https://ndsu.edu/agriculture/sites/default/files/2024-06/cv2243.pdf", note: "Six pages with a table that explains each capital with examples. PDF." },
+      { kind: "Source", title: "Promoting Community Vitality & Sustainability: The Community Capitals Framework", by: "Lionel J. Beaulieu · Southern Rural Development Center (2014)", href: "https://srdc.msstate.edu/sites/default/files/2023-05/Community-Capitals-Framework-Writeup-Oct-2014.pdf", note: "The longer original, including a section on spiraling up. PDF." },
+      { kind: "Go deeper", title: "Spiraling-Up: Mapping Community Transformation with Community Capitals Framework", by: "Mary Emery & Cornelia Butler Flora · Community Development 37(1), 2006", href: "https://vtechworks.lib.vt.edu/handle/10919/69153", note: "The research paper that introduced spiraling up. Harder reading. This page is a library record; the full paper is in the journal." },
     ],
   },
   {
     id: "frames",
     title: "Frame innovation",
     body: [
-      "Kees Dorst's frame innovation is a way of working on open, complex problems that don't yield to ordinary problem solving. Instead of jumping to solutions, you change how the problem is seen. You find a new frame (“if we look at it as…, then…”) that opens moves nobody could see before.",
-      "Dorst lays it out in nine steps: archaeology, paradox, context, field, themes, frames, futures, transformation and integration. This exercise covers the early ones: what's been tried, and who's involved.",
+      "Some problems are so tangled that the usual fixes don't work. Kees Dorst, a design professor, says the trick is to look at the problem in a new way before trying to solve it. He calls that new way of looking a “frame.” A frame often sounds like “What if we treated this like…?”",
+      "Here's a real example from his book. A nightlife district had a problem with fights and crime. Instead of treating it only as a crime problem, a team asked, “What if we ran the area like a music festival?” Festivals are good at keeping big crowds safe and happy, so that frame opened up new ideas.",
+      "Dorst's method has nine steps. This exercise covers the first ones: looking at what has already been tried, and figuring out who is involved.",
     ],
-    here: "Build Cycles use frame innovation to get from a messy situation to a frame a team can build on. Everyone's profiles are raw material for the paradox and themes steps that come next.",
+    here: "Build Cycles use this method to go from a messy situation to an idea a team can actually build. Everyone's profiles are the raw material for the next steps.",
     sources: [
-      { kind: "Start here", title: "Frame Innovation for Social Impact", by: "Allison Huang · Medium (2017)", href: "https://medium.com/@allisonyhuang/frame-innovation-for-social-impact-70d821e897a4", note: "A plain-language walk through the nine steps, one line each." },
-      { kind: "Source", title: "Frame Creation and Design in the Expanded Field", by: "Kees Dorst · She Ji 1(1), 2015", href: "https://doi.org/10.1016/j.sheji.2015.07.003", note: "Dorst's own short account of frame creation and why it travels beyond design. Free to read." },
-      { kind: "Go deeper", title: "Frame Innovation: Create New Thinking by Design", by: "Kees Dorst · MIT Press", href: "https://mitpressbookstore.mit.edu/book/9780262550963", note: "The book, with the full method and case studies. Paid." },
+      { kind: "Start here", title: "Frame Innovation for Social Impact", by: "Allison Huang · Medium (2017)", href: "https://medium.com/@allisonyhuang/frame-innovation-for-social-impact-70d821e897a4", note: "All nine steps explained in plain language, one line each." },
+      { kind: "Source", title: "Frame Creation and Design in the Expanded Field", by: "Kees Dorst · She Ji 1(1), 2015", href: "https://doi.org/10.1016/j.sheji.2015.07.003", note: "Dorst's own article about frames. Free, but written for professionals." },
+      { kind: "Go deeper", title: "Frame Innovation: Create New Thinking by Design", by: "Kees Dorst · MIT Press", href: "https://mitpressbookstore.mit.edu/book/9780262550963", note: "The full book, with the festival example and others. Costs money; try a library." },
     ],
   },
   {
     id: "archaeology",
-    title: "Archaeology: dig before you design",
+    title: "Archaeology: look back before you plan",
     body: [
-      "The first step looks backward. You investigate the problem as it's currently understood, and the earlier attempts to solve it: who tried what, what happened, and what assumptions kept getting repeated.",
-      "Old fixes leave traces. They show which frames have already been used up, and they often point to the paradox that keeps the problem stuck.",
+      "The first step in Dorst's method is called “archaeology,” like digging up history. Before you try to fix a problem, you find out how people have tried to fix it before. Who tried what? What happened? What did everyone assume?",
+      "Old attempts leave clues. They show which ideas have already been tried, and they often point to the real reason the problem keeps coming back.",
     ],
-    here: "When you describe a player, note what they've already tried in this space, and what they keep running into. That history is evidence.",
+    here: "When you write about a player, mention anything they have already tried in this area and what got in their way. That history counts as evidence.",
     sources: [
-      { kind: "Start here", title: "How Frame Creation can inspire innovation", by: "Jacqueline Antalik · OXD (2025)", href: "https://oxd.com/insights/how-frame-creation-can-inspire-innovation/", note: "A practitioner's account that starts with archaeology: what's been tried before, how it worked, and what drives decision-makers." },
-      { kind: "Source", title: "Frame Innovation for Social Impact", by: "Allison Huang · Medium (2017)", href: "https://medium.com/@allisonyhuang/frame-innovation-for-social-impact-70d821e897a4", note: "Archaeology: “investigate in depth the apparent problem, as well as earlier attempts to solve it.”" },
+      { kind: "Start here", title: "How Frame Creation can inspire innovation", by: "Jacqueline Antalik · OXD (2025)", href: "https://oxd.com/insights/how-frame-creation-can-inspire-innovation/", note: "A designer explains how her team uses archaeology: asking what was tried before and how it went." },
+      { kind: "Source", title: "Frame Innovation for Social Impact", by: "Allison Huang · Medium (2017)", href: "https://medium.com/@allisonyhuang/frame-innovation-for-social-impact-70d821e897a4", note: "Archaeology in one line: investigate the problem and earlier attempts to solve it." },
     ],
   },
   {
     id: "field",
-    title: "Field mapping: who's in the game",
+    title: "Field mapping: who's involved",
     body: [
-      "Dorst's context and field steps widen the view in two rings. The inner circle is everyone already involved in the problem situation. The wider field is every player who could be connected to the problem or a solution, including people nobody has asked yet.",
-      "Mapping the field is where new frames come from. Each player brings their own needs, values and fears. The deeper patterns that run across them, which Dorst calls themes, are what a good frame speaks to.",
+      "Next, Dorst asks you to list everyone connected to the problem, in two circles. The inner circle is the people and groups already involved. The wider field is everyone else who could be affected or could help, including people nobody has asked yet.",
+      "Each player wants different things, and each worries about different things. When you look across all of them, you start to see patterns. Those patterns are where new ideas come from.",
     ],
-    here: "This whole app is a field map. The Ring question puts each player in the inner circle or the wider field. Many people mapping the same field independently is what makes the patterns trustworthy.",
+    here: "This whole app is a field map. The “Ring” question puts each player in the inner circle or the wider field. Because many people map the same field on their own, the patterns we find are more trustworthy.",
     sources: [
-      { kind: "Tool", title: "Ripple Effects Mapping for Evaluation", by: "Washington State University Extension (2011)", href: "https://wpcdn.web.wsu.edu/extension/uploads/sites/54/2013/12/REM.Complete.pdf", note: "A visual mapping method that codes what each player contributes against the seven capitals. PDF." },
-      { kind: "Tool", title: "Asset-Based Community Development toolkit", by: "ABCD Institute, DePaul University", href: "https://resources.depaul.edu/abcd-institute/resources/Pages/tool-kit.aspx", note: "Capacity inventories and asset-mapping guides: start from what a community has, not what it lacks." },
+      { kind: "Tool", title: "Ripple Effects Mapping for Evaluation", by: "Washington State University Extension (2011)", href: "https://wpcdn.web.wsu.edu/extension/uploads/sites/54/2013/12/REM.Complete.pdf", note: "A hands-on way to draw who is involved and what each one adds, using the seven capitals. PDF." },
+      { kind: "Tool", title: "Asset-Based Community Development toolkit", by: "ABCD Institute, DePaul University", href: "https://resources.depaul.edu/abcd-institute/resources/Pages/tool-kit.aspx", note: "Worksheets for mapping what a community already has, instead of what it lacks." },
     ],
   },
   {
     id: "customers",
-    title: "Every nonprofit business has at least two customers",
+    title: "Why nonprofits have two kinds of customers",
     body: [
-      "Peter Drucker asked every organization, “Who is our customer?” For a nonprofit, he split the answer. The primary customer is “the person whose life is changed through your work.” Supporting customers are “volunteers, members, partners, funders, referral sources, employees and others” who must also be satisfied. And “the primary customer is never the only customer.”",
-      "In a business, the person who benefits usually pays, so one customer gives one signal. In a nonprofit, the person whose life changes and the person who pays are usually different, so every line of work has at least two customers who value different things. Drucker's advice is to keep one primary customer in focus while still earning the supporting customers' trust.",
+      "Peter Drucker was a famous thinker about how organizations work. He said every organization should ask, “Who is our customer?” For a nonprofit, he said there are two kinds. The primary customer is “the person whose life is changed through your work.” Supporting customers are the other people who have to be happy for the work to continue, like volunteers, partners and funders (the people who give money).",
+      "Think about a store. The person who buys the shoes is the person who wears them, so the store gets one clear signal: if people like the shoes, they buy more. A nonprofit is different. The person helped and the person paying are usually not the same. So a nonprofit has to keep two groups happy, and they don't always want the same thing.",
     ],
-    here: "Many players in your profiles are someone's primary customer or someone's funder, sometimes both. Where what the people served need and what funders reward pull apart, you've probably found a paradox.",
+    here: "Many players you profile are either someone the work helps, or someone who pays for it, or both. When what the people being helped need is different from what funders want, you may have found a key tension worth talking about.",
     sources: [
-      { kind: "Start here", title: "Drucker on Being Customer-Centric", by: "Peter F. Drucker · Drucker Institute reading", href: "https://drucker.institute/wp-content/uploads/2018/08/Reading_Drucker-on-Being-Customer-Centric.pdf", note: "Two pages, adapted from The Five Most Important Questions. The primary/supporting distinction in Drucker’s own words. PDF." },
-      { kind: "Source", title: "Who Exactly Are the “Customers” of a Nonprofit Organization?", by: "Mark R. Kramer · Chronicle of Philanthropy (2001)", href: "https://www.issuelab.org/resources/1839/1839.pdf", note: "Argues every nonprofit has three indispensable customers: clients, donors and volunteers or staff. PDF." },
-      { kind: "Go deeper", title: "Ten Nonprofit Funding Models", by: "William Foster, Peter Kim & Barbara Christiansen · SSIR (2009)", href: "https://ssir.org/articles/entry/ten_nonprofit_funding_models", note: "Who pays, and why, sorted into ten patterns. Free with an SSIR account." },
-      { kind: "Go deeper", title: "The Nonprofit Starvation Cycle", by: "Ann Goggins Gregory & Don Howard · SSIR (2009), via Bridgespan", href: "https://bridgespan.org/insights/the-nonprofit-starvation-cycle", note: "What happens when funders' expectations, not the work, set the budget." },
+      { kind: "Start here", title: "Drucker on Being Customer-Centric", by: "Peter F. Drucker · Drucker Institute", href: "https://drucker.institute/wp-content/uploads/2018/08/Reading_Drucker-on-Being-Customer-Centric.pdf", note: "Two pages in Drucker's own words about primary and supporting customers. PDF." },
+      { kind: "Source", title: "Who Exactly Are the “Customers” of a Nonprofit Organization?", by: "Mark R. Kramer · Chronicle of Philanthropy (2001)", href: "https://www.issuelab.org/resources/1839/1839.pdf", note: "A short article arguing every nonprofit really has three customers: the people it helps, its donors, and its volunteers or staff. PDF." },
+      { kind: "Go deeper", title: "Ten Nonprofit Funding Models", by: "William Foster, Peter Kim & Barbara Christiansen · SSIR (2009)", href: "https://ssir.org/articles/entry/ten_nonprofit_funding_models", note: "Ten common ways nonprofits get paid, and why funders give. Needs a free account." },
+      { kind: "Go deeper", title: "The Nonprofit Starvation Cycle", by: "Ann Goggins Gregory & Don Howard · SSIR (2009), via Bridgespan", href: "https://bridgespan.org/insights/the-nonprofit-starvation-cycle", note: "What goes wrong when funders expect nonprofits to spend almost nothing on running themselves." },
     ],
   },
 ];
@@ -100,7 +101,7 @@ export default function Reading() {
       <div className="page-head">
         <p className="eyebrow rv">Build Cycle C04 · Background reading</p>
         <h1 className="h1 rv"><Words text="The ideas behind the map" /></h1>
-        <p className="lede rv">You don't need any of this to write a good profile. Your own view of the field is the point. But if you want to know where the questions come from, start here.</p>
+        <p className="lede rv">You don't need to read any of this to write a good profile. What matters most is your own view. But if you're curious where the questions come from, start here.</p>
         <nav className="toc rv" aria-label="On this page">
           {TOPICS.map((t) => <a key={t.id} href={`#${t.id}`}>{t.title}</a>)}
         </nav>
