@@ -1,3 +1,8 @@
 node_modules/
-package-lock.json
-package.json
+dist/
+dist-mock/
+.env
+.env.local
+.env.*.local
+.vercel
+*.log

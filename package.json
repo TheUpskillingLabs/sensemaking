@@ -1,0 +1,29 @@
+{
+  "name": "stakeholder-profiles",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Stakeholder Profiles for The Upskilling Labs' Build Cycle C04 sensemaking day",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:mock": "VITE_MOCK=1 vite",
+    "build": "tsc --noEmit && vite build",
+    "build:mock": "VITE_MOCK=1 vite build --outDir dist-mock",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.117.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.30.6"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "@vitejs/plugin-react": "4.7.0",
+    "typescript": "5.9.3",
+    "vite": "5.4.21"
+  }
+}
