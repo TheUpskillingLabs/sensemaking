@@ -26,6 +26,15 @@ Checks: `npm run typecheck` and `npm run build`.
 
 Vite, React 18 and TypeScript (strict), `@supabase/supabase-js` v2 with PKCE, `react-router-dom` and plain CSS, including a print stylesheet. It's a single-page app with no server code. Access control lives in Postgres row-level security.
 
+## Environments
+
+| Address | Branch | Database |
+|---|---|---|
+| sensemaking.theupskillinglabs.org | `main` | OLOS-prod |
+| dev.sensemaking.theupskillinglabs.org | `dev` | OLOS-dev |
+
+Vercel Preview and Development env vars point at OLOS-dev, and Production points at OLOS-prod. Merge into `dev` to try a change, then into `main` to ship it.
+
 ## Setup
 
 1. **Vercel:** create a new project from this repo with framework Vite and the root directory left as the repo root. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. `vercel.json` rewrites every path to the app so deep links work.
