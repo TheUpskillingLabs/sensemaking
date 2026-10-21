@@ -75,6 +75,7 @@ export const mockApi: Api = {
   async getUser() { await wait(60); return user(); },
   onAuthChange(cb) { listeners.add(cb); return () => listeners.delete(cb); },
   async signInWithGoogle(redirectTo) { await wait(); setSignedIn(true); location.assign(redirectTo); },
+  async googleSignInUrl(redirectTo) { await wait(); setSignedIn(true); return redirectTo; },
   async signOut() { await wait(); setSignedIn(false); },
   async hasOlosAccount() { await wait(); return who() !== "nonmember"; },
   async isFacilitator() { await wait(); return facilitator(); },

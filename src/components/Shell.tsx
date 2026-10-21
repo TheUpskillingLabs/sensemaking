@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Link, NavLink, Navigate, Outlet, useLocation } from "react-router-dom";
 import { rememberReturn, useAuth } from "../auth";
 import { ErrorNote, Loader } from "./bits";
+import { Opening, arrive, markOpened, openedThisSession } from "./Opening";
 
 export function World() { return <div className="world" aria-hidden="true" />; }
 
@@ -59,14 +60,31 @@ export function Shell() {
 
 /** Every route but /login: needs a session and an OLOS account. */
 export function RequireMember({ children }: { children: ReactNode }) {
-  const { ready, user, membership, membershipError, reloadMembership } = useAuth();
+  const { ready, user, membership, membershipError } = useAuth();
   const loc = useLocation();
-  const [retrying, setRetrying] = useState(false);
-  if (!ready) return <Loader center />;
-  if (!user) {
+  // The first page load of a browser session opens with the scene (dust, orb, mark); later loads don't.
+  const [opening, setOpening] = useState(() => !openedThisSession());
+  if (ready && !user) {
     rememberReturn(loc.pathname + loc.search + loc.hash);
     return <Navigate to="/login" replace />;
   }
+  const page = <Gatekeeper>{children}</Gatekeeper>;
+  if (!opening) return page;
+  return (
+    <>
+      {page}
+      <Opening
+        ready={ready && (membership !== null || membershipError !== null)}
+        onDone={() => { markOpened(); arrive(); setOpening(false); }}
+      />
+    </>
+  );
+}
+
+function Gatekeeper({ children }: { children: ReactNode }) {
+  const { ready, membership, membershipError, reloadMembership } = useAuth();
+  const [retrying, setRetrying] = useState(false);
+  if (!ready) return <Loader center />;
   if (membershipError) {
     return (
       <div className="page page-narrow">

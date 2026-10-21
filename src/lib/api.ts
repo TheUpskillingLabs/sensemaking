@@ -15,6 +15,8 @@ export interface Api {
   getUser(): Promise<SessionUser | null>;
   onAuthChange(cb: (u: SessionUser | null) => void): () => void;
   signInWithGoogle(redirectTo: string): Promise<void>;
+  /** Starts Google sign-in (PKCE) without leaving the page, so the opening can fly first. */
+  googleSignInUrl(redirectTo: string): Promise<string>;
   signOut(): Promise<void>;
   hasOlosAccount(): Promise<boolean>;
   isFacilitator(): Promise<boolean>;
@@ -66,6 +68,12 @@ const realApi: Api = {
   async signInWithGoogle(redirectTo) {
     const { error } = await supabase().auth.signInWithOAuth({ provider: "google", options: { redirectTo } });
     if (error) throw wrap(error);
+  },
+  async googleSignInUrl(redirectTo) {
+    const { data, error } = await supabase().auth.signInWithOAuth({ provider: "google", options: { redirectTo, skipBrowserRedirect: true } });
+    if (error) throw wrap(error);
+    if (!data.url) throw new Error("Google sign-in didn't start.");
+    return data.url;
   },
   async signOut() {
     const { error } = await supabase().auth.signOut();

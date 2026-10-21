@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth";
-import { CapStrip, ErrorNote, Loader, useTitle } from "../components/bits";
+import { CapStrip, ErrorNote, Loader, Words, useTitle } from "../components/bits";
 import { api } from "../lib/api";
 import { CAPITALS, LEVELS, ORG_TYPES, RINGS, RING_LABEL, typeLabel } from "../lib/capitals";
 import { CYCLE } from "../lib/config";
@@ -54,7 +54,7 @@ export default function Gallery() {
     <div className="page">
       <div className="page-head">
         <p className="eyebrow rv">Build Cycle C04 · Everyone's view</p>
-        <h1 className="h1 rv">The field, as we each see it</h1>
+        <h1 className="h1 rv"><Words text="The field, as we each see it" /></h1>
         <p className="lede rv">Every submitted profile, side by side. Look for players many people saw, players only one person saw, and places where the views disagree.</p>
       </div>
 

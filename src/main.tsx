@@ -19,10 +19,11 @@ const Print = lazy(() => import("./routes/Print"));
 const page = (el: JSX.Element) => <RequireMember><Suspense fallback={<Loader center />}>{el}</Suspense></RequireMember>;
 
 const router = createBrowserRouter([
+  // The sign-in page is the opening itself: full screen, no bar.
+  { path: "/login", element: <Login /> },
   {
     element: <Shell />,
     children: [
-      { path: "/login", element: <Login /> },
       { path: "/", element: page(<Home />) },
       { path: "/profiles/:id/edit", element: page(<Editor />) },
       { path: "/profiles/:id", element: page(<View />) },

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { takeReturn, useAuth } from "../auth";
-import { GoogleIcon, Loader, useTitle } from "../components/bits";
+import { GoogleIcon, useTitle } from "../components/bits";
+import { Opening, arrive, markOpened, type OpeningHandle } from "../components/Opening";
 import { api } from "../lib/api";
 
 function oauthError(): string | null {
@@ -12,35 +13,62 @@ function oauthError(): string | null {
 
 export default function Login() {
   useTitle("Sign in");
-  const { ready, user } = useAuth();
+  const { ready, user, membership, membershipError } = useAuth();
   const nav = useNavigate();
+  const opening = useRef<OpeningHandle>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(oauthError());
+  const [shake, setShake] = useState(0);
 
-  useEffect(() => { if (ready && user) nav(takeReturn(), { replace: true, viewTransition: true }); }, [ready, user, nav]);
+  // Signed in (back from Google, or already): once the account check is in, the scene flies into the
+  // orb on its own and hands over to where they were going.
+  const signedIn = Boolean(user);
+  const sceneReady = ready && (!user || membership !== null || membershipError !== null);
+
+  useEffect(() => {
+    if (!error) return;
+    const t = window.setTimeout(() => opening.current?.jolt(), 2600);
+    return () => window.clearTimeout(t);
+  }, [error]);
 
   async function go() {
+    if (busy) return;
     setBusy(true); setError(null);
-    try { await api.signInWithGoogle(`${location.origin}/login`); }
-    catch (e) { setError(e instanceof Error ? e.message : "Sign-in didn't start."); setBusy(false); }
+    try {
+      const url = await api.googleSignInUrl(`${location.origin}/login`);
+      markOpened();
+      await opening.current?.leave();
+      location.assign(url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Sign-in didn't start.");
+      setBusy(false);
+      setShake((n) => n + 1);
+      opening.current?.jolt();
+    }
   }
 
-  if (!ready || user) return <Loader center label={user ? "Signing you in" : "Loading"} />;
+  const portal = signedIn ? null : (
+    <>
+      <p className="opening-lbl">Build Cycle C04 · Sensemaking</p>
+      <h1 className="opening-h1">Stakeholder Profiles</h1>
+      <p className="opening-note">Map the players around The Labs in DC. You'll write three, then read everyone's.</p>
+      <div className={`opening-act${shake ? " shake" : ""}`} key={shake}>
+        <button type="button" className="opening-btn" onClick={() => void go()} disabled={busy} aria-busy={busy}>
+          <GoogleIcon /> {busy ? "Opening Google…" : "Continue with Google"}
+        </button>
+        <p className="opening-err" role="alert" hidden={!error}>{error ? <><strong>Sign-in didn't work.</strong> {error}</> : " "}</p>
+        <p className="opening-hint">Use the Google account you use for OLOS.</p>
+      </div>
+    </>
+  );
 
   return (
-    <div className="gate">
-      <div className="gate-inner">
-        <p className="eyebrow rv">The Upskilling Labs · Build Cycle C04</p>
-        <h1 className="h1 rv">Stakeholder Profiles</h1>
-        <p className="lede rv">Map the players around The Labs in DC, one profile at a time. You'll write three, then read everyone's.</p>
-        {error && <div className="note note-error rv" role="alert"><strong>Sign-in didn't work.</strong> {error}</div>}
-        <div className="act rv">
-          <button type="button" className="btn btn-primary google" onClick={() => void go()} disabled={busy} aria-busy={busy}>
-            <GoogleIcon /> {busy ? "Opening Google…" : "Continue with Google"}
-          </button>
-        </div>
-        <p className="small muted rv">Use the Google account you use for OLOS.</p>
-      </div>
-    </div>
+    <Opening
+      ref={opening}
+      ready={sceneReady}
+      portal={portal}
+      label={signedIn ? "Signing you in" : "Loading"}
+      onDone={() => { markOpened(); arrive(); nav(takeReturn(), { replace: true }); }}
+    />
   );
 }

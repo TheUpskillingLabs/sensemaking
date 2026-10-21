@@ -94,3 +94,15 @@ export function ConfirmDialog({ open, title, children, confirmLabel, cancelLabel
 export function useTitle(t: string) {
   useLayoutEffect(() => { document.title = t ? `${t} · Stakeholder Profiles` : "Stakeholder Profiles · The Upskilling Labs"; }, [t]);
 }
+
+/** A headline whose words arrive one by one when the page is arriving (after the opening). */
+export function Words({ text }: { text: string }) {
+  const words = text.trim().split(/\s+/);
+  return (
+    <span className="words" aria-label={text}>
+      {words.map((w, i) => (
+        <span key={i} aria-hidden="true"><span className="w" style={{ ["--w" as string]: i }}>{w}</span>{i < words.length - 1 ? " " : ""}</span>
+      ))}
+    </span>
+  );
+}
