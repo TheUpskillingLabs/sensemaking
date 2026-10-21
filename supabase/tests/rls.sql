@@ -5,7 +5,7 @@
 --   psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/rls.sql
 -- Everything runs in one transaction and is rolled back, so it leaves no rows
 -- behind. Any failed check raises an exception and aborts the run; reaching the
--- final SELECT means all eight checks passed.
+-- final SELECT means all nine checks passed.
 --
 -- Simulated people:
 --   A  member, submits three profiles (unlocked)
@@ -16,16 +16,24 @@
 begin;
 
 -- ── Fixtures (as postgres) ─────────────────────────────────────────────────
-insert into auth.users (id, email, aud, role) values
-  ('00000000-0000-4000-a000-00000000000a', 'rls-a@test.invalid', 'authenticated', 'authenticated'),
-  ('00000000-0000-4000-a000-00000000000b', 'rls-b@test.invalid', 'authenticated', 'authenticated'),
-  ('00000000-0000-4000-a000-00000000000f', 'rls-f@test.invalid', 'authenticated', 'authenticated'),
-  ('00000000-0000-4000-a000-0000000000ee', 'rls-n@test.invalid', 'authenticated', 'authenticated');
+insert into auth.users (id, email, aud, role, email_confirmed_at) values
+  ('00000000-0000-4000-a000-00000000000a', 'rls-a@test.invalid', 'authenticated', 'authenticated', now()),
+  ('00000000-0000-4000-a000-00000000000b', 'rls-b@test.invalid', 'authenticated', 'authenticated', now()),
+  ('00000000-0000-4000-a000-00000000000f', 'rls-f@test.invalid', 'authenticated', 'authenticated', now()),
+  ('00000000-0000-4000-a000-0000000000ee', 'rls-n@test.invalid', 'authenticated', 'authenticated', now()),
+  -- U: member whose OLOS row isn't linked to this login yet (confirmed email).
+  ('00000000-0000-4000-a000-0000000000cc', 'RLS-U@test.invalid', 'authenticated', 'authenticated', now()),
+  -- X: claims a member's address but never confirmed it.
+  ('00000000-0000-4000-a000-0000000000dd', 'rls-x@test.invalid', 'authenticated', 'authenticated', null);
 
 insert into public.participants (auth_user_id, google_id, email, first_name, last_name, is_test) values
   ('00000000-0000-4000-a000-00000000000a', 'rls-google-a', 'rls-a@test.invalid', 'Ada',  'Test', true),
   ('00000000-0000-4000-a000-00000000000b', 'rls-google-b', 'rls-b@test.invalid', 'Bo',   'Test', true),
-  ('00000000-0000-4000-a000-00000000000f', 'rls-google-f', 'rls-f@test.invalid', 'Fran', 'Test', true);
+  ('00000000-0000-4000-a000-00000000000f', 'rls-google-f', 'rls-f@test.invalid', 'Fran', 'Test', true),
+  (null, 'rls-google-u', 'rls-u@test.invalid', 'Uma', 'Test', true),
+  (null, 'rls-google-x', 'rls-x@test.invalid', 'Xan', 'Test', true);
+insert into public.participant_roles (participant_id, role, note)
+select id, 'lab_lead', 'rls test fixture' from public.participants where email = 'rls-u@test.invalid';
 
 insert into public.participant_roles (participant_id, role, note)
 select id, 'poderator', 'rls test fixture' from public.participants where email = 'rls-f@test.invalid';
@@ -151,6 +159,27 @@ begin
   end;
 end $$;
 
+-- ── Unlinked OLOS rows, matched by confirmed email ─────────────────────────
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-0000000000cc","role":"authenticated"}', true);
+do $$
+begin
+  -- 9. A member whose row isn't linked yet gets in by confirmed email (case-insensitive),
+  --    keeps their roles, and can write; an unconfirmed claim of a member's email can't.
+  if not public.sensemaking_has_olos_account() then raise exception 'test 9 failed: unlinked member not recognized'; end if;
+  if not public.sensemaking_is_facilitator() then raise exception 'test 9 failed: unlinked Lab Lead not a facilitator'; end if;
+  insert into public.sensemaking_profiles (cycle, name) values ('C04', 'U draft');
+end $$;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-0000000000dd","role":"authenticated"}', true);
+do $$
+begin
+  if public.sensemaking_has_olos_account() then raise exception 'test 9 failed: unconfirmed email counted as a member'; end if;
+  begin
+    insert into public.sensemaking_profiles (cycle, name) values ('C04', 'X attempt');
+    raise exception 'test 9 failed: unconfirmed email inserted';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+
 -- ── Submissions closed ─────────────────────────────────────────────────────
 reset role;
 update public.sensemaking_config set submissions_open = false where cycle = 'C04';
@@ -191,6 +220,6 @@ begin
 end $$;
 
 reset role;
-select 'All 8 RLS checks passed' as result;
+select 'All 9 RLS checks passed' as result;
 
 rollback;
