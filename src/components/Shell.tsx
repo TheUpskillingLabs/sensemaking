@@ -3,6 +3,7 @@ import { Link, NavLink, Navigate, Outlet, useLocation } from "react-router-dom";
 import { rememberReturn, useAuth } from "../auth";
 import { ErrorNote, Loader } from "./bits";
 import { Opening, arrive, markOpened, openedThisSession } from "./Opening";
+import { ReadingSheetProvider } from "./Learn";
 
 export function World() { return <div className="world" aria-hidden="true" />; }
 
@@ -49,13 +50,13 @@ function Bar() {
 
 export function Shell() {
   return (
-    <>
+    <ReadingSheetProvider>
       <a className="skip" href="#main">Skip to content</a>
       <World />
       <Bar />
       <main id="main" tabIndex={-1}><Outlet /></main>
       <footer className="foot">The Upskilling Labs · Build Cycle C04 sensemaking</footer>
-    </>
+    </ReadingSheetProvider>
   );
 }
 

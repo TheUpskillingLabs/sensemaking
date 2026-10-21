@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth";
+import { Why } from "../components/Learn";
 import { ConfirmDialog, ErrorNote, Loader, Segmented, Tick, useTitle } from "../components/bits";
 import { ApiError, api } from "../lib/api";
 import { CAPITALS, LEVELS, ORG_TYPES, RINGS, missingFields, noteField, ratingField, type Missing } from "../lib/capitals";
@@ -253,7 +254,8 @@ export default function Editor() {
 
           <div className={`field rv${bad("description") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-description">Who they are <span className="req" aria-hidden="true">*</span></label>
-            <p className="hint" id="h-description">Describe this player in your own words: who they are, what they do, and how they show up in the DC area.</p>
+            <p className="hint" id="h-description">Describe this player in your own words: who they are, what they do, and how they show up in the DC area. If you know what they've tried before, include it.</p>
+            <Why id="archaeology" />
             <textarea id="f-description" className="textarea big" value={draft.description ?? ""} onChange={(e) => set("description", e.target.value)} aria-describedby="h-description" aria-required="true" aria-invalid={bad("description") || undefined} />
             {bad("description") && <p className="err-text">Write a few lines about who they are.</p>}
           </div>
@@ -265,6 +267,7 @@ export default function Editor() {
 
           <div className={`field rv${bad("ring") ? " invalid" : ""}`} role="radiogroup" aria-labelledby="l-ring" aria-required="true">
             <p className="label" id="l-ring">Ring <span className="req" aria-hidden="true">*</span></p>
+            <Why id="field" />
             <div className="choices">
               {RINGS.map((r, i) => (
                 <label key={r.value} className="choice">
@@ -278,7 +281,8 @@ export default function Editor() {
 
           <div className="field rv">
             <p className="label" id="l-caps">What they bring <span className="req" aria-hidden="true">*</span></p>
-            <p className="hint">Rate each of the seven capitals Low, Medium or High. Add a note wherever it helps. <Link to="/reading#capitals" target="_blank">What are the capitals?</Link></p>
+            <p className="hint">Rate each of the seven capitals Low, Medium or High. Add a note wherever it helps.</p>
+            <Why id="capitals" label="What are the capitals?" />
             <div className="caps" aria-labelledby="l-caps" role="group">
               {CAPITALS.map((c) => {
                 const rf = ratingField(c.key), nf = noteField(c.key);
@@ -333,6 +337,7 @@ export default function Editor() {
 
           <div className={`field rv${bad("connection_to_labs") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-connection_to_labs">How they could connect to The Labs <span className="req" aria-hidden="true">*</span></label>
+            <Why id="customers" label="Helped, paying, or both?" />
             <textarea id="f-connection_to_labs" className="textarea" value={draft.connection_to_labs ?? ""} onChange={(e) => set("connection_to_labs", e.target.value)} aria-required="true" aria-invalid={bad("connection_to_labs") || undefined} />
             {bad("connection_to_labs") && <p className="err-text">How could they connect to The Labs?</p>}
           </div>
