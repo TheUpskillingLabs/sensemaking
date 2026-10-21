@@ -61,7 +61,7 @@ export default function Print() {
                 <div key={group[0]?.id} className="print-page">
                   {group.map((p) => (
                     <div key={p.id} className="print-card">
-                      <ProfileCard p={p} headingLevel={2} showStatus={p.status === "draft"} />
+                      <ProfileCard p={p} headingLevel={2} showStatus={p.status === "draft"} variant="print" />
                     </div>
                   ))}
                 </div>

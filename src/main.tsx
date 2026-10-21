@@ -10,6 +10,7 @@ import { configured } from "./lib/supabase";
 import Login from "./routes/Login";
 import Home from "./routes/Home";
 import "./styles/app.css";
+import "./styles/labs.css";
 
 const Editor = lazy(() => import("./routes/Editor"));
 const View = lazy(() => import("./routes/View"));

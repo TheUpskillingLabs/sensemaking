@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Link, NavLink, Navigate, Outlet, useLocation } from "react-router-dom";
 import { rememberReturn, useAuth } from "../auth";
 import { ErrorNote, Loader } from "./bits";
@@ -48,14 +48,30 @@ function Bar() {
   );
 }
 
+// As on the ambassadors site: the header has no bar at the top of a page; once the page moves, a band of
+// ink and a soft blur fade in behind it so whatever scrolls under it stays readable.
+function useScrolledFlag() {
+  useEffect(() => {
+    const root = document.documentElement;
+    const on = () => { root.dataset.scrolled = window.scrollY > 8 ? "true" : "false"; };
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+}
+
 export function Shell() {
+  useScrolledFlag();
   return (
     <ReadingSheetProvider>
       <a className="skip" href="#main">Skip to content</a>
       <World />
       <Bar />
       <main id="main" tabIndex={-1}><Outlet /></main>
-      <footer className="foot">The Upskilling Labs · Build Cycle C04 sensemaking</footer>
+      <footer className="foot">
+        <img src="/logo-row.webp" alt="The Upskilling Labs" width={126} height={28} />
+        <p>Build Cycle C04 · Sensemaking. Your profiles are stored in The Labs' OLOS database. Facilitators can read them; other participants can once they've submitted their own.</p>
+      </footer>
     </ReadingSheetProvider>
   );
 }
@@ -89,7 +105,7 @@ function Gatekeeper({ children }: { children: ReactNode }) {
   if (!ready) return <Loader center />;
   if (membershipError) {
     return (
-      <div className="page page-narrow">
+      <div className="page">
         <ErrorNote message={`We couldn't check your account. ${membershipError}`} onRetry={retrying ? undefined : () => { setRetrying(true); void reloadMembership().finally(() => setRetrying(false)); }} />
       </div>
     );

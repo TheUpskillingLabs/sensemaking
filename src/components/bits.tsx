@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { CAPITALS, LEVEL_LABEL, ratingField } from "../lib/capitals";
 import type { Level, ProfileRow } from "../lib/types";
 
@@ -58,7 +58,7 @@ export function CapStrip({ p }: { p: ProfileRow }) {
     <div className="strip" role="img" aria-label={CAPITALS.map((c) => { const v = p[ratingField(c.key)]; return `${c.label}: ${v ? LEVEL_LABEL[v] : "not rated"}`; }).join(", ")}>
       {CAPITALS.map((c) => {
         const v = p[ratingField(c.key)] as Level | null;
-        return <span key={c.key} className={v ? `s-${v}` : ""} title={`${c.label}: ${v ? LEVEL_LABEL[v] : "not rated"}`}>{c.label.slice(0, 3)}</span>;
+        return <span key={c.key} className={`cd cd-${v ?? "none"}`} title={`${c.label}: ${v ? LEVEL_LABEL[v] : "not rated"}`}><i aria-hidden="true" />{c.label.slice(0, 3)}</span>;
       })}
     </div>
   );
@@ -104,5 +104,45 @@ export function Words({ text }: { text: string }) {
         <span key={i} aria-hidden="true"><span className="w" style={{ ["--w" as string]: i }}>{w}</span>{i < words.length - 1 ? " " : ""}</span>
       ))}
     </span>
+  );
+}
+
+export type StatusKind = "draft" | "submitted" | "edited" | "open" | "closed" | "unlocked";
+/** A status is plain text with a dot: only things you can press look pressable. */
+export function Status({ kind, children }: { kind: StatusKind; children: ReactNode }) {
+  return <span className={`status st-${kind}`}>{children}</span>;
+}
+
+/** A page's own sections, as a row under the header; the one in view is marked as you scroll. */
+export function LocalNav({ links, label }: { links: { id: string; label: string }[]; label: string }) {
+  const [current, setCurrent] = useState<string | null>(links[0]?.id ?? null);
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const els = links.map((l) => document.getElementById(l.id)).filter((e): e is HTMLElement => Boolean(e));
+    if (!els.length || !("IntersectionObserver" in window)) return;
+    const seen = new Map<string, number>();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) seen.set(e.target.id, e.isIntersecting ? e.boundingClientRect.top : Infinity);
+      let best: string | null = null, top = Infinity;
+      for (const [id, t] of seen) if (t !== Infinity && t < top) { top = t; best = id; }
+      if (best) setCurrent(best);
+    }, { rootMargin: "-120px 0px -55% 0px" });
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [links]);
+  // Keep the marked link in view on a phone, where the row scrolls sideways.
+  useEffect(() => {
+    const a = ref.current?.querySelector<HTMLElement>(`a[data-id="${current}"]`);
+    if (a && ref.current) ref.current.scrollTo({ left: a.offsetLeft - 16, behavior: "smooth" });
+  }, [current]);
+  return (
+    <nav className="lnav" aria-label={label} ref={ref}>
+      <ul>
+        {links.map((l) => (
+          <li key={l.id}><a href={`#${l.id}`} data-id={l.id} aria-current={current === l.id ? "location" : undefined}
+            onClick={(e) => { e.preventDefault(); document.getElementById(l.id)?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); history.replaceState(null, "", `#${l.id}`); }}>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
   );
 }

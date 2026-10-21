@@ -33,29 +33,23 @@ export default function View() {
   const back = mine ? { to: "/", label: "← My profiles" } : { to: "/gallery", label: "← Gallery" };
 
   return (
-    <div className="page page-narrow">
-      <p className="rv" style={{ marginBottom: 16 }}><Link to={back.to} viewTransition>{back.label}</Link></p>
+    <div className="page page-doc">
+      <p className="crumb rv"><Link to={back.to} viewTransition>{back.label}</Link>
+        {p && mine && p.status === "submitted" && membership?.config.submissions_open && <Link className="btn btn-ghost btn-sm" to={`/profiles/${p.id}/edit`} viewTransition>Edit this profile</Link>}</p>
       {error ? <ErrorNote message={error} onRetry={() => void load()} />
         : !p ? <Loader label="Opening the profile" />
         : (
           <>
             {justSubmitted && (
-              <div className="note note-info rv" role="status" style={{ marginBottom: 24 }}>
+              <div className="band band-lit rv" role="status">
                 <p style={{ display: "flex", alignItems: "center", gap: 8 }}><Tick /> <strong>Submitted.</strong></p>
                 <p className="muted" style={{ marginTop: 4 }}>{membership?.unlocked ? <>You've unlocked everyone's profiles. <Link to="/gallery" viewTransition>Open the gallery</Link>.</> : <>Thank you. <Link to="/" viewTransition>Back to your profiles</Link> to write the next one.</>}</p>
               </div>
             )}
             {mine && p.status === "draft" && membership?.config.submissions_open && (
-              <p className="note rv" style={{ marginBottom: 24 }}>This is still a draft. <Link to={`/profiles/${p.id}/edit`} viewTransition>Keep editing</Link>.</p>
+              <p className="band rv">This is still a draft. <Link to={`/profiles/${p.id}/edit`} viewTransition>Keep editing</Link>.</p>
             )}
-            {mine && p.status === "submitted" && membership?.config.submissions_open && (
-              <p className="rv" style={{ marginBottom: 24, display: "flex", justifyContent: "flex-end" }}>
-                <Link className="btn btn-ghost btn-sm" to={`/profiles/${p.id}/edit`} viewTransition>Edit this profile</Link>
-              </p>
-            )}
-            <div className="sheet">
-              <ProfileCard p={p} author={membership?.facilitator ? author : undefined} showStatus={Boolean(mine) || p.status === "draft"} />
-            </div>
+            <ProfileCard p={p} author={membership?.facilitator ? author : undefined} showStatus={Boolean(mine) || p.status === "draft"} />
           </>
         )}
     </div>

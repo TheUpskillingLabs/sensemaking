@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
-import { ErrorNote, Loader, Words, useTitle } from "../components/bits";
+import { ErrorNote, Loader, Status, Words, useTitle } from "../components/bits";
 import { api } from "../lib/api";
-import { typeLabel } from "../lib/capitals";
+import { RING_LABEL, typeLabel } from "../lib/capitals";
 import type { ProfileRow } from "../lib/types";
 
 const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
@@ -31,7 +31,6 @@ export default function Home() {
   const open = membership.config.submissions_open;
   const submitted = rows?.filter((r) => r.status === "submitted").length ?? 0;
   const unlocked = membership.unlocked || submitted >= required;
-  const pct = Math.min(100, Math.round((submitted / required) * 100));
 
   async function create() {
     setCreating(true); setCreateError(null);
@@ -44,68 +43,111 @@ export default function Home() {
     }
   }
 
+  // Your required profiles as numbered columns (submitted first, then drafts, then empty slots); any extras
+  // are listed after them.
+  const ordered = rows ? [...rows].sort((x, y) => (x.status === y.status ? Date.parse(y.updated_at) - Date.parse(x.updated_at) : x.status === "submitted" ? -1 : 1)) : [];
+  const slots = Array.from({ length: Math.max(required, Math.min(ordered.length, required)) }, (_, i) => ordered[i] ?? null);
+  const extras = ordered.slice(required);
+  const firstEmpty = slots.findIndex((x) => x === null);
+  const href = (r: ProfileRow) => (open ? `/profiles/${r.id}/edit` : `/profiles/${r.id}`);
+
   return (
-    <div className="page page-narrow">
-      <div className="page-head">
-        <p className="eyebrow rv">Build Cycle C04 · Sensemaking</p>
-        <h1 className="h1 rv"><Words text="My profiles" /></h1>
-        <p className="lede rv">Write one profile for each player you see around The Labs in DC: a library, an employer, an agency, a community group, a training provider, anyone who matters here. <Link to="/reading" viewTransition>Where these questions come from</Link>.</p>
-      </div>
+    <div className="page">
+      <header className="hero">
+        <p className="kicker rv">Build Cycle C04 · Sensemaking</p>
+        <h1 className="display rv"><Words text="Map the field." /></h1>
+        <p className="lede rv">Write one profile for each player you see around The Labs in DC: a library, an employer, an agency, a community group, a training provider, anyone who matters here.</p>
+        <p className="hero-meta rv" aria-live="polite">
+          {rows ? <><b>{submitted} of {required}</b> submitted</> : "Counting…"}
+          {" · "}{!unlocked && !membership.facilitator ? "Others' profiles unlock after your " + inWords(required) : unlocked ? "Everyone's profiles are open to you" : "You can read every profile"}
+          {" · "}<Link to="/reading" viewTransition>Where the questions come from</Link>
+        </p>
+      </header>
 
-      {flash && <div className="note note-info rv" role="status" style={{ marginBottom: 24 }}>{flash}</div>}
+      {flash && <p className="band band-info rv" role="status">{flash}</p>}
+      {!open && <p className="band rv" role="status"><Status kind="closed">Submissions are closed</Status> You can still read your profiles, but you can't start or edit any.</p>}
+      {createError && <ErrorNote title="Couldn't start a profile" message={createError} />}
 
-      <section className="progress rv" aria-label="Your progress">
-        <p className="progress-count" aria-live="polite">{rows ? `${submitted} of ${required} submitted` : "Counting…"}</p>
-        <div className={`meter${submitted >= required ? " done" : ""}`} role="progressbar" aria-valuemin={0} aria-valuemax={required} aria-valuenow={Math.min(submitted, required)} aria-label="Profiles submitted"
-          style={{ ["--pct" as string]: `${rows ? pct : 0}%` }}><span /></div>
-      </section>
-
-      <div className="stack" style={{ ["--s" as string]: "24px", marginTop: 32 }}>
-        {!unlocked && !membership.facilitator && (
-          <p className="note rv">Once you've submitted your {inWords(required)}, you'll be able to read everyone else's. Until then, nobody sees yours and you don't see theirs. That keeps everyone's view independent.</p>
-        )}
-        {membership.facilitator && !unlocked && (
-          <p className="note note-info rv">You're a facilitator, so you can already read every profile, drafts included. <Link to="/gallery" viewTransition>Open the gallery</Link>.</p>
-        )}
-        {unlocked && (
-          <div className="note note-info rv">
-            <p className="h3" style={{ marginBottom: 8 }}>You've unlocked the gallery.</p>
-            <p className="muted" style={{ marginBottom: 16 }}>Read what everyone else saw. Anything you write from here on won't be independent of theirs, and that's fine.</p>
-            <Link className="btn btn-primary" to="/gallery" viewTransition>Read everyone's profiles <span className="nudge" aria-hidden="true">→</span></Link>
-          </div>
-        )}
-        {!open && <p className="note rv" role="status"><strong>Submissions are closed.</strong> You can still read your profiles, but you can't start or edit any.</p>}
-
-        <div className="act rv" style={{ justifyContent: "space-between" }}>
-          <h2 className="h3">Your profiles</h2>
-          {open && (
-            <button type="button" className="btn btn-primary" onClick={() => void create()} disabled={creating} aria-busy={creating}>
-              {creating ? "Starting…" : <>New profile <span className="arrow" aria-hidden="true">+</span></>}
-            </button>
-          )}
-        </div>
-        {createError && <ErrorNote title="Couldn't start a profile" message={createError} />}
-
+      <section className="sec" aria-labelledby="h-yours">
+        <h2 className="sr-only" id="h-yours">Your profiles</h2>
         {error ? <ErrorNote message={error} onRetry={() => void load()} />
           : !rows ? <Loader label="Loading your profiles" />
-          : rows.length === 0 ? <p className="empty rv">No profiles yet. Start with a player you know well.</p>
           : (
-            <ul className="plist">
-              {rows.map((r) => (
-                <li key={r.id} className="pitem rv">
-                  <Link to={r.status === "draft" && open ? `/profiles/${r.id}/edit` : `/profiles/${r.id}`} viewTransition>
-                    <span className="pname">{r.name?.trim() || "Untitled player"}</span>
-                    <span className="pmeta">
-                      <span className={`badge ${r.status === "draft" ? "badge-draft" : "badge-sub"}`}>{r.status === "draft" ? "Draft" : "Submitted"}</span>{r.edited_at && <span className="badge badge-edited">Edited</span>}
-                      {r.org_type ? <> · {typeLabel(r)}</> : null}
-                    </span>
+            <ol className="steps">
+              {slots.map((r, i) => (
+                <li key={r?.id ?? `empty-${i}`} className={`step rv${r?.status === "submitted" ? " is-done" : r ? " is-draft" : ""}`}>
+                  <p className="step-no"><span className="no">{String(i + 1).padStart(2, "0")}</span>
+                    {r ? <Status kind={r.status === "draft" ? "draft" : "submitted"}>{r.status === "draft" ? "Draft" : "Submitted"}</Status> : <span className="status">Not started</span>}
+                    {r?.edited_at && <Status kind="edited">Edited</Status>}
+                  </p>
+                  {r ? (
+                    <>
+                      <h3 className="step-title"><Link to={r.status === "draft" && open ? `/profiles/${r.id}/edit` : `/profiles/${r.id}`} viewTransition>{r.name?.trim() || "Untitled player"}</Link></h3>
+                      <p className="step-body">{[r.org_type ? typeLabel(r) : null, r.ring ? RING_LABEL[r.ring] : null].filter(Boolean).join(" · ") || "Still in your own words"}</p>
+                      <p className="step-act">
+                        {r.status === "draft" && open ? <Link className="textlink" to={href(r)} viewTransition>Keep writing →</Link>
+                          : <Link className="textlink" to={`/profiles/${r.id}`} viewTransition>Read it →</Link>}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="step-title muted-title">A player you know</h3>
+                      <p className="step-body">{i === 0 ? "Start with someone you know well." : "Someone different from the others: a funder, a neighbor, a rival."}</p>
+                      <p className="step-act">
+                        {open && i === firstEmpty && (
+                          <button type="button" className="btn btn-primary" onClick={() => void create()} disabled={creating} aria-busy={creating}>
+                            {creating ? "Starting…" : <>Start <span className="arrow" aria-hidden="true">→</span></>}
+                          </button>
+                        )}
+                      </p>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ol>
+          )}
+      </section>
+
+      {rows && (unlocked || membership.facilitator) && (
+        <section className="band band-lit rv" aria-labelledby="h-unlocked">
+          <div>
+            <Status kind="unlocked">{membership.facilitator && !unlocked ? "Facilitator" : "Unlocked"}</Status>
+            <h2 className="band-title" id="h-unlocked">{membership.facilitator && !unlocked ? "You can read every profile." : "Read what everyone else saw."}</h2>
+            <p>{membership.facilitator && !unlocked ? "Drafts included. Participants can't see each other's until they've submitted their own." : "Anything you write from here on won't be independent of theirs, and that's fine."}</p>
+          </div>
+          <Link className="btn btn-primary" to="/gallery" viewTransition>Open the gallery <span className="arrow" aria-hidden="true">→</span></Link>
+        </section>
+      )}
+      {rows && !unlocked && !membership.facilitator && (
+        <p className="fine rv">Once you've submitted your {inWords(required)}, you'll be able to read everyone else's. Until then, nobody sees yours and you don't see theirs. That keeps everyone's view independent.</p>
+      )}
+
+      {rows && (extras.length > 0 || (open && firstEmpty === -1)) && (
+        <section className="sec" aria-labelledby="h-more">
+          <div className="sec-head">
+            <h2 className="sub" id="h-more">More players</h2>
+            {open && firstEmpty === -1 && (
+              <button type="button" className="btn btn-ghost" onClick={() => void create()} disabled={creating} aria-busy={creating}>
+                {creating ? "Starting…" : <>New profile <span className="arrow" aria-hidden="true">+</span></>}
+              </button>
+            )}
+          </div>
+          {extras.length > 0 && (
+            <ul className="rows">
+              {extras.map((r) => (
+                <li key={r.id} className="rv">
+                  <Link className="row" to={r.status === "draft" && open ? `/profiles/${r.id}/edit` : `/profiles/${r.id}`} viewTransition>
+                    <span className="row-main"><span className="row-title">{r.name?.trim() || "Untitled player"}</span>
+                      <span className="row-sub">{r.org_type ? typeLabel(r) : "No type yet"}</span></span>
+                    <Status kind={r.status === "draft" ? "draft" : "submitted"}>{r.status === "draft" ? "Draft" : "Submitted"}</Status>
                     <span className="arrow" aria-hidden="true">→</span>
                   </Link>
                 </li>
               ))}
             </ul>
           )}
-      </div>
+        </section>
+      )}
     </div>
   );
 }

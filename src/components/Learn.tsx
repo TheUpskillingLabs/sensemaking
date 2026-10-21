@@ -11,11 +11,15 @@ import { topic, type Topic, type TopicId } from "../lib/reading";
    - The Reading tab holds the same topics as a library for the curious. */
 
 /** The full topic: explanation, how it shows up here, checked sources. */
-export function TopicBody({ t, headingLevel = 2 }: { t: Topic; headingLevel?: 2 | 3 }) {
+export function TopicBody({ t, headingLevel = 2, n }: { t: Topic; headingLevel?: 2 | 3; n?: number }) {
   const H = headingLevel === 2 ? "h2" : "h3";
   return (
     <>
-      <H className={headingLevel === 2 ? "h2 rv" : "h3"} id={`h-${t.id}`}>{t.title}</H>
+      <div className="topic-head">
+        {n !== undefined && <p className="step-no rv"><span className="no">{String(n).padStart(2, "0")}</span>Background</p>}
+        <H className={headingLevel === 2 ? "sub rv" : "h3"} id={`h-${t.id}`}>{t.title}</H>
+      </div>
+      <div className="topic-body">
       {t.body.map((p, i) => <p key={i} className="rv">{p}</p>)}
       <p className="here rv"><strong>In this app:</strong> {t.here}</p>
       <ul className="sources">
@@ -28,6 +32,7 @@ export function TopicBody({ t, headingLevel = 2 }: { t: Topic; headingLevel?: 2 
           </li>
         ))}
       </ul>
+      </div>
     </>
   );
 }

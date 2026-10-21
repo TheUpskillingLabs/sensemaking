@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth";
 import { DiscussionPrompts, ReadTheField } from "../components/Learn";
-import { CapStrip, ErrorNote, Loader, Words, useTitle } from "../components/bits";
+import { Status, CapStrip, ErrorNote, Loader, Words, useTitle } from "../components/bits";
 import { api } from "../lib/api";
 import { CAPITALS, LEVELS, ORG_TYPES, RINGS, RING_LABEL, typeLabel } from "../lib/capitals";
 import { CYCLE } from "../lib/config";
@@ -53,10 +53,12 @@ export default function Gallery() {
 
   return (
     <div className="page">
-      <div className="page-head">
-        <p className="eyebrow rv">Build Cycle C04 · Everyone's view</p>
-        <h1 className="h1 rv"><Words text="The field, as we each see it" /></h1>
+      <header className="hero">
+        <p className="kicker rv">Build Cycle C04 · Everyone's view</p>
+        <h1 className="display rv"><Words text="The field, as we each see it." /></h1>
         <p className="lede rv">Every submitted profile, side by side. Look for players many people saw, players only one person saw, and places where the views disagree.</p>
+      </header>
+      <div className="guides">
         <ReadTheField />
         {facilitator && <DiscussionPrompts />}
       </div>
@@ -117,9 +119,10 @@ export default function Gallery() {
       </div>
 
       <p className="legend rv" aria-hidden="true">
-        <span><i style={{ background: "#00474e" }} />High</span>
-        <span><i style={{ background: "#9fd8dd" }} />Medium</span>
-        <span><i style={{ background: "#f3e3c3" }} />Low</span>
+        <span className="cd cd-high"><i />High</span>
+        <span className="cd cd-medium"><i />Medium</span>
+        <span className="cd cd-low"><i />Low</span>
+        <span className="cd cd-none"><i />Not rated</span>
         <span>Capitals: {CAPITALS.map((c) => c.label).join(", ")}</span>
       </p>
 
@@ -131,12 +134,13 @@ export default function Gallery() {
             {shown.map((p) => (
               <li key={p.id} className="gcard rv">
                 <Link to={`/profiles/${p.id}`} viewTransition>
-                  <h3>{p.name?.trim() || "Untitled player"} {p.status === "draft" && <span className="badge badge-draft">Draft</span>}{facilitator && p.edited_at && <span className="badge badge-edited">Edited</span>}</h3>
-                  <div className="chips">
-                    {p.org_type && <span className="chip">{typeLabel(p)}</span>}
-                    {p.ring && <span className={`chip${p.ring === "inner_circle" ? " ring-inner" : ""}`}>{RING_LABEL[p.ring]}</span>}
-                    {facilitator && nameOf(p.author_id) && <span className="chip" style={{ background: "transparent", boxShadow: "inset 0 0 0 1px rgba(0,20,27,.2)" }}>{nameOf(p.author_id)}</span>}
-                  </div>
+                  <p className="gmeta">
+                    {[p.org_type ? typeLabel(p) : null, p.ring ? RING_LABEL[p.ring] : null].filter(Boolean).join(" · ")}
+                    {p.status === "draft" && <Status kind="draft">Draft</Status>}
+                    {facilitator && p.edited_at && <Status kind="edited">Edited</Status>}
+                  </p>
+                  <h3>{p.name?.trim() || "Untitled player"}</h3>
+                  {facilitator && nameOf(p.author_id) && <p className="gauthor">by {nameOf(p.author_id)}</p>}
                   <p>{p.description}</p>
                   <CapStrip p={p} />
                 </Link>
