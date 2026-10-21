@@ -20,6 +20,7 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus }: { p: Pr
           {p.org_type && <span className="chip">{typeLabel(p)}</span>}
           {p.ring && <span className={`chip${p.ring === "inner_circle" ? " ring-inner" : ""}`}>{RING_LABEL[p.ring]}</span>}
           {showStatus && <span className={`badge ${p.status === "draft" ? "badge-draft" : "badge-sub"}`}>{p.status === "draft" ? "Draft" : "Submitted"}</span>}
+          {showStatus && p.edited_at && <span className="badge badge-edited" title={`Edited after submitting, ${new Date(p.edited_at).toLocaleString()}`}>Edited</span>}
         </div>
         {author && <p className="author rv">Written by {author}</p>}
       </header>

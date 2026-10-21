@@ -26,6 +26,7 @@ export interface Api {
   listAll(includeDrafts: boolean): Promise<ProfileRow[]>;
   getProfile(id: string): Promise<ProfileRow>;
   createDraft(): Promise<ProfileRow>;
+  /** Saves a draft, or the author's own submitted profile (it stays submitted). */
   saveDraft(id: string, patch: Partial<ProfileDraft>): Promise<ProfileRow>;
   submit(id: string, full: ProfileDraft): Promise<ProfileRow>;
   deleteDraft(id: string): Promise<void>;
@@ -115,9 +116,9 @@ const realApi: Api = {
     return data as ProfileRow;
   },
   async saveDraft(id, patch) {
-    const { data, error } = await supabase().from("sensemaking_profiles").update(patch).eq("id", id).eq("status", "draft").select("*");
+    const { data, error } = await supabase().from("sensemaking_profiles").update(patch).eq("id", id).select("*");
     if (error) throw wrap(error);
-    if (!data || data.length === 0) throw new ApiError("This profile can't be edited any more. It may have been submitted, or submissions may be closed.", undefined, "locked");
+    if (!data || data.length === 0) throw new ApiError("This profile can't be edited any more. Submissions may have closed.", undefined, "locked");
     return data[0] as ProfileRow;
   },
   async submit(id, full) {

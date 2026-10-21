@@ -52,7 +52,7 @@ Vercel Preview and Development env vars point at OLOS-dev, and Production points
 | Facilitator (admin, owner, developer, Poderator, Lab Lead) | ✓ | ✓ (with author) | ✓ | ✓ |
 | Google account without OLOS membership | — | — | — | — |
 
-An OLOS member is anyone with a `participants` row that isn't archived or banned. Submitted profiles are locked for their authors.
+An OLOS member is anyone with a `participants` row that isn't archived or banned. Authors can keep editing their own profiles after submitting, until submissions close. A submitted profile stays submitted and complete, can't be deleted, and is marked "Edited" for facilitators once it changes.
 
 ## License
 

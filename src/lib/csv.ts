@@ -8,6 +8,7 @@ const cols = (withAuthor: (id: string) => string | undefined): Col[] => {
     { header: "Profile ID", get: (p) => p.id },
     { header: "Status", get: (p) => (p.status === "submitted" ? "Submitted" : "Draft") },
     { header: "Submitted at", get: (p) => p.submitted_at ?? "" },
+    { header: "Edited after submitting at", get: (p) => p.edited_at ?? "" },
     { header: "Name", get: (p) => p.name ?? "" },
     { header: "Type", get: (p) => (p.org_type ? ORG_TYPE_LABEL[p.org_type] : "") },
     { header: "Type (other)", get: (p) => p.org_type_other ?? "" },

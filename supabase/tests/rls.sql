@@ -114,10 +114,20 @@ begin
   select count(*) into n from public.sensemaking_profiles where status = 'draft';
   if n <> 0 then raise exception 'test 2 failed: A sees % drafts', n; end if;
 
-  -- 3. A submitted profile can't be updated or deleted by its author.
-  update public.sensemaking_profiles set name = 'changed' where author_id = auth.uid();
+  -- 3. An author can edit a submitted profile, but it stays submitted and complete
+  --    (no un-submitting, no emptying required fields), edited_at is stamped, and it can't be deleted.
+  update public.sensemaking_profiles set name = 'changed', status = 'draft' where author_id = auth.uid() and name = 'Test player A1';
   get diagnostics n = row_count;
-  if n <> 0 then raise exception 'test 3 failed: author updated % submitted rows', n; end if;
+  if n <> 1 then raise exception 'test 3 failed: author could not edit their submitted profile (% rows)', n; end if;
+  select count(*) into n from public.sensemaking_profiles
+   where author_id = auth.uid() and name = 'changed' and status = 'submitted' and edited_at is not null and submitted_at is not null;
+  if n <> 1 then raise exception 'test 3 failed: edited profile did not stay submitted with edited_at set'; end if;
+  if not public.sensemaking_has_unlocked('C04') then raise exception 'test 3 failed: editing un-submitted the profile'; end if;
+  begin
+    update public.sensemaking_profiles set stake = '  ' where author_id = auth.uid() and name = 'changed';
+    raise exception 'test 3 failed: required field emptied on a submitted profile';
+  exception when check_violation then null;
+  end;
   delete from public.sensemaking_profiles where author_id = auth.uid();
   get diagnostics n = row_count;
   if n <> 0 then raise exception 'test 3 failed: author deleted % submitted rows', n; end if;
@@ -197,6 +207,9 @@ begin
   update public.sensemaking_profiles set name = 'late edit' where name = 'B draft';
   get diagnostics n = row_count;
   if n <> 0 then raise exception 'test 7 failed: draft updated while closed'; end if;
+  update public.sensemaking_profiles set needs = 'late edit' where author_id = auth.uid() and status = 'submitted';
+  get diagnostics n = row_count;
+  if n <> 0 then raise exception 'test 7 failed: submitted profile edited while closed'; end if;
 end $$;
 
 -- ── anon ───────────────────────────────────────────────────────────────────

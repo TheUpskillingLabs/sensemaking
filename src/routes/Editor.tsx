@@ -8,7 +8,7 @@ import { EDITABLE_FIELDS, type EditableField, type ProfileDraft, type ProfileRow
 
 const AUTOSAVE_MS = 800;
 const MAX_BACKOFF_MS = 30_000;
-type SaveState = "idle" | "saving" | "saved" | "retrying" | "locked";
+type SaveState = "idle" | "saving" | "saved" | "retrying" | "locked" | "incomplete";
 
 const pickDraft = (r: ProfileRow): ProfileDraft => Object.fromEntries(EDITABLE_FIELDS.map((f) => [f, r[f]])) as ProfileDraft;
 const toDb = (v: unknown) => (typeof v === "string" && v.trim() === "" ? null : v);
@@ -43,6 +43,8 @@ export default function Editor() {
   const timer = useRef<number | undefined>(undefined);
   const attempt = useRef(0);
   const alive = useRef(true);
+  // A submitted profile stays submitted and complete: edits save only while every required field is filled.
+  const submittedRef = useRef(false);
 
   useTitle(draft?.name?.trim() ? `Editing ${draft.name.trim()}` : "New profile");
 
@@ -51,7 +53,9 @@ export default function Editor() {
     setLoadError(null);
     try {
       const r = await api.getProfile(id);
-      if (r.status !== "draft" || (user && r.author_id !== user.id)) { nav(`/profiles/${id}`, { replace: true }); return; }
+      if (user && r.author_id !== user.id) { nav(`/profiles/${id}`, { replace: true }); return; }
+      submittedRef.current = r.status === "submitted";
+      if (submittedRef.current) setShowErrors(true);
       let d = pickDraft(r);
       const m = readMirror(id);
       if (m && m.at > Date.parse(r.updated_at)) {
@@ -74,6 +78,7 @@ export default function Editor() {
     window.clearTimeout(timer.current);
     if (inflight.current) { await inflight.current; if (dirty.current.size) return flush(); return; }
     if (!dirty.current.size || !draftRef.current) return;
+    if (submittedRef.current && missingFields(draftRef.current).length) { setSave("incomplete"); return; }
     const snapshot: Partial<Record<EditableField, unknown>> = {};
     dirty.current.forEach((f) => { snapshot[f] = draftRef.current?.[f]; });
     const patch = Object.fromEntries(Object.entries(snapshot).map(([k, v]) => [k, toDb(v)])) as Partial<ProfileDraft>;
@@ -122,7 +127,7 @@ export default function Editor() {
     const unsaved: Partial<ProfileDraft> = {};
     dirty.current.forEach((f) => { (unsaved as Record<string, unknown>)[f] = next[f]; });
     writeMirror(id, unsaved);
-    if (save !== "retrying") setSave("idle");
+    if (save !== "retrying") setSave(submittedRef.current && missingFields(next).length ? "incomplete" : "idle");
     schedule(save === "retrying" ? Math.max(AUTOSAVE_MS, 1000) : AUTOSAVE_MS);
   }
 
@@ -168,6 +173,16 @@ export default function Editor() {
     }
   }
 
+  // Leaving a submitted profile: save what's there (if it's complete), then back to the read-only view.
+  async function done() {
+    setActionError(null);
+    if (missing.length) { setShowErrors(true); setShakeKey((k) => k + 1); const first = missing[0]; if (first) focusField(first.field); return; }
+    setBusy(true);
+    await flush();
+    if (dirty.current.size) { setBusy(false); setActionError("We couldn't save your last changes yet. They're kept in this browser; try Done again in a moment."); return; }
+    nav(`/profiles/${id}`, { replace: true, viewTransition: true });
+  }
+
   async function doDelete() {
     setBusy(true); setActionError(null);
     try {
@@ -186,12 +201,14 @@ export default function Editor() {
   if (!draft || !row) return <Loader center label="Opening your profile" />;
   const closed = membership ? !membership.config.submissions_open : false;
   const readOnly = save === "locked" || closed;
+  const isSubmitted = row.status === "submitted";
 
   const saveLabel =
     save === "saving" ? "Saving…" :
     save === "saved" ? "Saved" :
     save === "retrying" ? "Couldn't save, retrying" :
     save === "locked" ? "Not saved" :
+    save === "incomplete" ? "Not saved: fill in what's missing" :
     dirty.current.size ? "Unsaved changes" : "All changes saved";
 
   return (
@@ -199,10 +216,12 @@ export default function Editor() {
       <p className="rv" style={{ marginBottom: 16 }}><Link to="/" viewTransition>← My profiles</Link></p>
       <form className="sheet editor" noValidate onSubmit={(e) => { e.preventDefault(); trySubmit(); }} aria-describedby="save-state">
         <div className="page-head" style={{ marginBottom: 0 }}>
-          <p className="eyebrow rv"><span className="badge badge-draft">Draft</span></p>
+          <p className="eyebrow rv">{isSubmitted ? <span className="badge badge-sub">Submitted</span> : <span className="badge badge-draft">Draft</span>}</p>
           <h1 className="h2 rv">{draft.name?.trim() || "A new player"}</h1>
-          <p className="muted rv">Start in your own words, then give it some structure. Everything saves as you go. Nobody else sees this until you've submitted all of yours.</p>
-          {readOnly && <p className="note note-error rv" role="alert">{closed ? "Submissions are closed, so this draft can't be changed." : lockedMsg}</p>}
+          <p className="muted rv">{isSubmitted
+            ? "You're editing a submitted profile. Changes save as you go, and it stays submitted. Facilitators can see that it was edited after you submitted it."
+            : "Start in your own words, then give it some structure. Everything saves as you go. Nobody else sees this until you've submitted all of yours."}</p>
+          {readOnly && <p className="note note-error rv" role="alert">{closed ? "Submissions are closed, so this profile can't be changed." : lockedMsg}</p>}
         </div>
 
         <fieldset className="part" disabled={readOnly}>
@@ -321,26 +340,27 @@ export default function Editor() {
 
         {showErrors && missing.length > 0 && (
           <div key={shakeKey} className="summary shake" role="alert" style={{ marginTop: 32 }}>
-            <p><strong>{missing.length === 1 ? "One thing is" : `${missing.length} things are`} still missing before you can submit:</strong></p>
+            <p><strong>{missing.length === 1 ? "One thing is" : `${missing.length} things are`} {isSubmitted ? " missing. A submitted profile needs these to save:" : " still missing before you can submit:"}</strong></p>
             <ul>{missing.map((m) => <li key={m.field}><a href={`#f-${m.field}`} onClick={(e) => { e.preventDefault(); focusField(m.field); }}>{m.label}</a></li>)}</ul>
           </div>
         )}
         {actionError && !confirm && <p className="note note-error" role="alert" style={{ marginTop: 16 }}>{actionError}</p>}
 
         <div className="dock">
-          <span id="save-state" className={`savestate${save === "saved" ? " ok" : save === "retrying" || save === "locked" ? " err" : save === "saving" ? " busy" : ""}`} role="status" aria-live="polite">
+          <span id="save-state" className={`savestate${save === "saved" ? " ok" : save === "retrying" || save === "locked" || save === "incomplete" ? " err" : save === "saving" ? " busy" : ""}`} role="status" aria-live="polite">
             {save === "saved" && <Tick key={row.updated_at} />}{saveLabel}
           </span>
           <div className="act">
-            {!readOnly && <button type="button" className="btn btn-danger btn-sm" onClick={() => setConfirm("delete")}>Delete draft</button>}
-            {!readOnly && <button type="submit" className="btn btn-primary">Submit <span className="arrow" aria-hidden="true">→</span></button>}
+            {!readOnly && !isSubmitted && <button type="button" className="btn btn-danger btn-sm" onClick={() => setConfirm("delete")}>Delete draft</button>}
+            {!readOnly && !isSubmitted && <button type="submit" className="btn btn-primary">Submit <span className="arrow" aria-hidden="true">→</span></button>}
+            {isSubmitted && <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void done()}>Done <span className="arrow" aria-hidden="true">→</span></button>}
           </div>
         </div>
       </form>
 
       <ConfirmDialog open={confirm === "submit"} title="Submit this profile?" confirmLabel="Submit" busy={busy}
         onConfirm={() => void doSubmit()} onCancel={() => { setConfirm(null); setActionError(null); }}>
-        <p>You won't be able to edit it afterward.</p>
+        <p>Once it's submitted, it counts toward your three. You can still come back and edit it while submissions are open.</p>
         {actionError && <p className="err-text" role="alert" style={{ marginTop: 8 }}>{actionError}</p>}
       </ConfirmDialog>
       <ConfirmDialog open={confirm === "delete"} title="Delete this draft?" confirmLabel="Delete draft" danger busy={busy}

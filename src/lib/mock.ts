@@ -24,7 +24,7 @@ const wait = (ms = 180) => new Promise((r) => setTimeout(r, ms));
 const config: ConfigRow = { cycle: CYCLE, required_profiles: 3, submissions_open: true };
 
 const blankRow = (id: string, author: string): ProfileRow => ({
-  id, cycle: CYCLE, author_id: author, status: "draft", created_at: new Date().toISOString(), updated_at: new Date().toISOString(), submitted_at: null,
+  id, cycle: CYCLE, author_id: author, status: "draft", created_at: new Date().toISOString(), updated_at: new Date().toISOString(), submitted_at: null, edited_at: null,
   name: null, org_type: null, org_type_other: null, description: null, ring: null,
   capital_natural_rating: null, capital_natural_note: null, capital_cultural_rating: null, capital_cultural_note: null,
   capital_human_rating: null, capital_human_note: null, capital_social_rating: null, capital_social_note: null,
@@ -89,8 +89,8 @@ export const mockApi: Api = {
     await wait(250);
     if (flaky()) throw new ApiError("We couldn't reach the server.", undefined, "network");
     const r = find(id);
-    if (r.author_id !== ME || r.status !== "draft") throw new ApiError("This profile can't be edited any more.", undefined, "locked");
-    Object.assign(r, patch, { updated_at: new Date().toISOString() });
+    if (r.author_id !== ME || !config.submissions_open) throw new ApiError("This profile can't be edited any more.", undefined, "locked");
+    Object.assign(r, patch, { updated_at: new Date().toISOString(), ...(r.status === "submitted" ? { edited_at: new Date().toISOString() } : {}) });
     return { ...r };
   },
   async submit(id, full: ProfileDraft) {

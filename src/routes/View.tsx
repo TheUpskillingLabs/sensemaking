@@ -48,6 +48,11 @@ export default function View() {
             {mine && p.status === "draft" && membership?.config.submissions_open && (
               <p className="note rv" style={{ marginBottom: 24 }}>This is still a draft. <Link to={`/profiles/${p.id}/edit`} viewTransition>Keep editing</Link>.</p>
             )}
+            {mine && p.status === "submitted" && membership?.config.submissions_open && (
+              <p className="rv" style={{ marginBottom: 24, display: "flex", justifyContent: "flex-end" }}>
+                <Link className="btn btn-ghost btn-sm" to={`/profiles/${p.id}/edit`} viewTransition>Edit this profile</Link>
+              </p>
+            )}
             <div className="sheet">
               <ProfileCard p={p} author={membership?.facilitator ? author : undefined} showStatus={Boolean(mine) || p.status === "draft"} />
             </div>

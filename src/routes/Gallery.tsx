@@ -128,7 +128,7 @@ export default function Gallery() {
             {shown.map((p) => (
               <li key={p.id} className="gcard rv">
                 <Link to={`/profiles/${p.id}`} viewTransition>
-                  <h3>{p.name?.trim() || "Untitled player"} {p.status === "draft" && <span className="badge badge-draft">Draft</span>}</h3>
+                  <h3>{p.name?.trim() || "Untitled player"} {p.status === "draft" && <span className="badge badge-draft">Draft</span>}{facilitator && p.edited_at && <span className="badge badge-edited">Edited</span>}</h3>
                   <div className="chips">
                     {p.org_type && <span className="chip">{typeLabel(p)}</span>}
                     {p.ring && <span className={`chip${p.ring === "inner_circle" ? " ring-inner" : ""}`}>{RING_LABEL[p.ring]}</span>}

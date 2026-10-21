@@ -15,6 +15,8 @@ export interface ProfileRow {
   created_at: string;
   updated_at: string;
   submitted_at: string | null;
+  /** Last change after submitting; null if never edited after submission. */
+  edited_at: string | null;
 
   name: string | null;
   org_type: OrgType | null;
@@ -47,7 +49,7 @@ export interface ProfileRow {
 }
 
 /** The fields an author can write. Everything else is set by the database. */
-export type EditableField = Exclude<keyof ProfileRow, "id" | "cycle" | "author_id" | "status" | "created_at" | "updated_at" | "submitted_at">;
+export type EditableField = Exclude<keyof ProfileRow, "id" | "cycle" | "author_id" | "status" | "created_at" | "updated_at" | "submitted_at" | "edited_at">;
 export type ProfileDraft = Pick<ProfileRow, EditableField>;
 
 export const EDITABLE_FIELDS: EditableField[] = [

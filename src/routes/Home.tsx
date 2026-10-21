@@ -96,7 +96,7 @@ export default function Home() {
                   <Link to={r.status === "draft" && open ? `/profiles/${r.id}/edit` : `/profiles/${r.id}`} viewTransition>
                     <span className="pname">{r.name?.trim() || "Untitled player"}</span>
                     <span className="pmeta">
-                      <span className={`badge ${r.status === "draft" ? "badge-draft" : "badge-sub"}`}>{r.status === "draft" ? "Draft" : "Submitted"}</span>
+                      <span className={`badge ${r.status === "draft" ? "badge-draft" : "badge-sub"}`}>{r.status === "draft" ? "Draft" : "Submitted"}</span>{r.edited_at && <span className="badge badge-edited">Edited</span>}
                       {r.org_type ? <> · {typeLabel(r)}</> : null}
                     </span>
                     <span className="arrow" aria-hidden="true">→</span>
