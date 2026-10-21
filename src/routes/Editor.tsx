@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth";
 import { Why } from "../components/Learn";
-import { LocalNav, Status, ConfirmDialog, ErrorNote, Loader, Segmented, Tick, useTitle } from "../components/bits";
+import { CapGlyph, LocalNav, ConfirmDialog, ErrorNote, Loader, Segmented, Tick, useTitle } from "../components/bits";
 import { ApiError, api } from "../lib/api";
 import { CAPITALS, LEVELS, ORG_TYPES, RINGS, missingFields, noteField, ratingField, type Missing } from "../lib/capitals";
 import { EDITABLE_FIELDS, type EditableField, type ProfileDraft, type ProfileRow } from "../lib/types";
@@ -207,7 +207,7 @@ export default function Editor() {
     }
   }
 
-  if (loadError) return <div className="page page-narrow"><ErrorNote message={loadError} onRetry={() => void load()} /><p style={{ marginTop: 16 }}><Link to="/" viewTransition>← My profiles</Link></p></div>;
+  if (loadError) return <div className="page page-narrow"><ErrorNote message={loadError} onRetry={() => void load()} /><p style={{ marginTop: 16 }}><Link to="/" viewTransition>Your profiles</Link></p></div>;
   if (!draft || !row) return <Loader center label="Opening your profile" />;
   const closed = membership ? !membership.config.submissions_open : false;
   const readOnly = save === "locked" || closed;
@@ -223,29 +223,32 @@ export default function Editor() {
 
   return (
     <div className="page page-form">
-      <p className="crumb rv"><Link to="/" viewTransition>← My profiles</Link></p>
-      <LocalNav label="Sections of this profile" links={SECTIONS} />
+      <nav className="crumb" aria-label="Back"><Link to="/" viewTransition>Your profiles</Link></nav>
+      <div className="form-layout">
+      <aside className="form-rail">
+        <div className="rail-shape" aria-hidden="true"><CapGlyph p={{ ...row, ...draft }} size={88} label={false} /><span>{isSubmitted ? "Submitted" : "Draft"}</span></div>
+        <LocalNav label="Sections of this profile" links={SECTIONS} rail />
+      </aside>
       <form className="editor" noValidate onSubmit={(e) => { e.preventDefault(); trySubmit(); }} aria-describedby="save-state">
-        <div className="hero hero-form">
-          <p className="eyebrow rv">{isSubmitted ? <Status kind="submitted">Submitted</Status> : <Status kind="draft">Draft</Status>}</p>
-          <h1 className="title rv">{draft.name?.trim() || "A new player"}</h1>
-          <p className="muted rv">{isSubmitted
+        <div className="form-head">
+          <h1 className="h-title">{draft.name?.trim() || "A new player"}</h1>
+          <p className="lede">{isSubmitted
             ? "You're editing a submitted profile. Changes save as you go, and it stays submitted. Facilitators can see that it was edited after you submitted it."
             : "Start in your own words, then give it some structure. Everything saves as you go. Nobody else sees this until you've submitted all of yours."}</p>
-          {readOnly && <p className="note note-error rv" role="alert">{closed ? "Submissions are closed, so this profile can't be changed." : lockedMsg}</p>}
+          {readOnly && <p className="note note-error" role="alert">{closed ? "Submissions are closed, so this profile can't be changed." : lockedMsg}</p>}
         </div>
 
         <fieldset className="part" id="s-own" disabled={readOnly}>
           <legend className="sr-only">Part 1: In your own words</legend>
-          <div className="part-head rv"><p className="step-no"><span className="no">01</span>Part 1 of 2</p><h2 className="sub">In your own words</h2></div>
+          <h2 className="h-section part-title">In your own words</h2>
 
-          <div className={`field rv${bad("name") ? " invalid" : ""}`}>
+          <div className={`field${bad("name") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-name">Name of the player <span className="req" aria-hidden="true">*</span></label>
             <input id="f-name" className="input" type="text" autoComplete="off" value={draft.name ?? ""} onChange={(e) => set("name", e.target.value)} aria-required="true" aria-invalid={bad("name") || undefined} maxLength={200} />
             {bad("name") && <p className="err-text">Give this player a name.</p>}
           </div>
 
-          <div className={`field rv${bad("org_type") ? " invalid" : ""}`}>
+          <div className={`field${bad("org_type") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-org_type">Type <span className="req" aria-hidden="true">*</span></label>
             <select id="f-org_type" className="select" value={draft.org_type ?? ""} onChange={(e) => set("org_type", (e.target.value || null) as ProfileDraft["org_type"])} aria-required="true" aria-invalid={bad("org_type") || undefined}>
               <option value="">Choose a type</option>
@@ -262,7 +265,7 @@ export default function Editor() {
             </div>
           )}
 
-          <div className={`field rv${bad("description") ? " invalid" : ""}`}>
+          <div className={`field${bad("description") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-description">Who they are <span className="req" aria-hidden="true">*</span></label>
             <p className="hint" id="h-description">Describe this player in your own words: who they are, what they do, and how they show up in the DC area. If you know what they've tried before, include it.</p>
             <Why id="archaeology" />
@@ -272,10 +275,10 @@ export default function Editor() {
         </fieldset>
 
         <fieldset className="part" id="s-structure" disabled={readOnly}>
-          <legend className="sr-only">Part 2: Structure it</legend>
-          <div className="part-head rv"><p className="step-no"><span className="no">02</span>Part 2 of 2</p><h2 className="sub">Structure it</h2></div>
+          <legend className="sr-only">Part 2: Give it structure</legend>
+          <h2 className="h-section part-title">Give it structure</h2>
 
-          <div id="s-ring" className={`field rv${bad("ring") ? " invalid" : ""}`} role="radiogroup" aria-labelledby="l-ring" aria-required="true">
+          <div id="s-ring" className={`field${bad("ring") ? " invalid" : ""}`} role="radiogroup" aria-labelledby="l-ring" aria-required="true">
             <p className="label" id="l-ring">Ring <span className="req" aria-hidden="true">*</span></p>
             <Why id="field" />
             <div className="choices">
@@ -289,7 +292,7 @@ export default function Editor() {
             {bad("ring") && <p className="err-text">Choose a ring.</p>}
           </div>
 
-          <div id="s-capitals" className="field rv">
+          <div id="s-capitals" className="field">
             <p className="label" id="l-caps">What they bring <span className="req" aria-hidden="true">*</span></p>
             <p className="hint">Rate each of the seven capitals Low, Medium or High. Add a note wherever it helps.</p>
             <Why id="capitals" label="What are the capitals?" />
@@ -313,23 +316,23 @@ export default function Editor() {
             </div>
           </div>
 
-          <div id="s-needs" className={`field rv${bad("needs") ? " invalid" : ""}`}>
+          <div id="s-needs" className={`field${bad("needs") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-needs">What they need <span className="req" aria-hidden="true">*</span></label>
             <textarea id="f-needs" className="textarea" value={draft.needs ?? ""} onChange={(e) => set("needs", e.target.value)} aria-required="true" aria-invalid={bad("needs") || undefined} />
             {bad("needs") && <p className="err-text">What do they need?</p>}
           </div>
 
-          <div className="field rv">
+          <div className="field">
             <label className="label" htmlFor="f-values_held">What they value <span className="opt">(optional)</span></label>
             <textarea id="f-values_held" className="textarea" value={draft.values_held ?? ""} onChange={(e) => set("values_held", e.target.value)} />
           </div>
 
-          <div className="field rv">
+          <div className="field">
             <label className="label" htmlFor="f-fears">What they fear or want to avoid <span className="opt">(optional)</span></label>
             <textarea id="f-fears" className="textarea" value={draft.fears ?? ""} onChange={(e) => set("fears", e.target.value)} />
           </div>
 
-          <div id="s-influence" className={`field rv${bad("influence_level") ? " invalid" : ""}`}>
+          <div id="s-influence" className={`field${bad("influence_level") ? " invalid" : ""}`}>
             <p className="label" id="l-influence">Influence <span className="req" aria-hidden="true">*</span></p>
             <p className="hint" id="h-influence">How much influence do they have in the ecosystem around The Labs?</p>
             <Segmented name="influence_level" value={draft.influence_level} options={LEVELS} onChange={(v) => set("influence_level", v)} labelledBy="l-influence h-influence" idFirst="f-influence_level" invalid={bad("influence_level")} />
@@ -338,14 +341,14 @@ export default function Editor() {
             {bad("influence_level") && <p className="err-text">Choose Low, Medium or High.</p>}
           </div>
 
-          <div id="s-stake" className={`field rv${bad("stake") ? " invalid" : ""}`}>
+          <div id="s-stake" className={`field${bad("stake") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-stake">Stake <span className="req" aria-hidden="true">*</span></label>
             <p className="hint" id="h-stake">What do they stand to gain or lose?</p>
             <textarea id="f-stake" className="textarea" value={draft.stake ?? ""} onChange={(e) => set("stake", e.target.value)} aria-describedby="h-stake" aria-required="true" aria-invalid={bad("stake") || undefined} />
             {bad("stake") && <p className="err-text">What's at stake for them?</p>}
           </div>
 
-          <div id="s-connection" className={`field rv${bad("connection_to_labs") ? " invalid" : ""}`}>
+          <div id="s-connection" className={`field${bad("connection_to_labs") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-connection_to_labs">How they could connect to The Labs <span className="req" aria-hidden="true">*</span></label>
             <Why id="customers" label="Helped, paying, or both?" />
             <textarea id="f-connection_to_labs" className="textarea" value={draft.connection_to_labs ?? ""} onChange={(e) => set("connection_to_labs", e.target.value)} aria-required="true" aria-invalid={bad("connection_to_labs") || undefined} />
@@ -367,13 +370,14 @@ export default function Editor() {
           </span>
           <div className="act">
             {!readOnly && !isSubmitted && <button type="button" className="btn-link quiet" onClick={() => setConfirm("delete")}>Delete draft</button>}
-            {!readOnly && !isSubmitted && <button type="submit" className="btn btn-primary">Submit <span className="arrow" aria-hidden="true">→</span></button>}
-            {isSubmitted && <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void done()}>Done <span className="arrow" aria-hidden="true">→</span></button>}
+            {!readOnly && !isSubmitted && <button type="submit" className="btn btn-primary">Submit profile</button>}
+            {isSubmitted && <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void done()}>Done</button>}
           </div>
         </div>
       </form>
+      </div>
 
-      <ConfirmDialog open={confirm === "submit"} title="Submit this profile?" confirmLabel="Submit" busy={busy}
+      <ConfirmDialog open={confirm === "submit"} title="Submit this profile?" confirmLabel="Submit profile" busy={busy}
         onConfirm={() => void doSubmit()} onCancel={() => { setConfirm(null); setActionError(null); }}>
         <p>Once it's submitted, it counts toward your three. You can still come back and edit it while submissions are open.</p>
         {actionError && <p className="err-text" role="alert" style={{ marginTop: 8 }}>{actionError}</p>}

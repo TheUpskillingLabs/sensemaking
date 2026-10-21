@@ -40,7 +40,7 @@ export default function Print() {
   return (
     <>
       <div className="print-bar noprint">
-        <Link to={`/gallery${back.toString() ? `?${back}` : ""}`} className="btn btn-ghost btn-sm">← Gallery</Link>
+        <Link to={`/gallery${back.toString() ? `?${back}` : ""}`} className="btn btn-ghost btn-sm">Back to the gallery</Link>
         <span className="count">{rows ? `${shown.length} ${shown.length === 1 ? "card" : "cards"}` : "Loading…"}</span>
         <div className="act">
           <span className="sr-only" id="per-l">Cards per page</span>

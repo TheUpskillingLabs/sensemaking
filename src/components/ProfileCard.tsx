@@ -1,5 +1,5 @@
-import { Status } from "./bits";
-import { CAPITALS, LEVEL_LABEL, RING_LABEL, noteField, ratingField, typeLabel } from "../lib/capitals";
+import { kindOf } from "./bits";
+import { CAPITALS, LEVEL_LABEL, noteField, ratingField } from "../lib/capitals";
 import type { Level, ProfileRow } from "../lib/types";
 
 function Lvl({ v }: { v: Level | null }) {
@@ -23,15 +23,15 @@ export function CapRing({ p }: { p: ProfileRow }) {
   });
   const rated = pts.filter((q) => q.v);
   return (
-    <figure className="capring rv">
+    <figure className="capring">
       <svg viewBox={`0 0 ${size} ${size}`} role="img" aria-label={pts.map((q) => `${q.cap.label}: ${q.v ? LEVEL_LABEL[q.v] : "not rated"}`).join(", ")}>
-        {[0.4, 0.7, 1].map((k) => <circle key={k} cx={c} cy={c} r={r * k} className="cr-ring" />)}
+        {[0.4, 0.7, 1].map((k) => <polygon key={k} className="cr-ring" points={pts.map((q) => `${c + Math.cos(q.a) * r * k},${c + Math.sin(q.a) * r * k}`).join(" ")} />)}
         {pts.map((q) => <line key={q.cap.key} x1={c} y1={c} x2={q.ex} y2={q.ey} className="cr-spoke" />)}
-        {rated.length > 2 && <polygon points={rated.map((q) => `${q.x},${q.y}`).join(" ")} className="cr-area" />}
-        {pts.map((q) => q.v && <circle key={q.cap.key} cx={q.x} cy={q.y} r={5.5} className={`cr-dot cr-${q.v}`} />)}
+        {rated.length > 0 && <polygon points={pts.map((q) => q.v ? `${q.x},${q.y}` : `${c + Math.cos(q.a) * r * 0.08},${c + Math.sin(q.a) * r * 0.08}`).join(" ")} className="cr-area" />}
+        {pts.map((q) => q.v && <circle key={q.cap.key} cx={q.x} cy={q.y} r={4} className="cr-dot" />)}
         {pts.map((q) => <text key={q.cap.key} x={q.lx} y={q.ly} className="cr-label" textAnchor={Math.abs(Math.cos(q.a)) < 0.3 ? "middle" : Math.cos(q.a) > 0 ? "start" : "end"} dominantBaseline="middle">{q.cap.label}</text>)}
       </svg>
-      <figcaption>Further out means rated higher: low, medium, high.</figcaption>
+      <figcaption>Further from the centre means rated higher.</figcaption>
     </figure>
   );
 }
@@ -41,16 +41,16 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant =
   return (
     <article className={`card card-${variant}`} aria-label={p.name ?? "Untitled profile"}>
       <header className="card-head">
-        <p className="card-meta rv">
-          {[p.org_type ? typeLabel(p) : null, p.ring ? RING_LABEL[p.ring] : null].filter(Boolean).join(" · ")}
-          {showStatus && <Status kind={p.status === "draft" ? "draft" : "submitted"}>{p.status === "draft" ? "Draft" : "Submitted"}</Status>}
-          {showStatus && p.edited_at && <span title={`Edited after submitting, ${new Date(p.edited_at).toLocaleString()}`}><Status kind="edited">Edited</Status></span>}
+        <H className="card-title">{p.name?.trim() || "Untitled player"}</H>
+        <p className="card-meta">
+          <span>{kindOf(p) || "Type and ring not set"}</span>
+          {showStatus && <span className={`state state-${p.status}`}>{p.status === "draft" ? "Draft" : "Submitted"}</span>}
+          {showStatus && p.edited_at && <span className="state" title={new Date(p.edited_at).toLocaleString()}>Edited after submitting</span>}
+          {author && <span className="author">Written by {author}</span>}
         </p>
-        <H className="card-title rv">{p.name?.trim() || "Untitled player"}</H>
-        {author && <p className="author rv">Written by {author}</p>}
       </header>
 
-      <section className="rv" aria-label="Who they are">
+      <section aria-label="Who they are">
         <p className="desc"><Text v={p.description} /></p>
       </section>
 
@@ -62,12 +62,12 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant =
       ) : <CapTable p={p} />}
 
       <dl className="kv">
-        <div className="rv"><dt>What they need</dt><dd><Text v={p.needs} /></dd></div>
-        <div className="rv"><dt>What they value</dt><dd><Text v={p.values_held} /></dd></div>
-        <div className="rv"><dt>What they fear or want to avoid</dt><dd><Text v={p.fears} /></dd></div>
-        <div className="rv"><dt>Influence</dt><dd><Lvl v={p.influence_level} />{p.influence_note?.trim() ? <> · {p.influence_note}</> : null}</dd></div>
-        <div className="rv"><dt>Stake: what they stand to gain or lose</dt><dd><Text v={p.stake} /></dd></div>
-        <div className="rv"><dt>How they could connect to The Labs</dt><dd><Text v={p.connection_to_labs} /></dd></div>
+        <div><dt>What they need</dt><dd><Text v={p.needs} /></dd></div>
+        <div><dt>What they value</dt><dd><Text v={p.values_held} /></dd></div>
+        <div><dt>What they fear or want to avoid</dt><dd><Text v={p.fears} /></dd></div>
+        <div><dt>Influence</dt><dd><Lvl v={p.influence_level} />{p.influence_note?.trim() ? <span className="capnote">{p.influence_note}</span> : null}</dd></div>
+        <div><dt>Stake: what they stand to gain or lose</dt><dd><Text v={p.stake} /></dd></div>
+        <div><dt>How they could connect to The Labs</dt><dd><Text v={p.connection_to_labs} /></dd></div>
       </dl>
     </article>
   );
@@ -75,8 +75,8 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant =
 
 function CapTable({ p }: { p: ProfileRow }) {
   return (
-    <table className="captable rv">
-      <caption>What they bring: the seven capitals</caption>
+    <table className="captable">
+      <caption>What they bring</caption>
       <tbody>
         {CAPITALS.map((c) => (
           <tr key={c.key}>

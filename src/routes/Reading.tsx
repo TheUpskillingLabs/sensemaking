@@ -14,20 +14,21 @@ export default function Reading() {
   useTitle("Background reading");
   return (
     <div className="page reading">
-      <header className="hero">
-        <p className="kicker rv">Build Cycle C04 · Background reading</p>
-        <h1 className="display rv"><Words text="The ideas behind the map." /></h1>
-        <p className="lede rv">You don't need to read any of this to write a good profile. What matters most is your own view. But if you're curious where the questions come from, start here.</p>
+      <header className="intro">
+        <h1 className="h-display"><Words text="Background reading" /></h1>
+        <p className="lede">You don't need to read any of this to write a good profile. What matters most is your own view. But if you're curious where the questions come from, start here.</p>
       </header>
-      <LocalNav label="Topics on this page" links={TOPICS.map((t) => ({ id: t.id, label: SHORT_LABEL[t.id] }))} />
-
-      {TOPICS.map((t, i) => (
-        <section key={t.id} id={t.id} className="topic" aria-labelledby={`h-${t.id}`}>
-          <TopicBody t={t} n={i + 1} />
-        </section>
-      ))}
-
-      <p className="fine rv">Links checked October 2026. <Link to="/" viewTransition>← Back to my profiles</Link></p>
+      <div className="doc-layout">
+        <aside className="doc-rail"><LocalNav label="Topics on this page" links={TOPICS.map((t) => ({ id: t.id, label: SHORT_LABEL[t.id] }))} rail /></aside>
+        <div className="doc-main">
+          {TOPICS.map((t) => (
+            <section key={t.id} id={t.id} className="topic" aria-labelledby={`h-${t.id}`}>
+              <TopicBody t={t} />
+            </section>
+          ))}
+          <p className="fine">Links checked October 2026. <Link to="/" viewTransition>Back to your profiles</Link></p>
+        </div>
+      </div>
     </div>
   );
 }

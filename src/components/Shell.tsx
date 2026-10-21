@@ -37,7 +37,7 @@ function Bar() {
       </Link>
       {user && (
         <nav className="tabs" ref={tabs} aria-label="Main">
-          {membership?.member && <NavLink className="tab" to="/" end viewTransition>My profiles</NavLink>}
+          {membership?.member && <NavLink className="tab" to="/" end viewTransition>Your profiles</NavLink>}
           {showGallery && <NavLink className="tab" to="/gallery" viewTransition>Gallery</NavLink>}
           {membership?.member && <NavLink className="tab" to="/reading" viewTransition>Reading</NavLink>}
           <button type="button" className="tab" onClick={() => void signOut()}>Sign out</button>
@@ -69,8 +69,7 @@ export function Shell() {
       <Bar />
       <main id="main" tabIndex={-1}><Outlet /></main>
       <footer className="foot">
-        <img src="/logo-row.webp" alt="The Upskilling Labs" width={126} height={28} />
-        <p>Build Cycle C04 · Sensemaking. Your profiles are stored in The Labs' OLOS database. Facilitators can read them; other participants can once they've submitted their own.</p>
+        <p>The Upskilling Labs, Build Cycle C04. Your profiles are stored in The Labs' OLOS database. Facilitators can read them; other participants can once they've submitted their own.</p>
       </footer>
     </ReadingSheetProvider>
   );

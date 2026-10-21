@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth";
 import { DiscussionPrompts, ReadTheField } from "../components/Learn";
-import { Status, CapStrip, ErrorNote, Loader, Words, useTitle } from "../components/bits";
+import { CapGlyph, ErrorNote, GlyphKey, Loader, Words, kindOf, useTitle } from "../components/bits";
 import { api } from "../lib/api";
-import { CAPITALS, LEVELS, ORG_TYPES, RINGS, RING_LABEL, typeLabel } from "../lib/capitals";
+import { CAPITALS, LEVELS, ORG_TYPES, RINGS } from "../lib/capitals";
 import { CYCLE } from "../lib/config";
 import { downloadCsv, toCsv } from "../lib/csv";
 import { applyFilters, readFilters, sortRows, writeFilters, type Filters } from "../lib/filters";
@@ -53,17 +53,16 @@ export default function Gallery() {
 
   return (
     <div className="page">
-      <header className="hero">
-        <p className="kicker rv">Build Cycle C04 · Everyone's view</p>
-        <h1 className="display rv"><Words text="The field, as we each see it." /></h1>
-        <p className="lede rv">Every submitted profile, side by side. Look for players many people saw, players only one person saw, and places where the views disagree.</p>
+      <header className="intro">
+        <h1 className="h-display"><Words text="Gallery" /></h1>
+        <p className="lede">Every submitted profile, side by side. Look for players many people saw, players only one person saw, and places where the views disagree.</p>
       </header>
       <div className="guides">
         <ReadTheField />
         {facilitator && <DiscussionPrompts />}
       </div>
 
-      <form className="filters rv" role="search" onSubmit={(e) => e.preventDefault()} aria-label="Filter profiles">
+      <form className="filters" role="search" onSubmit={(e) => e.preventDefault()} aria-label="Filter profiles">
         <div className="field">
           <label className="label" htmlFor="q">Search</label>
           <input id="q" className="input" type="search" placeholder="Name, description, needs, connection" value={q}
@@ -100,10 +99,10 @@ export default function Gallery() {
         </fieldset>
       </form>
 
-      <div className="toolbar rv">
+      <div className="toolbar">
         <p className="count" aria-live="polite">
           {rows ? <>{shown.length} {shown.length === 1 ? "profile" : "profiles"}{filtered ? " match" : ""}</> : "Loading…"}
-          {facilitator && rows && <> · {counts.submitted} submitted, {counts.drafts} {counts.drafts === 1 ? "draft" : "drafts"} in progress</>}
+          {facilitator && rows && <span className="count-sub">{counts.submitted} submitted, {counts.drafts} {counts.drafts === 1 ? "draft" : "drafts"} in progress</span>}
         </p>
         <div className="act">
           {filtered && <button type="button" className="btn-link" onClick={() => { setQ(""); setSp(writeFilters({ type: "", ring: "", cap: "", level: "", q: "", drafts: f.drafts }), { replace: true }); }}>Clear filters</button>}
@@ -118,32 +117,22 @@ export default function Gallery() {
         </div>
       </div>
 
-      <p className="legend rv" aria-hidden="true">
-        <span className="cd cd-high"><i />High</span>
-        <span className="cd cd-medium"><i />Medium</span>
-        <span className="cd cd-low"><i />Low</span>
-        <span className="cd cd-none"><i />Not rated</span>
-        <span>Capitals: {CAPITALS.map((c) => c.label).join(", ")}</span>
-      </p>
+      <GlyphKey />
 
       {error ? <ErrorNote message={error} onRetry={() => void reload()} />
         : !rows ? <Loader label="Gathering everyone's profiles" />
-        : shown.length === 0 ? <p className="empty rv">{rows.length === 0 ? "No profiles have been submitted yet." : "Nothing matches these filters."}</p>
+        : shown.length === 0 ? <p className="empty">{rows.length === 0 ? "No profiles have been submitted yet." : "Nothing matches these filters."}</p>
         : (
           <ul className="grid">
             {shown.map((p) => (
-              <li key={p.id} className="gcard rv">
-                <Link to={`/profiles/${p.id}`} viewTransition>
-                  <p className="gmeta">
-                    {[p.org_type ? typeLabel(p) : null, p.ring ? RING_LABEL[p.ring] : null].filter(Boolean).join(" · ")}
-                    {p.status === "draft" && <Status kind="draft">Draft</Status>}
-                    {facilitator && p.edited_at && <Status kind="edited">Edited</Status>}
-                  </p>
-                  <h3>{p.name?.trim() || "Untitled player"}</h3>
-                  {facilitator && nameOf(p.author_id) && <p className="gauthor">by {nameOf(p.author_id)}</p>}
-                  <p>{p.description}</p>
-                  <CapStrip p={p} />
-                </Link>
+              <li key={p.id} className={`gitem${p.status === "draft" ? " is-draft" : ""}`}>
+                <CapGlyph p={p} size={64} />
+                <div className="gbody">
+                  <h3><Link to={`/profiles/${p.id}`} viewTransition>{p.name?.trim() || "Untitled player"}</Link></h3>
+                  <p className="gkind">{kindOf(p)}{p.status === "draft" && <span className="state state-draft">Draft</span>}{facilitator && p.edited_at && <span className="state">Edited</span>}</p>
+                  <p className="gdesc">{p.description}</p>
+                  {facilitator && nameOf(p.author_id) && <p className="gauthor">{nameOf(p.author_id)}</p>}
+                </div>
               </li>
             ))}
           </ul>

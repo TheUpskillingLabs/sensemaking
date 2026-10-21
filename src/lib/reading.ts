@@ -32,9 +32,9 @@ export const TOPICS: Topic[] = [
     ],
     here: "The “What they bring” part of each profile asks you to rate these seven capitals. When we put everyone's ratings together, we can see which ones are strong in our area and which ones are missing.",
     sources: [
-      { kind: "Start here", title: "The Community Capitals Framework", by: "Lionel J. Beaulieu, Purdue University · NDSU Extension (2024)", href: "https://ndsu.edu/agriculture/sites/default/files/2024-06/cv2243.pdf", note: "Six pages with a table that explains each capital with examples. PDF." },
-      { kind: "Source", title: "Promoting Community Vitality & Sustainability: The Community Capitals Framework", by: "Lionel J. Beaulieu · Southern Rural Development Center (2014)", href: "https://srdc.msstate.edu/sites/default/files/2023-05/Community-Capitals-Framework-Writeup-Oct-2014.pdf", note: "The longer original, including a section on spiraling up. PDF." },
-      { kind: "Go deeper", title: "Spiraling-Up: Mapping Community Transformation with Community Capitals Framework", by: "Mary Emery & Cornelia Butler Flora · Community Development 37(1), 2006", href: "https://vtechworks.lib.vt.edu/handle/10919/69153", note: "The research paper that introduced spiraling up. Harder reading. This page is a library record; the full paper is in the journal." },
+      { kind: "Start here", title: "The Community Capitals Framework", by: "Lionel J. Beaulieu, Purdue University, NDSU Extension (2024)", href: "https://ndsu.edu/agriculture/sites/default/files/2024-06/cv2243.pdf", note: "Six pages with a table that explains each capital with examples. PDF." },
+      { kind: "Source", title: "Promoting Community Vitality & Sustainability: The Community Capitals Framework", by: "Lionel J. Beaulieu, Southern Rural Development Center (2014)", href: "https://srdc.msstate.edu/sites/default/files/2023-05/Community-Capitals-Framework-Writeup-Oct-2014.pdf", note: "The longer original, including a section on spiraling up. PDF." },
+      { kind: "Go deeper", title: "Spiraling-Up: Mapping Community Transformation with Community Capitals Framework", by: "Mary Emery & Cornelia Butler Flora, Community Development 37(1), 2006", href: "https://vtechworks.lib.vt.edu/handle/10919/69153", note: "The research paper that introduced spiraling up. Harder reading. This page is a library record; the full paper is in the journal." },
     ],
   },
   {
@@ -48,9 +48,9 @@ export const TOPICS: Topic[] = [
     ],
     here: "Build Cycles use this method to go from a messy situation to an idea a team can actually build. Everyone's profiles are the raw material for the next steps.",
     sources: [
-      { kind: "Start here", title: "Frame Innovation for Social Impact", by: "Allison Huang · Medium (2017)", href: "https://medium.com/@allisonyhuang/frame-innovation-for-social-impact-70d821e897a4", note: "All nine steps explained in plain language, one line each." },
-      { kind: "Source", title: "Frame Creation and Design in the Expanded Field", by: "Kees Dorst · She Ji 1(1), 2015", href: "https://doi.org/10.1016/j.sheji.2015.07.003", note: "Dorst's own article about frames. Free, but written for professionals." },
-      { kind: "Go deeper", title: "Frame Innovation: Create New Thinking by Design", by: "Kees Dorst · MIT Press", href: "https://mitpressbookstore.mit.edu/book/9780262550963", note: "The full book, with the festival example and others. Costs money; try a library." },
+      { kind: "Start here", title: "Frame Innovation for Social Impact", by: "Allison Huang, Medium (2017)", href: "https://medium.com/@allisonyhuang/frame-innovation-for-social-impact-70d821e897a4", note: "All nine steps explained in plain language, one line each." },
+      { kind: "Source", title: "Frame Creation and Design in the Expanded Field", by: "Kees Dorst, She Ji 1(1), 2015", href: "https://doi.org/10.1016/j.sheji.2015.07.003", note: "Dorst's own article about frames. Free, but written for professionals." },
+      { kind: "Go deeper", title: "Frame Innovation: Create New Thinking by Design", by: "Kees Dorst, MIT Press", href: "https://mitpressbookstore.mit.edu/book/9780262550963", note: "The full book, with the festival example and others. Costs money; try a library." },
     ],
   },
   {
@@ -63,8 +63,8 @@ export const TOPICS: Topic[] = [
     ],
     here: "When you write about a player, mention anything they have already tried in this area and what got in their way. That history counts as evidence.",
     sources: [
-      { kind: "Start here", title: "How Frame Creation can inspire innovation", by: "Jacqueline Antalik · OXD (2025)", href: "https://oxd.com/insights/how-frame-creation-can-inspire-innovation/", note: "A designer explains how her team uses archaeology: asking what was tried before and how it went." },
-      { kind: "Source", title: "Frame Innovation for Social Impact", by: "Allison Huang · Medium (2017)", href: "https://medium.com/@allisonyhuang/frame-innovation-for-social-impact-70d821e897a4", note: "Archaeology in one line: investigate the problem and earlier attempts to solve it." },
+      { kind: "Start here", title: "How Frame Creation can inspire innovation", by: "Jacqueline Antalik, OXD (2025)", href: "https://oxd.com/insights/how-frame-creation-can-inspire-innovation/", note: "A designer explains how her team uses archaeology: asking what was tried before and how it went." },
+      { kind: "Source", title: "Frame Innovation for Social Impact", by: "Allison Huang, Medium (2017)", href: "https://medium.com/@allisonyhuang/frame-innovation-for-social-impact-70d821e897a4", note: "Archaeology in one line: investigate the problem and earlier attempts to solve it." },
     ],
   },
   {
@@ -91,10 +91,10 @@ export const TOPICS: Topic[] = [
     ],
     here: "Many players you profile are either someone the work helps, or someone who pays for it, or both. When what the people being helped need is different from what funders want, you may have found a key tension worth talking about.",
     sources: [
-      { kind: "Start here", title: "Drucker on Being Customer-Centric", by: "Peter F. Drucker · Drucker Institute", href: "https://drucker.institute/wp-content/uploads/2018/08/Reading_Drucker-on-Being-Customer-Centric.pdf", note: "Two pages in Drucker's own words about primary and supporting customers. PDF." },
-      { kind: "Source", title: "Who Exactly Are the “Customers” of a Nonprofit Organization?", by: "Mark R. Kramer · Chronicle of Philanthropy (2001)", href: "https://www.issuelab.org/resources/1839/1839.pdf", note: "A short article arguing every nonprofit really has three customers: the people it helps, its donors, and its volunteers or staff. PDF." },
-      { kind: "Go deeper", title: "Ten Nonprofit Funding Models", by: "William Foster, Peter Kim & Barbara Christiansen · SSIR (2009)", href: "https://ssir.org/articles/entry/ten_nonprofit_funding_models", note: "Ten common ways nonprofits get paid, and why funders give. Needs a free account." },
-      { kind: "Go deeper", title: "The Nonprofit Starvation Cycle", by: "Ann Goggins Gregory & Don Howard · SSIR (2009), via Bridgespan", href: "https://bridgespan.org/insights/the-nonprofit-starvation-cycle", note: "What goes wrong when funders expect nonprofits to spend almost nothing on running themselves." },
+      { kind: "Start here", title: "Drucker on Being Customer-Centric", by: "Peter F. Drucker, Drucker Institute", href: "https://drucker.institute/wp-content/uploads/2018/08/Reading_Drucker-on-Being-Customer-Centric.pdf", note: "Two pages in Drucker's own words about primary and supporting customers. PDF." },
+      { kind: "Source", title: "Who Exactly Are the “Customers” of a Nonprofit Organization?", by: "Mark R. Kramer, Chronicle of Philanthropy (2001)", href: "https://www.issuelab.org/resources/1839/1839.pdf", note: "A short article arguing every nonprofit really has three customers: the people it helps, its donors, and its volunteers or staff. PDF." },
+      { kind: "Go deeper", title: "Ten Nonprofit Funding Models", by: "William Foster, Peter Kim & Barbara Christiansen, SSIR (2009)", href: "https://ssir.org/articles/entry/ten_nonprofit_funding_models", note: "Ten common ways nonprofits get paid, and why funders give. Needs a free account." },
+      { kind: "Go deeper", title: "The Nonprofit Starvation Cycle", by: "Ann Goggins Gregory & Don Howard, SSIR (2009), via Bridgespan", href: "https://bridgespan.org/insights/the-nonprofit-starvation-cycle", note: "What goes wrong when funders expect nonprofits to spend almost nothing on running themselves." },
     ],
   },
 ];

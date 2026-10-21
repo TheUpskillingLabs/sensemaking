@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { CAPITALS, LEVEL_LABEL, ratingField } from "../lib/capitals";
+import { CAPITALS, LEVEL_LABEL, RING_LABEL, ratingField, typeLabel } from "../lib/capitals";
 import type { Level, ProfileRow } from "../lib/types";
 
 export function Loader({ label = "Loading", center = false }: { label?: string; center?: boolean }) {
@@ -107,14 +107,59 @@ export function Words({ text }: { text: string }) {
   );
 }
 
+/** A profile's shape: its seven capitals as one small radial mark, read clockwise from the top
+    (Natural, Cultural, Human, Social, Political, Financial, Built). The further out a point, the higher the rating. */
+export function CapGlyph({ p, size = 44, label = true }: { p: ProfileRow; size?: number; label?: boolean }) {
+  const K = { low: 0.4, medium: 0.7, high: 1 } as const;
+  const c = 50, r = 44;
+  const at = (i: number, k: number) => { const a = -Math.PI / 2 + (i * 2 * Math.PI) / CAPITALS.length; return `${(c + Math.cos(a) * r * k).toFixed(1)},${(c + Math.sin(a) * r * k).toFixed(1)}`; };
+  const vals = CAPITALS.map((cap) => p[ratingField(cap.key)] as Level | null);
+  const rated = vals.filter(Boolean).length;
+  const desc = CAPITALS.map((cap, i) => `${cap.label} ${vals[i] ? LEVEL_LABEL[vals[i] as Level].toLowerCase() : "not rated"}`).join(", ");
+  return (
+    <svg className={`glyph${rated ? "" : " glyph-empty"}`} viewBox="0 0 100 100" width={size} height={size}
+      role={label ? "img" : undefined} aria-label={label ? `Capitals: ${desc}` : undefined} aria-hidden={label ? undefined : true}>
+      <polygon className="g-frame" points={CAPITALS.map((_, i) => at(i, 1)).join(" ")} />
+      {CAPITALS.map((_, i) => <line key={i} className="g-spoke" x1={c} y1={c} x2={at(i, 1).split(",")[0]} y2={at(i, 1).split(",")[1]} />)}
+      {rated > 0 && <polygon className="g-shape" points={vals.map((v, i) => at(i, v ? K[v] : 0.08)).join(" ")} />}
+    </svg>
+  );
+}
+
+/** How to read the mark: one worked example, labelled, instead of a colour legend. */
+export function GlyphKey() {
+  const K = { low: 0.4, medium: 0.7, high: 1 } as const;
+  const ex: Level[] = ["high", "medium", "low", "high", "medium", "low", "medium"];
+  const c = 60, r = 40;
+  const at = (i: number, k: number) => { const a = -Math.PI / 2 + (i * 2 * Math.PI) / CAPITALS.length; return [c + Math.cos(a) * r * k, c + Math.sin(a) * r * k]; };
+  return (
+    <figure className="gkey">
+      <svg className="glyph" viewBox="0 0 120 120" width={120} height={120} aria-hidden="true">
+        <polygon className="g-frame" points={CAPITALS.map((_, i) => at(i, 1).join(",")).join(" ")} />
+        {CAPITALS.map((_, i) => { const [x, y] = at(i, 1); return <line key={i} className="g-spoke" x1={c} y1={c} x2={x} y2={y} />; })}
+        <polygon className="g-shape" points={ex.map((v, i) => at(i, K[v]).join(",")).join(" ")} />
+        {CAPITALS.map((cap, i) => { const [x, y] = at(i, 1.32); return <text key={cap.key} className="g-label" x={x} y={y} textAnchor="middle" dominantBaseline="middle">{cap.label.slice(0, 3)}</text>; })}
+      </svg>
+      <figcaption>Each profile's mark shows the seven capitals, clockwise from Natural at the top. The further a point reaches toward the edge, the higher that capital was rated.</figcaption>
+    </figure>
+  );
+}
+
+/** "Library, inner circle": a player's type and ring as one plain phrase. */
+export function kindOf(p: ProfileRow): string {
+  const t = p.org_type ? typeLabel(p) : "";
+  const r = p.ring ? RING_LABEL[p.ring] : "";
+  return t && r ? `${t}, ${r.toLowerCase()}` : t || r;
+}
+
 export type StatusKind = "draft" | "submitted" | "edited" | "open" | "closed" | "unlocked";
-/** A status is plain text with a dot: only things you can press look pressable. */
+/** A status is a plain word; colour carries it only where it means something (drafts). */
 export function Status({ kind, children }: { kind: StatusKind; children: ReactNode }) {
   return <span className={`status st-${kind}`}>{children}</span>;
 }
 
 /** A page's own sections, as a row under the header; the one in view is marked as you scroll. */
-export function LocalNav({ links, label }: { links: { id: string; label: string }[]; label: string }) {
+export function LocalNav({ links, label, rail }: { links: { id: string; label: string }[]; label: string; rail?: boolean }) {
   const [current, setCurrent] = useState<string | null>(links[0]?.id ?? null);
   const ref = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -133,10 +178,10 @@ export function LocalNav({ links, label }: { links: { id: string; label: string 
   // Keep the marked link in view on a phone, where the row scrolls sideways.
   useEffect(() => {
     const a = ref.current?.querySelector<HTMLElement>(`a[data-id="${current}"]`);
-    if (a && ref.current) ref.current.scrollTo({ left: a.offsetLeft - 16, behavior: "smooth" });
+    if (a && ref.current && ref.current.scrollWidth > ref.current.clientWidth) ref.current.scrollTo({ left: a.offsetLeft - 16, behavior: "smooth" });
   }, [current]);
   return (
-    <nav className="lnav" aria-label={label} ref={ref}>
+    <nav className={`lnav${rail ? " lnav-rail" : ""}`} aria-label={label} ref={ref}>
       <ul>
         {links.map((l) => (
           <li key={l.id}><a href={`#${l.id}`} data-id={l.id} aria-current={current === l.id ? "location" : undefined}

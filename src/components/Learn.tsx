@@ -11,20 +11,19 @@ import { topic, type Topic, type TopicId } from "../lib/reading";
    - The Reading tab holds the same topics as a library for the curious. */
 
 /** The full topic: explanation, how it shows up here, checked sources. */
-export function TopicBody({ t, headingLevel = 2, n }: { t: Topic; headingLevel?: 2 | 3; n?: number }) {
+export function TopicBody({ t, headingLevel = 2 }: { t: Topic; headingLevel?: 2 | 3 }) {
   const H = headingLevel === 2 ? "h2" : "h3";
   return (
     <>
       <div className="topic-head">
-        {n !== undefined && <p className="step-no rv"><span className="no">{String(n).padStart(2, "0")}</span>Background</p>}
-        <H className={headingLevel === 2 ? "sub rv" : "h3"} id={`h-${t.id}`}>{t.title}</H>
+        <H className={headingLevel === 2 ? "h-section" : "h3"} id={`h-${t.id}`}>{t.title}</H>
       </div>
       <div className="topic-body">
-      {t.body.map((p, i) => <p key={i} className="rv">{p}</p>)}
-      <p className="here rv"><strong>In this app:</strong> {t.here}</p>
+      {t.body.map((p, i) => <p key={i}>{p}</p>)}
+      <p className="here"><strong>In this app:</strong> {t.here}</p>
       <ul className="sources">
         {t.sources.map((s) => (
-          <li key={s.href + s.title} className="source rv">
+          <li key={s.href + s.title} className="source">
             <span className={`kind kind-${s.kind.replace(/\s+/g, "-").toLowerCase()}`}>{s.kind}</span>
             <a href={s.href} target="_blank" rel="noopener noreferrer">{s.title}<span className="sr-only"> (opens in a new tab)</span></a>
             <span className="by">{s.by}</span>
@@ -71,7 +70,7 @@ export function ReadingSheetProvider({ children }: { children: ReactNode }) {
         {id && (
           <div className="sheet-inner">
             <div className="sheet-top">
-              <span className="eyebrow">Background</span>
+              <span className="sheet-label">Background reading</span>
               <button type="button" className="btn btn-ghost btn-sm" onClick={close} autoFocus>Close</button>
             </div>
             <div className="sheet-body topic"><TopicBody t={topic(id)} /></div>
@@ -100,12 +99,12 @@ export function Why({ id, label = "Why we ask" }: { id: TopicId; label?: string 
     <span className="why">
       <button type="button" className="why-toggle" aria-expanded={expanded} aria-controls={`${key}-panel`}
         onClick={() => setOpenWhy(expanded ? null : key)}>
-        <span className="why-i" aria-hidden="true">i</span>{label}
+        {label}
       </button>
       {expanded && (
         <span className="why-panel" id={`${key}-panel`} role="note">
           {t.why}{" "}
-          <button type="button" className="why-more" onClick={() => open(id)}>Read more about {SHORT[id]} →</button>
+          <button type="button" className="why-more" onClick={() => open(id)}>Read more about {SHORT[id]}</button>
         </span>
       )}
     </span>
@@ -128,17 +127,17 @@ function useRemembered(key: string, initial: boolean): [boolean, (v: boolean) =>
 export function ReadTheField() {
   const [open, setOpen] = useRemembered("sp.guide.gallery", true);
   return (
-    <details className="guide rv" open={open} onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}>
+    <details className="guide" open={open} onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}>
       <summary><span className="guide-title">How to read the field</span><span className="guide-sub">Three things to look for</span></summary>
       <ol className="guide-list">
         <li>
-          <b>Who keeps showing up?</b> Players many people wrote about are probably central. Players only one person saw might be blind spots for the rest of us. <ReadMore id="field">Field mapping →</ReadMore>
+          <b>Who keeps showing up?</b> Players many people wrote about are probably central. Players only one person saw might be blind spots for the rest of us. <ReadMore id="field">Field mapping</ReadMore>
         </li>
         <li>
-          <b>Which capitals are strong, and which are thin?</b> Use the “Capital rated” filter. A capital almost nobody rates high is something our area may be missing. <ReadMore id="capitals">The seven capitals →</ReadMore>
+          <b>Which capitals are strong, and which are thin?</b> Use the “Capital rated” filter. A capital almost nobody rates high is something our area may be missing. <ReadMore id="capitals">The seven capitals</ReadMore>
         </li>
         <li>
-          <b>Helped, paying, or both?</b> Some players are people The Labs could help, some could pay for that help, and some are both. Where what one side wants clashes with what the other needs, write it down. That's a tension worth talking about. <ReadMore id="customers">Two kinds of customers →</ReadMore>
+          <b>Helped, paying, or both?</b> Some players are people The Labs could help, some could pay for that help, and some are both. Where what one side wants clashes with what the other needs, write it down. That's a tension worth talking about. <ReadMore id="customers">Two kinds of customers</ReadMore>
         </li>
       </ol>
     </details>
@@ -149,8 +148,8 @@ export function ReadTheField() {
 export function DiscussionPrompts() {
   const [open, setOpen] = useRemembered("sp.guide.prompts", false);
   return (
-    <details className="guide guide-fac rv" open={open} onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}>
-      <summary><span className="guide-title">Discussion prompts</span><span className="guide-sub">For facilitators · go through these for each program</span></summary>
+    <details className="guide guide-fac" open={open} onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}>
+      <summary><span className="guide-title">Discussion prompts</span><span className="guide-sub">For facilitators, to work through for each program</span></summary>
       <ol className="guide-list">
         <li>Who is the main person this program helps? Describe a real person, not a big group.</li>
         <li>Who pays for it, and who else has to be happy for it to keep going?</li>
@@ -160,7 +159,7 @@ export function DiscussionPrompts() {
         <li>Which players are on both sides, like a library that hosts Upskillers and also pays for programs?</li>
         <li>Where does what a funder wants clash with what the people being helped need? Write each one down as a tension.</li>
       </ol>
-      <p className="small muted">Background: <ReadMore id="customers">two kinds of customers</ReadMore> · <ReadMore id="frames">frame innovation</ReadMore></p>
+      <p className="small muted">Background: <ReadMore id="customers">two kinds of customers</ReadMore> and <ReadMore id="frames">frame innovation</ReadMore>.</p>
     </details>
   );
 }
