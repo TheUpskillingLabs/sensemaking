@@ -49,7 +49,7 @@ export default function Home() {
       <div className="page-head">
         <p className="eyebrow rv">Build Cycle C04 · Sensemaking</p>
         <h1 className="h1 rv"><Words text="My profiles" /></h1>
-        <p className="lede rv">Write one profile for each player you see around The Labs in DC: a library, an employer, an agency, a community group, a training provider, anyone who matters here.</p>
+        <p className="lede rv">Write one profile for each player you see around The Labs in DC: a library, an employer, an agency, a community group, a training provider, anyone who matters here. <Link to="/reading" viewTransition>Where these questions come from</Link>.</p>
       </div>
 
       {flash && <div className="note note-info rv" role="status" style={{ marginBottom: 24 }}>{flash}</div>}

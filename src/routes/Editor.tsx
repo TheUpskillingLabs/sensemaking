@@ -278,7 +278,7 @@ export default function Editor() {
 
           <div className="field rv">
             <p className="label" id="l-caps">What they bring <span className="req" aria-hidden="true">*</span></p>
-            <p className="hint">Rate each of the seven capitals Low, Medium or High. Add a note wherever it helps.</p>
+            <p className="hint">Rate each of the seven capitals Low, Medium or High. Add a note wherever it helps. <Link to="/reading#capitals" target="_blank">What are the capitals?</Link></p>
             <div className="caps" aria-labelledby="l-caps" role="group">
               {CAPITALS.map((c) => {
                 const rf = ratingField(c.key), nf = noteField(c.key);

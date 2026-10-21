@@ -15,6 +15,7 @@ const Editor = lazy(() => import("./routes/Editor"));
 const View = lazy(() => import("./routes/View"));
 const Gallery = lazy(() => import("./routes/Gallery"));
 const Print = lazy(() => import("./routes/Print"));
+const Reading = lazy(() => import("./routes/Reading"));
 
 const page = (el: JSX.Element) => <RequireMember><Suspense fallback={<Loader center />}>{el}</Suspense></RequireMember>;
 
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
       { path: "/profiles/:id/edit", element: page(<Editor />) },
       { path: "/profiles/:id", element: page(<View />) },
       { path: "/gallery", element: page(<Gallery />) },
+      { path: "/reading", element: page(<Reading />) },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },

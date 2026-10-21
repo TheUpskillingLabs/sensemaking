@@ -38,6 +38,7 @@ function Bar() {
         <nav className="tabs" ref={tabs} aria-label="Main">
           {membership?.member && <NavLink className="tab" to="/" end viewTransition>My profiles</NavLink>}
           {showGallery && <NavLink className="tab" to="/gallery" viewTransition>Gallery</NavLink>}
+          {membership?.member && <NavLink className="tab" to="/reading" viewTransition>Reading</NavLink>}
           <button type="button" className="tab" onClick={() => void signOut()}>Sign out</button>
           <span className="underline" ref={line} aria-hidden="true" />
         </nav>
