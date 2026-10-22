@@ -84,7 +84,7 @@ export default function Gallery() {
           </select>
         </div>
         <div className="field">
-          <label className="label" htmlFor="fro">Served, contributing, sustaining</label>
+          <label className="label" htmlFor="fro">Serving, contributing, sustaining</label>
           <select id="fro" className="select" value={f.role} onChange={(e) => update({ role: e.target.value as Filters["role"] })}>
             <option value="">Any</option>
             {ROLES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}

@@ -56,15 +56,15 @@ export function flowLabel(c: Connection): string {
   return `${CAPITAL_LABEL[c.capital]} capital${c.direction ? `, ${DIRECTION_LABEL[c.direction]}` : ""}`;
 }
 
-/** Drucker's two kinds of customers, with the supporting kind split in two. Any mix; "unsure" stands alone. */
+/** What a player does in relation to the work, said the same way for all three. Any mix; "unsure" stands alone. */
 export const ROLES: { value: Role; label: string; hint: string }[] = [
-  { value: "served", label: "Served", hint: "The Labs' work changes things for them." },
+  { value: "serving", label: "Serving", hint: "They serve the same people or place The Labs does." },
   { value: "contributing", label: "Contributing", hint: "They host it, hire from it, refer people, or give their time." },
   { value: "sustaining", label: "Sustaining", hint: "They pay for it, or otherwise keep it going." },
   { value: "unsure", label: "Not sure", hint: "That's fine. Say what you'd need to know." },
 ];
-export const ROLE_LABEL: Record<Role, string> = { served: "Served", contributing: "Contributing", sustaining: "Sustaining", unsure: "Not sure" };
-/** "Served and sustaining", "Not sure", or "" when there's no tie. */
+export const ROLE_LABEL: Record<Role, string> = { serving: "Serving", contributing: "Contributing", sustaining: "Sustaining", unsure: "Not sure" };
+/** "Serving and sustaining", "Not sure", or "" when there's no tie. */
 export function rolesLabel(roles: Role[] | null | undefined): string {
   const r = roles ?? [];
   if (r.includes("unsure")) return "Not sure";

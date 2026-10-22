@@ -4,7 +4,7 @@
 
 export type Status = "draft" | "submitted";
 export type OrgType = "library" | "employer" | "workforce_agency" | "community_group" | "training_provider" | "funder" | "other";
-export type Role = "served" | "contributing" | "sustaining" | "unsure";
+export type Role = "serving" | "contributing" | "sustaining" | "unsure";
 export type FlowDirection = "gives" | "gets" | "both";
 
 /** One connection from this player to another, with the capital that flows along it, if known. */
@@ -61,7 +61,7 @@ export interface ProfileRow {
   influence_level: Level | null;
   influence_note: string | null;
   stake: string | null;
-  /** Served by the work, contributing to it, sustaining it: any mix; or unsure alone. Empty: no tie today. */
+  /** Serving the same people, contributing to the work, sustaining it: any mix; or unsure alone. Empty: no tie today. */
   roles: Role[];
   connection_to_labs: string | null;
 }

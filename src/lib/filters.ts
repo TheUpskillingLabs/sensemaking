@@ -13,7 +13,7 @@ export interface Filters {
 }
 
 const TYPES: OrgType[] = ["library", "employer", "workforce_agency", "community_group", "training_provider", "funder", "other"];
-const ROLES: (Role | "none")[] = ["served", "contributing", "sustaining", "unsure", "none"];
+const ROLES: (Role | "none")[] = ["serving", "contributing", "sustaining", "unsure", "none"];
 const RINGS: Ring[] = ["inner_circle", "wider_field"];
 const LEVELS: Level[] = ["low", "medium", "high", "unsure"];
 

@@ -179,7 +179,7 @@ export default function Tutorial() {
                 {(ex.fears || live("fears")) && <div className={`field${live("fears")}`}><p className="label">What they fear or want to avoid <span className="opt">(optional)</span></p><textarea className="textarea" readOnly value={draft.fears ?? ""} /></div>}
                 <div className={`field${live("influence_level")}`}><p className="label">Influence</p><Segmented name="t-influence" value={draft.influence_level} options={LEVELS} onChange={() => undefined} /><input className="input optional" readOnly placeholder="Note (optional)" value={draft.influence_note ?? ""} /></div>
                 <div className={`field${live("stake")}`}><p className="label">What's at stake for them</p><textarea className="textarea" readOnly value={draft.stake ?? ""} /></div>
-                <div className={`field${live("roles")}`}><p className="label">Served, contributing, sustaining <span className="opt">(optional)</span></p>
+                <div className={`field${live("roles")}`}><p className="label">Serving, contributing, sustaining <span className="opt">(optional)</span></p>
                   <div className="choices choices-4">{ROLES.map((r) => <label key={r.value} className="choice"><input type="checkbox" readOnly checked={draft.roles.includes(r.value)} /><b>{r.label}</b><span>{r.hint}</span></label>)}</div></div>
                 <div className={`field${live("connection")}`}><p className="label">Could they connect to {CASE.short}?</p><textarea className="textarea" readOnly value={draft.connection_to_labs ?? ""} /></div>
               </div>

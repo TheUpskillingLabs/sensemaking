@@ -140,12 +140,12 @@ export const SECTIONS: Section[] = [
     title: "Two kinds of customers",
     lead: "A nonprofit has the people it serves and the people who keep it going, and they don't always want the same thing.",
     body: [
-      "Peter Drucker, who spent his life studying how organizations work, said a nonprofit has two kinds of customers.[^20] The **primary customer** is “the person whose life is changed through your work.” For The Labs, that's an Upskiller. The **supporting customers** are everyone who has to be satisfied for the work to continue. We split them in two: the **contributing**, who host it, hire from it, refer people to it, or give their time, and the **sustaining**, who pay for it.[^21]",
+      "Peter Drucker, who spent his life studying how organizations work, said a nonprofit has two kinds of customers.[^20] The **primary customer** is “the person whose life is changed through your work.” For The Labs, that's an Upskiller. The **supporting customers** are everyone who has to be satisfied for the work to continue. We split them in two: the **contributing**, who host it, hire from it, refer people to it, or give their time, and the **sustaining**, who pay for it. Players who work for the same people The Labs does, in their own way, are **serving**.[^21]",
       "A shoe store gets one clear signal: if people like the shoes, they buy more. A nonprofit doesn't, because the person served and the person paying are almost never the same. It has to keep all of them happy at once.[^22]",
       "This is where section 2 comes back. The supporting customers around The Labs mostly want the workforce numbers and the digital-equity numbers, by the end of the grant year. The Upskiller may need something neither counts: time to finish something real, a mentor who knows the tool, a bus pass. Where what the people served need differs from what the sustainers count, programs quietly bend out of shape. That's also where the best ideas hide.[^23]",
     ],
-    terms: ["primary customer", "supporting customers", "served, contributing, sustaining"],
-    forProfile: "Tick whether this player is served, contributing, sustaining, any mix, or none, and say what each side wants. A library that hosts Upskillers and funds a digital-skills class is contributing and sustaining.",
+    terms: ["primary customer", "supporting customers", "serving, contributing, sustaining"],
+    forProfile: "Tick whether this player is serving, contributing, sustaining, any mix, or none, and say what each side wants. A library that hosts Upskillers and funds a digital-skills class is contributing and sustaining.",
     talk: "Have you seen a program bend toward its funder and away from the people in it? What happened?",
   },
   {

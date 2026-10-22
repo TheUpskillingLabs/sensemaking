@@ -113,7 +113,7 @@ export function ReadTheField() {
           <b>Which capitals are strong, and which are thin?</b> Use the “Rated for a capital” filter. A capital almost nobody rates high is something our area may be missing. <ReadMore id="capitals">The seven capitals</ReadMore>
         </li>
         <li>
-          <b>Served, contributing, sustaining?</b> Some players are people The Labs serves. Some contribute to the work by hosting, hiring, referring, or volunteering. Some sustain it by paying for it. Many are more than one. Where what one side wants clashes with what another needs, write it down. That's a tension worth talking about. <ReadMore id="customers">Two kinds of customers</ReadMore>
+          <b>Serving, contributing, sustaining?</b> Some players serve the same people The Labs does. Some contribute to the work by hosting, hiring, referring, or volunteering. Some sustain it by paying for it. Many are more than one. Where what one side wants clashes with what another needs, write it down. That's a tension worth talking about. <ReadMore id="customers">Two kinds of customers</ReadMore>
         </li>
       </ol>
     </details>

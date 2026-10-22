@@ -28,7 +28,7 @@ const cols = (withAuthor: (id: string) => string | undefined): Col[] => {
     { header: "Influence", get: (p) => (p.influence_level ? LEVEL_LABEL[p.influence_level] : "") },
     { header: "Influence note", get: (p) => p.influence_note ?? "" },
     { header: "Stake", get: (p) => p.stake ?? "" },
-    { header: "Served, contributing, sustaining", get: (p) => rolesLabel(p.roles) },
+    { header: "Serving, contributing, sustaining", get: (p) => rolesLabel(p.roles) },
     { header: "Could they connect to The Labs", get: (p) => p.connection_to_labs ?? "" },
   );
   base.push({ header: "Author", get: (p) => withAuthor(p.author_id) ?? "" });

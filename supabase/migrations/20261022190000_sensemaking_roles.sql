@@ -1,7 +1,7 @@
--- Stakeholder Profiles: served, contributing, sustaining.
+-- Stakeholder Profiles: serving, contributing, sustaining.
 --
 -- Drucker's two kinds of customers, with the supporting kind split in two:
---   served       the work changes things for them
+--   serving      they serve the same people or place The Labs does
 --   contributing they host it, hire from it, refer people, give their time
 --   sustaining   they pay for it or otherwise keep it going
 -- A player can be any mix, so this is a set, not one choice. 'unsure' stands
@@ -13,18 +13,18 @@ begin;
 
 alter table public.sensemaking_profiles
   add column roles text[] not null default '{}'
-    check (roles <@ array['served', 'contributing', 'sustaining', 'unsure']::text[]);
+    check (roles <@ array['serving', 'contributing', 'sustaining', 'unsure']::text[]);
 
 update public.sensemaking_profiles set roles = case customer_role
-  when 'helped'  then array['served']
+  when 'helped'  then array['serving']
   when 'paying'  then array['sustaining']
-  when 'both'    then array['served', 'sustaining']
+  when 'both'    then array['serving', 'sustaining']
   when 'unsure'  then array['unsure']
   else '{}' end::text[];
 
 alter table public.sensemaking_profiles drop column customer_role;
 
 comment on column public.sensemaking_profiles.roles is
-  'Any of served, contributing, sustaining; or unsure alone. Empty: no tie to The Labs today.';
+  'Any of serving, contributing, sustaining; or unsure alone. Empty: no tie to The Labs today.';
 
 commit;

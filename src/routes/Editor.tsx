@@ -366,8 +366,8 @@ export default function Editor() {
           </div>
 
           <fieldset id="s-connection" className="field">
-            <legend className="label">Served, contributing, sustaining <span className="opt">(optional)</span></legend>
-            <p className="hint">Does The Labs' work serve this player, do they contribute to it, do they sustain it, or none of these? Tick any that fit.</p>
+            <legend className="label">Serving, contributing, sustaining <span className="opt">(optional)</span></legend>
+            <p className="hint">Do they serve the same people The Labs does, contribute to the work, sustain it, or none of these? Tick any that fit.</p>
             <Why id="customers" />
             <div className="choices choices-4">
               {ROLES.map((r, i) => (

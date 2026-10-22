@@ -59,12 +59,12 @@ export const EXAMPLES: Example[] = [
     influence_level: "medium",
     influence_note: "Everyone knows it; it decides little.",
     stake: "Without a steady stream of new vendors, the winter market dies, and the lease goes with it.",
-    roles: ["served", "contributing"],
+    roles: ["serving", "contributing"],
     connection: "It's where the Collective's cooks start selling, and it could help pick which products to train for.",
     captions: {
       org_type: "The list has the common kinds. A market isn't one of them, so this one is Other, and you say what kind.",
       ring: "The market already works with the Collective every week, so it's inner circle.",
-      roles: "The market is served by the Collective's new vendors, and it contributes by giving them somewhere to sell. Tick both.",
+      roles: "The market serves the same new food businesses the Collective does, and it contributes by giving them somewhere to sell. Tick both.",
     },
   },
   {
@@ -95,7 +95,7 @@ export const EXAMPLES: Example[] = [
       org_type: "Funder is on the list because the two-customers idea needs it.",
       tried_before: "This is the archaeology. The foundation tried something like this before. Say what, and what got in the way. That history is evidence for the whole group.",
       ring: "The foundation gave one small grant and isn't in the room week to week. Wider field.",
-      roles: "The foundation sustains the work: it pays. It isn't the one whose life the work changes.",
+      roles: "The foundation sustains the work: it pays. It doesn't serve the cooks itself, and it doesn't host or hire.",
       connection: "In the real form this question is about The Labs. Here it's about the Collective, but the shape is the same: could they connect, and what would each side want?",
     },
   },
@@ -119,7 +119,7 @@ const DEFAULT_CAPTIONS: Record<string, string> = {
   fears: "What do they fear or want to avoid? Optional.",
   influence_level: "How much say do they have over what happens around the organization at the center?",
   stake: "What's at stake for them, if anything? What do they stand to gain or lose?",
-  roles: "Does the work serve them, do they contribute to it, do they sustain it? Tick any that fit, or none. Not sure is a real answer.",
+  roles: "Do they serve the same people, contribute to the work, or sustain it? Tick any that fit, or none. Not sure is a real answer.",
   connection: "Last, could they connect to the organization at the center? How, or why not?",
 };
 
