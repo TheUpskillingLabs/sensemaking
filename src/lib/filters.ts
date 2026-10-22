@@ -53,7 +53,7 @@ export function applyFilters(rows: ProfileRow[], f: Filters, canSeeDrafts: boole
     if (f.role === "none" ? (p.roles ?? []).length > 0 : f.role && !(p.roles ?? []).includes(f.role)) return false;
     if (f.cap && f.level && p[ratingField(f.cap)] !== f.level) return false;
     if (terms.length) {
-      const hay = norm([p.name, typeLabel(p), p.description, p.tried_before, ...(p.connections ?? []).map((c) => c.name), p.needs, p.connection_to_labs].filter(Boolean).join(" "));
+      const hay = norm([p.name, typeLabel(p), p.description, p.touchpoints, p.tried_before, ...(p.connections ?? []).map((c) => c.name), p.needs, p.connection_to_labs].filter(Boolean).join(" "));
       if (!terms.every((t) => hay.includes(t))) return false;
     }
     return true;

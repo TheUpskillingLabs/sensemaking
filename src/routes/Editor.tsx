@@ -274,6 +274,13 @@ export default function Editor() {
             {bad("description") && <p className="err-text">Write a few lines about who they are.</p>}
           </div>
 
+          <div className={`field${bad("touchpoints") ? " invalid" : ""}`}>
+            <label className="label" htmlFor="f-touchpoints">Where people meet them <span className="req" aria-hidden="true">*</span></label>
+            <p className="hint" id="h-touchpoints">Where does anyone come into contact with this player? A front desk, a class, a website, a caseworker, a job board, a hotline, a bulletin board, word of mouth. List what you know of.</p>
+            <textarea id="f-touchpoints" className="textarea" value={draft.touchpoints ?? ""} onChange={(e) => set("touchpoints", e.target.value)} aria-describedby="h-touchpoints" aria-required="true" aria-invalid={bad("touchpoints") || undefined} />
+            {bad("touchpoints") && <p className="err-text">Name at least one place or way people come into contact with them.</p>}
+          </div>
+
           <div className="field">
             <label className="label" htmlFor="f-tried_before">What they've tried before <span className="opt">(optional)</span></label>
             <p className="hint" id="h-tried_before">Anything they've already tried in this area, and how it went. That history is evidence.</p>

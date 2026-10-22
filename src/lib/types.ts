@@ -35,6 +35,8 @@ export interface ProfileRow {
   description: string | null;
   /** Archaeology: what they have already tried here, and what got in the way. */
   tried_before: string | null;
+  /** Where people come into contact with this player: places, moments, channels. */
+  touchpoints: string | null;
   ring: Ring | null;
 
   capital_natural_rating: Level | null;
@@ -71,7 +73,7 @@ export type EditableField = Exclude<keyof ProfileRow, "id" | "cycle" | "author_i
 export type ProfileDraft = Pick<ProfileRow, EditableField>;
 
 export const EDITABLE_FIELDS: EditableField[] = [
-  "name", "org_type", "org_type_other", "description", "tried_before", "ring",
+  "name", "org_type", "org_type_other", "description", "touchpoints", "tried_before", "ring",
   "capital_natural_rating", "capital_natural_note",
   "capital_cultural_rating", "capital_cultural_note",
   "capital_human_rating", "capital_human_note",

@@ -52,6 +52,7 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant =
 
       <section aria-label="Who they are">
         <p className="desc"><Text v={p.description} /></p>
+        <p className="tried"><span>Where people meet them</span><Text v={p.touchpoints} /></p>
         {p.tried_before?.trim() && <p className="tried"><span>What they've tried before</span>{p.tried_before}</p>}
       </section>
 

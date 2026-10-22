@@ -13,6 +13,7 @@ const cols = (withAuthor: (id: string) => string | undefined): Col[] => {
     { header: "Type", get: (p) => (p.org_type ? ORG_TYPE_LABEL[p.org_type] : "") },
     { header: "Type (other)", get: (p) => p.org_type_other ?? "" },
     { header: "Who they are", get: (p) => p.description ?? "" },
+    { header: "Where people meet them", get: (p) => p.touchpoints ?? "" },
     { header: "What they've tried before", get: (p) => p.tried_before ?? "" },
     { header: "Ring", get: (p) => (p.ring ? RING_LABEL[p.ring] : "") },
   ];

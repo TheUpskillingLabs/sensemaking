@@ -131,7 +131,7 @@ export const SECTIONS: Section[] = [
       "This whole app is a field map. The inner-circle-or-wider-field question puts each player in one or the other. And there's a reason you can't see anyone else's profiles until you've finished your own: when many people map the same field on their own, the patterns that show up in all of them are ones we can trust.[^19]",
     ],
     terms: ["inner circle", "wider field", "field map"],
-    forProfile: "Choose inner circle or wider field honestly, and write what this player wants and what they worry about.",
+    forProfile: "Choose inner circle or wider field honestly, write what this player wants and what they worry about, and say where people actually come into contact with them. Connections happen at those touchpoints.",
     talk: "Is there anyone in the wider field nobody has asked yet? Who?",
   },
   {

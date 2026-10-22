@@ -19,6 +19,7 @@ export interface Example {
   org_type: OrgType;
   org_type_other: string | null;
   description: string;
+  touchpoints: string;
   tried_before: string | null;
   ring: Ring;
   ratings: Record<CapitalKey, Level>;
@@ -44,6 +45,7 @@ export const EXAMPLES: Example[] = [
     org_type: "other",
     org_type_other: "Market",
     description: "A Saturday market on a city lot by the river, run by a volunteer board. Forty stalls in summer, a dozen in winter. It's where new food businesses from the Collective sell for the first time, and where a lot of Millbrook finds out they exist.",
+    touchpoints: "The Saturday stalls, the riverside lot itself, a sign-up form on its website for new vendors, and a volunteer at the info table who knows everyone.",
     tried_before: null,
     ring: "inner_circle",
     ratings: { natural: "high", cultural: "high", human: "medium", social: "high", political: "low", financial: "low", built: "medium" },
@@ -74,6 +76,7 @@ export const EXAMPLES: Example[] = [
     org_type: "funder",
     org_type_other: null,
     description: "The county's community foundation. It pools donations from local families and businesses and makes grants of a few thousand to a few hundred thousand dollars a year, mostly to health, schools, and job programs. A small staff and a board of long-time residents.",
+    touchpoints: "A grant application once a year, a program officer who takes meetings, and an annual report that goes to every donor. Most people in Millbrook have never met it directly.",
     tried_before: "Funded a culinary job-training certificate at the community college in 2021. Closed after two years when placements came in under the grant's target. Staff there say the students were good; the restaurants that had promised to hire were short on hours that winter.",
     ring: "wider_field",
     ratings: { natural: "low", cultural: "medium", human: "medium", social: "high", political: "high", financial: "high", built: "low" },
@@ -110,6 +113,7 @@ const DEFAULT_CAPTIONS: Record<string, string> = {
   org_type: "Pick the closest type from the list.",
   org_type_other: "When the list doesn't fit, say what kind of player this is in a word or two.",
   description: "Who they are, in your own words: what they do or make, and how they show up here. A few lines is plenty.",
+  touchpoints: "Where does anyone actually come into contact with them? Name the places, moments, and channels you know of. This is where connections happen in real life.",
   tried_before: "If they've tried something in this area before, say what, and how it went. Optional, but it's evidence.",
   ring: "Inner circle if they already work with the organization at the center. Wider field if they could be affected or could help but aren't involved yet.",
   capitals: "Rate how much of each of the seven kinds of wealth this player has: low, medium, high, or not sure. Add a note where it helps. Watch the shape take form as you go.",
@@ -131,6 +135,7 @@ export function stepsFor(ex: Example): Step[] {
   ];
   if (ex.org_type === "other") steps.push({ key: "org_type_other", kind: "text", caption: cap("org_type_other") });
   steps.push({ key: "description", kind: "text", caption: cap("description") });
+  steps.push({ key: "touchpoints", kind: "text", caption: cap("touchpoints") });
   if (ex.tried_before) steps.push({ key: "tried_before", kind: "text", caption: cap("tried_before") });
   steps.push({ key: "ring", kind: "choice", caption: cap("ring") });
   CAPITALS.forEach((c, i) => steps.push({ key: ratingField(c.key), kind: "segment", caption: i === 0 ? cap("capitals") : `${c.label}: ${c.prompt.toLowerCase()}.` }));

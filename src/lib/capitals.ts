@@ -98,6 +98,7 @@ export function missingFields(p: Pick<ProfileRow, EditableField>): Missing[] {
   if (!p.org_type) out.push({ field: "org_type", label: "Type of player" });
   else if (p.org_type === "other" && blank(p.org_type_other)) out.push({ field: "org_type_other", label: "What type of player" });
   if (blank(p.description)) out.push({ field: "description", label: "Who they are" });
+  if (blank(p.touchpoints)) out.push({ field: "touchpoints", label: "Where people meet them" });
   if (!p.ring) out.push({ field: "ring", label: "Inner circle or wider field" });
   for (const c of CAPITALS) if (!p[ratingField(c.key)]) out.push({ field: ratingField(c.key), label: `${c.label} capital` });
   if (namedConnections(p.connections).length === 0) out.push({ field: "connections", label: "At least one connection" });

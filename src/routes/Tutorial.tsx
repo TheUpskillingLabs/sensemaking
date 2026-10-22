@@ -17,7 +17,7 @@ const HOLD_MS = 1600;    // after a step completes
 const QUICK_MS = 900;    // after a pick
 
 const blank = (): ProfileDraft => ({
-  name: "", org_type: null, org_type_other: null, description: "", tried_before: "", ring: null,
+  name: "", org_type: null, org_type_other: null, description: "", touchpoints: "", tried_before: "", ring: null,
   capital_natural_rating: null, capital_natural_note: "", capital_cultural_rating: null, capital_cultural_note: "",
   capital_human_rating: null, capital_human_note: "", capital_social_rating: null, capital_social_note: "",
   capital_political_rating: null, capital_political_note: "", capital_financial_rating: null, capital_financial_note: "",
@@ -152,6 +152,7 @@ export default function Tutorial() {
                 <div className={`field${live("org_type")}`}><p className="label">Type of player</p><select className="select" value={draft.org_type ?? ""} onChange={() => undefined}><option value="">Choose a type</option>{ORG_TYPES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</select></div>
                 {(draft.org_type === "other" || live("org_type_other")) && <div className={`field${live("org_type_other")}`}><p className="label">Say what kind</p><input className="input" readOnly value={draft.org_type_other ?? ""} /></div>}
                 <div className={`field${live("description")}`}><p className="label">Who they are</p><textarea className="textarea big" readOnly value={draft.description ?? ""} /></div>
+                <div className={`field${live("touchpoints")}`}><p className="label">Where people meet them</p><textarea className="textarea" readOnly value={draft.touchpoints ?? ""} /></div>
                 {(ex.tried_before || live("tried_before")) && <div className={`field${live("tried_before")}`}><p className="label">What they've tried before <span className="opt">(optional)</span></p><textarea className="textarea" readOnly value={draft.tried_before ?? ""} /></div>}
               </div>
               <div className="part">
