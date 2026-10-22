@@ -55,7 +55,7 @@ export default function Home() {
     <div className="page page-home">
       <header className="intro">
         <h1 className="h-display"><Words text="Your stakeholder profiles" /></h1>
-        <p className="lede">Write one profile for each player you see around The Labs in DC: a library, an employer, an agency, a community group, a training provider, anyone who matters here.</p>
+        <p className="lede">Write one profile for each of three players around The Labs in DC: a library, an employer, an agency, a community group, a training provider, anyone who matters here.</p>
       </header>
 
       {flash && <p className="notice" role="status">{flash}</p>}
@@ -82,9 +82,9 @@ export default function Home() {
                     <CapGlyph p={r} />
                     <div className="prow-main">
                       <Link className="prow-name" to={r.status === "draft" && open ? `/profiles/${r.id}/edit` : `/profiles/${r.id}`} viewTransition>{r.name?.trim() || "Untitled player"}</Link>
-                      <span className="prow-kind">{kindOf(r) || "Not yet typed"}</span>
+                      <span className="prow-kind">{kindOf(r) || "No type yet"}</span>
                     </div>
-                    <span className={`state state-${r.status}`}>{r.status === "draft" ? "Draft" : r.edited_at ? "Submitted, edited" : "Submitted"}</span>
+                    <span className={`state state-${r.status}`}>{r.status === "draft" ? "Draft" : r.edited_at ? "Submitted, then edited" : "Submitted"}</span>
                     <span className="prow-act">
                       {r.status === "draft" && open
                         ? <Link className="btn btn-quiet btn-sm" to={`/profiles/${r.id}/edit`} viewTransition>Keep writing</Link>
@@ -119,7 +119,7 @@ export default function Home() {
         <section className="next" aria-labelledby="h-unlocked">
           <div>
             <h2 className="h-section" id="h-unlocked">{membership.facilitator && !unlocked ? "Every profile, drafts included" : "Read what everyone else saw"}</h2>
-            <p>{membership.facilitator && !unlocked ? "Participants can't see each other's until they've submitted their own." : "Anything you write from here on won't be independent of theirs, and that's fine."}</p>
+            <p>{membership.facilitator && !unlocked ? "Participants can't see each other's until the gallery opens and they've submitted their own." : "Anything you write from here on will be shaped by theirs, and that's fine."}</p>
           </div>
           <Link className="btn btn-primary" to="/gallery" viewTransition>Open the gallery</Link>
         </section>
@@ -128,7 +128,7 @@ export default function Home() {
         <section className="next" aria-labelledby="h-waiting">
           <div>
             <h2 className="h-section" id="h-waiting">Your {inWords(required)} are in.</h2>
-            <p>Everyone's profiles open {opensLabel(membership.config.gallery_opens_at, true)}. Until then you can still edit yours, or add another player.</p>
+            <p>Everyone's profiles open {opensLabel(membership.config.gallery_opens_at, true)}. Until then you can edit yours or add another player.</p>
           </div>
         </section>
       )}
@@ -137,7 +137,7 @@ export default function Home() {
         {rows && !unlocked && !membership.facilitator && (
           <p>{later && opens ? `Until ${opens}, nobody sees yours and you don't see theirs.` : `Until you've submitted your ${inWords(required)}, nobody sees yours and you don't see theirs.`} That keeps everyone's view independent.</p>
         )}
-        <p>New to this? <Link to="/tutorial" viewTransition>Watch a profile get written</Link>, two made-up examples in about two minutes each.</p>
+        <p>New to this? <Link to="/tutorial" viewTransition>Watch two example profiles get written</Link>. About two minutes each.</p>
         <p><Link to="/reading" viewTransition>Background reading</Link>: where these questions come from, in plain words.</p>
       </aside>
     </div>

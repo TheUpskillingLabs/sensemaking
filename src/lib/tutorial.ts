@@ -39,7 +39,7 @@ export interface Example {
 export const EXAMPLES: Example[] = [
   {
     id: "market",
-    intro: "First, a player close to the centre: the farmers' market where the Collective's cooks sell on Saturdays.",
+    intro: "First, a player close to the center: the farmers' market where the Collective's cooks sell on Saturdays.",
     name: "Riverside Farmers' Market",
     org_type: "other",
     org_type_other: "Market",
@@ -111,16 +111,16 @@ const DEFAULT_CAPTIONS: Record<string, string> = {
   org_type_other: "When the list doesn't fit, say what kind of player this is in a word or two.",
   description: "Who they are, in your own words: what real things they make, fix, teach, or help others make, and how they show up here. A few lines is plenty.",
   tried_before: "If they've tried something in this area before, say what, and what got in the way. Optional, but it's evidence.",
-  ring: "Inner circle if they're already involved. Wider field if they could be affected or could help.",
-  capitals: "Rate what they bring across the seven capitals: low, medium, or high. Add a note where it helps. Watch the shape take form as you go.",
+  ring: "Inner circle if they already work with the organization at the center. Wider field if they could be affected or could help but aren't involved yet.",
+  capitals: "Rate how much of each of the seven kinds of wealth this player has: low, medium, or high. Add a note where it helps. Watch the shape take form as you go.",
   connections: "Now the heart of it: who are they connected to? One row per connection. If you know which capital moves between them and which way, say so. That's optional, and it's what lets us draw the field later.",
   needs: "What do they need? One or two sentences.",
   values_held: "What do they value? Optional.",
   fears: "What do they fear or want to avoid? Optional.",
-  influence_level: "How much influence do they have around the organization at the centre?",
-  stake: "What do they stand to gain or lose?",
+  influence_level: "How much say do they have over what happens around the organization at the center?",
+  stake: "What's at stake for them? What do they stand to gain or lose?",
   customer_role: "Are they served by the work, contributing to it, or both? Optional, but it's the pattern we look for most on sensemaking day.",
-  connection: "Last, how could they connect to the organization at the centre? What would each side want from it?",
+  connection: "Last, how could they connect to the organization at the center? What would each side want from it?",
 };
 
 export function stepsFor(ex: Example): Step[] {

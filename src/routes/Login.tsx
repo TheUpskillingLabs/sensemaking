@@ -40,7 +40,7 @@ export default function Login() {
       await opening.current?.leave();
       location.assign(url);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Sign-in didn't start.");
+      setError(e instanceof Error ? e.message : "Sign-in didn't start. Try again.");
       setBusy(false);
       setShake((n) => n + 1);
       opening.current?.jolt();
@@ -57,7 +57,7 @@ export default function Login() {
           <GoogleIcon /> {busy ? "Opening Google…" : "Continue with Google"}
         </button>
         <p className="opening-err" role="alert" hidden={!error}>{error ? <><strong>Sign-in didn't work.</strong> {error}</> : " "}</p>
-        <p className="opening-hint">Use the Google account you use for OLOS.</p>
+        <p className="opening-hint">Use the Google account you signed up to The Labs with.</p>
       </div>
     </>
   );

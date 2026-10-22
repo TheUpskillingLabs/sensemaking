@@ -147,14 +147,14 @@ export default function Tutorial() {
               <div className="part">
                 <h3 className="h-section part-title">In your own words</h3>
                 <div className={`field${live("name")}`}><p className="label">Name of the player</p><input className="input" readOnly value={draft.name ?? ""} /></div>
-                <div className={`field${live("org_type")}`}><p className="label">Type</p><select className="select" value={draft.org_type ?? ""} onChange={() => undefined}><option value="">Choose a type</option>{ORG_TYPES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</select></div>
-                {(draft.org_type === "other" || live("org_type_other")) && <div className={`field${live("org_type_other")}`}><p className="label">What kind of player?</p><input className="input" readOnly value={draft.org_type_other ?? ""} /></div>}
+                <div className={`field${live("org_type")}`}><p className="label">Type of player</p><select className="select" value={draft.org_type ?? ""} onChange={() => undefined}><option value="">Choose a type</option>{ORG_TYPES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</select></div>
+                {(draft.org_type === "other" || live("org_type_other")) && <div className={`field${live("org_type_other")}`}><p className="label">Say what kind</p><input className="input" readOnly value={draft.org_type_other ?? ""} /></div>}
                 <div className={`field${live("description")}`}><p className="label">Who they are</p><textarea className="textarea big" readOnly value={draft.description ?? ""} /></div>
                 {(ex.tried_before || live("tried_before")) && <div className={`field${live("tried_before")}`}><p className="label">What they've tried before <span className="opt">(optional)</span></p><textarea className="textarea" readOnly value={draft.tried_before ?? ""} /></div>}
               </div>
               <div className="part">
                 <h3 className="h-section part-title">Give it structure</h3>
-                <div className={`field${live("ring")}`}><p className="label">Ring</p>
+                <div className={`field${live("ring")}`}><p className="label">Inner circle or wider field?</p>
                   <div className="choices">{RINGS.map((r) => <label key={r.value} className="choice"><input type="radio" readOnly checked={draft.ring === r.value} /><b>{r.label}</b><span>{r.hint}</span></label>)}</div></div>
                 <div className="field"><p className="label">What they bring</p>
                   <div className="caps">{CAPITALS.map((c) => (
@@ -167,16 +167,16 @@ export default function Tutorial() {
                 <div className={`field${steps.some((s) => s.key.startsWith("connection:") && s.key === liveKey) ? " is-live" : ""}`}><p className="label">Who they're connected to</p>
                   <ol className="conn-list">{(draft.connections.length ? draft.connections : [blankConnection()]).map((c, i) => (
                     <li key={i} className="conn">
-                      <div className="conn-main"><input className="input" readOnly placeholder="Who they're connected to" value={c.name} /><input className="input conn-note" readOnly placeholder="How, in a few words (optional)" value={c.note} /></div>
-                      <div className="conn-flow"><select className="select" value={c.capital ?? ""} onChange={() => undefined}><option value="">What flows? (optional)</option>{CAPITALS.map((x) => <option key={x.key} value={x.key}>{x.label} capital</option>)}</select>
-                        <select className="select" value={c.direction ?? ""} onChange={() => undefined}><option value="">Which way?</option><option value="gives">They give it</option><option value="gets">They get it</option><option value="both">Both ways</option></select><span /></div>
+                      <div className="conn-main"><input className="input" readOnly placeholder="Name of a player they work with" value={c.name} /><input className="input conn-note" readOnly placeholder="How, in a few words (optional)" value={c.note} /></div>
+                      <div className="conn-flow"><select className="select" value={c.capital ?? ""} onChange={() => undefined}><option value="">What passes between them? (optional)</option>{CAPITALS.map((x) => <option key={x.key} value={x.key}>{x.label} capital</option>)}</select>
+                        <select className="select" value={c.direction ?? ""} onChange={() => undefined}><option value="">Which way?</option><option value="gives">This player gives it</option><option value="gets">This player gets it</option><option value="both">Both ways</option></select><span /></div>
                     </li>
                   ))}</ol></div>
                 <div className={`field${live("needs")}`}><p className="label">What they need</p><textarea className="textarea" readOnly value={draft.needs ?? ""} /></div>
                 {(ex.values_held || live("values_held")) && <div className={`field${live("values_held")}`}><p className="label">What they value <span className="opt">(optional)</span></p><textarea className="textarea" readOnly value={draft.values_held ?? ""} /></div>}
                 {(ex.fears || live("fears")) && <div className={`field${live("fears")}`}><p className="label">What they fear or want to avoid <span className="opt">(optional)</span></p><textarea className="textarea" readOnly value={draft.fears ?? ""} /></div>}
                 <div className={`field${live("influence_level")}`}><p className="label">Influence</p><Segmented name="t-influence" value={draft.influence_level} options={LEVELS} onChange={() => undefined} /><input className="input optional" readOnly placeholder="Note (optional)" value={draft.influence_note ?? ""} /></div>
-                <div className={`field${live("stake")}`}><p className="label">Stake</p><textarea className="textarea" readOnly value={draft.stake ?? ""} /></div>
+                <div className={`field${live("stake")}`}><p className="label">What's at stake for them</p><textarea className="textarea" readOnly value={draft.stake ?? ""} /></div>
                 <div className={`field${live("customer_role")}`}><p className="label">Served, contributing, or both? <span className="opt">(optional)</span></p>
                   <div className="choices choices-4">{CUSTOMER_ROLES.map((r) => <label key={r.value} className="choice"><input type="radio" readOnly checked={draft.customer_role === r.value} /><b>{r.label}</b><span>{r.hint}</span></label>)}</div></div>
                 <div className={`field${live("connection")}`}><p className="label">How they could connect to {CASE.short}</p><textarea className="textarea" readOnly value={draft.connection_to_labs ?? ""} /></div>

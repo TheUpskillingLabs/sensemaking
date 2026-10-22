@@ -17,7 +17,7 @@ export function ConnectionsEditor({ value, onChange, invalid }: { value: Connect
           <li key={i} className="conn">
             <div className="conn-main">
               <label className="sr-only" htmlFor={i === 0 ? "f-connections" : `f-conn-${i}`}>Connected to</label>
-              <input id={i === 0 ? "f-connections" : `f-conn-${i}`} className="input" type="text" placeholder="Who they're connected to" value={r.name} maxLength={160}
+              <input id={i === 0 ? "f-connections" : `f-conn-${i}`} className="input" type="text" placeholder="Name of a player they work with" value={r.name} maxLength={160}
                 onChange={(e) => update(i, { name: e.target.value })} aria-invalid={invalid && i === 0 || undefined} />
               <label className="sr-only" htmlFor={`f-conn-${i}-note`}>How, in a few words (optional)</label>
               <input id={`f-conn-${i}-note`} className="input conn-note" type="text" placeholder="How, in a few words (optional)" value={r.note} maxLength={200}
@@ -26,7 +26,7 @@ export function ConnectionsEditor({ value, onChange, invalid }: { value: Connect
             <div className="conn-flow">
               <label className="sr-only" htmlFor={`f-conn-${i}-cap`}>Capital that flows</label>
               <select id={`f-conn-${i}-cap`} className="select" value={r.capital ?? ""} onChange={(e) => update(i, { capital: (e.target.value || null) as CapitalKey | null })}>
-                <option value="">What flows? (optional)</option>
+                <option value="">What passes between them? (optional)</option>
                 {CAPITALS.map((c) => <option key={c.key} value={c.key}>{c.label} capital</option>)}
               </select>
               <label className="sr-only" htmlFor={`f-conn-${i}-dir`}>Which way</label>

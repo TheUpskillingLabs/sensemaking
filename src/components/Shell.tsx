@@ -69,7 +69,7 @@ export function Shell() {
       <Bar />
       <main id="main" tabIndex={-1}><Outlet /></main>
       <footer className="foot">
-        <p>The Upskilling Labs, Build Cycle C04. Your profiles are stored in The Labs' OLOS database. Facilitators can read them; other participants can once they've submitted their own.</p>
+        <p>The Upskilling Labs, Build Cycle C04. Facilitators can read your profiles. Other participants can once the gallery opens and they've submitted their own.</p>
       </footer>
     </ReadingSheetProvider>
   );
@@ -120,7 +120,7 @@ export function NotMember() {
     <div className="gate">
       <div className="gate-inner">
         <h1 className="h2 rv">This app is for members of The Labs.</h1>
-        <p className="lede rv">Sign in with the Google account you use for OLOS.</p>
+        <p className="lede rv">Sign in with the Google account you signed up to The Labs with.</p>
         {user?.email && <p className="small muted rv">You're signed in as {user.email}.</p>}
         <div className="act rv"><button type="button" className="btn btn-primary" onClick={() => void signOut()}>Sign out</button></div>
       </div>

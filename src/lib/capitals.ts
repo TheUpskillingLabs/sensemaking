@@ -33,13 +33,13 @@ export const ORG_TYPES: { value: OrgType; label: string }[] = [
 export const ORG_TYPE_LABEL: Record<OrgType, string> = Object.fromEntries(ORG_TYPES.map((o) => [o.value, o.label])) as Record<OrgType, string>;
 
 export const RINGS: { value: Ring; label: string; hint: string }[] = [
-  { value: "inner_circle", label: "Inner circle", hint: "Already involved with The Labs or the people it serves." },
-  { value: "wider_field", label: "Wider field", hint: "Could be affected or could help, including people nobody has asked yet." },
+  { value: "inner_circle", label: "Inner circle", hint: "Already working with The Labs or the people it serves." },
+  { value: "wider_field", label: "Wider field", hint: "Not involved yet, but could be affected or could help." },
 ];
 /** Which way a capital moves along a connection, from this player's side. */
 export const DIRECTIONS: { value: FlowDirection; label: string }[] = [
-  { value: "gives", label: "They give it" },
-  { value: "gets", label: "They get it" },
+  { value: "gives", label: "This player gives it" },
+  { value: "gets", label: "This player gets it" },
   { value: "both", label: "Both ways" },
 ];
 export const DIRECTION_LABEL: Record<FlowDirection, string> = { gives: "gives", gets: "gets", both: "gives and gets" };
@@ -54,10 +54,10 @@ export function flowLabel(c: Connection): string {
 
 /** Drucker's two kinds of customers, as one choice. */
 export const CUSTOMER_ROLES: { value: CustomerRole; label: string; hint: string }[] = [
-  { value: "helped", label: "Served", hint: "Someone the work changes things for." },
-  { value: "paying", label: "Contributing", hint: "Pays for it, hosts it, hires from it, or gives time to keep it going." },
-  { value: "both", label: "Both", hint: "Served by it and keeps it going." },
-  { value: "unsure", label: "Not sure yet", hint: "Say what you'd need to know." },
+  { value: "helped", label: "Served", hint: "The Labs' work changes things for them." },
+  { value: "paying", label: "Contributing", hint: "They fund it, host it, hire from it, or give their time." },
+  { value: "both", label: "Both", hint: "Served by it, and helps keep it going." },
+  { value: "unsure", label: "Not sure yet", hint: "That's fine. Say what you'd need to know." },
 ];
 /* Database values stay helped/paying; the words people see are served/contributing. */
 export const CUSTOMER_ROLE_LABEL: Record<CustomerRole, string> = { helped: "Served", paying: "Contributing", both: "Served and contributing", unsure: "Not sure yet" };
@@ -78,15 +78,15 @@ const blank = (v: string | null | undefined) => !v || v.trim() === "";
 export function missingFields(p: Pick<ProfileRow, EditableField>): Missing[] {
   const out: Missing[] = [];
   if (blank(p.name)) out.push({ field: "name", label: "Name of the player" });
-  if (!p.org_type) out.push({ field: "org_type", label: "Type" });
+  if (!p.org_type) out.push({ field: "org_type", label: "Type of player" });
   else if (p.org_type === "other" && blank(p.org_type_other)) out.push({ field: "org_type_other", label: "What type of player" });
   if (blank(p.description)) out.push({ field: "description", label: "Who they are" });
-  if (!p.ring) out.push({ field: "ring", label: "Ring" });
+  if (!p.ring) out.push({ field: "ring", label: "Inner circle or wider field" });
   for (const c of CAPITALS) if (!p[ratingField(c.key)]) out.push({ field: ratingField(c.key), label: `${c.label} capital` });
   if (namedConnections(p.connections).length === 0) out.push({ field: "connections", label: "At least one connection" });
   if (blank(p.needs)) out.push({ field: "needs", label: "What they need" });
   if (!p.influence_level) out.push({ field: "influence_level", label: "Influence" });
-  if (blank(p.stake)) out.push({ field: "stake", label: "Stake" });
+  if (blank(p.stake)) out.push({ field: "stake", label: "What's at stake for them" });
   if (blank(p.connection_to_labs)) out.push({ field: "connection_to_labs", label: "How they could connect to The Labs" });
   return out;
 }

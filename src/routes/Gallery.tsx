@@ -66,20 +66,20 @@ export default function Gallery() {
       <form className="filters" role="search" onSubmit={(e) => e.preventDefault()} aria-label="Filter profiles">
         <div className="field">
           <label className="label" htmlFor="q">Search</label>
-          <input id="q" className="input" type="search" placeholder="Name, description, needs, connection" value={q}
+          <input id="q" className="input" type="search" placeholder="A name, a word, a connection" value={q}
             onChange={(e) => { const v = e.target.value; setQ(v); window.clearTimeout(qTimer.current); qTimer.current = window.setTimeout(() => update({ q: v }), 250); }} />
         </div>
         <div className="field">
-          <label className="label" htmlFor="ft">Type</label>
+          <label className="label" htmlFor="ft">Type of player</label>
           <select id="ft" className="select" value={f.type} onChange={(e) => update({ type: e.target.value as Filters["type"] })}>
             <option value="">All types</option>
             {ORG_TYPES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
         <div className="field">
-          <label className="label" htmlFor="fr">Ring</label>
+          <label className="label" htmlFor="fr">Inner or wider</label>
           <select id="fr" className="select" value={f.ring} onChange={(e) => update({ ring: e.target.value as Filters["ring"] })}>
-            <option value="">Both rings</option>
+            <option value="">Inner and wider</option>
             {RINGS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
@@ -91,11 +91,11 @@ export default function Gallery() {
           </select>
         </div>
         <fieldset className="field">
-          <legend className="label">Capital rated</legend>
+          <legend className="label">Rated for a capital</legend>
           <div className="capfilter">
             <label className="sr-only" htmlFor="fc">Capital</label>
             <select id="fc" className="select" value={f.cap} onChange={(e) => update({ cap: e.target.value as Filters["cap"], level: e.target.value ? f.level || "high" : "" })}>
-              <option value="">Any capital</option>
+              <option value="">Any</option>
               {CAPITALS.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
             </select>
             <label className="sr-only" htmlFor="fl">Rating</label>

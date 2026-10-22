@@ -128,10 +128,10 @@ export const SECTIONS: Section[] = [
     body: [
       "The **inner circle** is already involved with The Labs or the people it serves. The **wider field** is everyone else: employers who could hire, agencies that could refer, groups that could host, and people nobody has thought to ask.[^17]",
       "Each player wants something different. An employer wants people who can start Monday. A training provider wants a full class. A library wants its space used. A funder wants numbers to report. One at a time, that's a list. Laid out together, patterns show up: two groups that want the same thing without knowing it, a need nobody is meeting, a player quietly connected to everyone. New ideas come from the patterns.[^18]",
-      "This whole app is a field map. The Ring question puts each player in one circle or the other. And there's a reason you can't see anyone else's profiles until you've finished your own: when many people map the same field on their own, the patterns that show up in all of them are ones we can trust.[^19]",
+      "This whole app is a field map. The inner-circle-or-wider-field question puts each player in one or the other. And there's a reason you can't see anyone else's profiles until you've finished your own: when many people map the same field on their own, the patterns that show up in all of them are ones we can trust.[^19]",
     ],
     terms: ["inner circle", "wider field", "field map"],
-    forProfile: "Choose the ring honestly, and write what this player wants and what they worry about.",
+    forProfile: "Choose inner circle or wider field honestly, and write what this player wants and what they worry about.",
     talk: "Who's in the wider field that nobody has asked yet?",
   },
   {

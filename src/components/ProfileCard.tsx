@@ -31,7 +31,7 @@ export function CapRing({ p }: { p: ProfileRow }) {
         {pts.map((q) => q.v && <circle key={q.cap.key} cx={q.x} cy={q.y} r={4} className="cr-dot" />)}
         {pts.map((q) => <text key={q.cap.key} x={q.lx} y={q.ly} className="cr-label" textAnchor={Math.abs(Math.cos(q.a)) < 0.3 ? "middle" : Math.cos(q.a) > 0 ? "start" : "end"} dominantBaseline="middle">{q.cap.label}</text>)}
       </svg>
-      <figcaption>Further from the centre means rated higher.</figcaption>
+      <figcaption>Further from the center means rated higher.</figcaption>
     </figure>
   );
 }
@@ -43,7 +43,7 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant =
       <header className="card-head">
         <H className="card-title">{p.name?.trim() || "Untitled player"}</H>
         <p className="card-meta">
-          <span>{kindOf(p) || "Type and ring not set"}</span>
+          <span>{kindOf(p) || "No type yet"}</span>
           {showStatus && <span className={`state state-${p.status}`}>{p.status === "draft" ? "Draft" : "Submitted"}</span>}
           {showStatus && p.edited_at && <span className="state" title={new Date(p.edited_at).toLocaleString()}>Edited after submitting</span>}
           {author && <span className="author">Written by {author}</span>}
@@ -78,7 +78,7 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant =
         <div><dt>What they value</dt><dd><Text v={p.values_held} /></dd></div>
         <div><dt>What they fear or want to avoid</dt><dd><Text v={p.fears} /></dd></div>
         <div><dt>Influence</dt><dd><Lvl v={p.influence_level} />{p.influence_note?.trim() ? <span className="capnote">{p.influence_note}</span> : null}</dd></div>
-        <div><dt>Stake: what they stand to gain or lose</dt><dd><Text v={p.stake} /></dd></div>
+        <div><dt>What's at stake for them</dt><dd><Text v={p.stake} /></dd></div>
         <div><dt>Served, contributing, or both</dt><dd>{p.customer_role ? CUSTOMER_ROLE_LABEL[p.customer_role] : <span className="muted">—</span>}</dd></div>
         <div><dt>How they could connect to {centre}</dt><dd><Text v={p.connection_to_labs} /></dd></div>
       </dl>

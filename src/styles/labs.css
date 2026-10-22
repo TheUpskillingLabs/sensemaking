@@ -293,8 +293,9 @@ a.prow-name:hover { text-decoration: underline; text-decoration-color: var(--tex
 .conn { display: grid; gap: 8px; padding: 14px 0; box-shadow: inset 0 1px 0 var(--rule); }
 .conn:first-child { box-shadow: inset 0 1px 0 var(--rule-2); }
 .conn-main { display: grid; gap: 8px; }
-.conn-flow { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: center; }
-@media (min-width: 640px) { .conn-main { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); } }
+.conn-flow { display: grid; gap: 8px; grid-template-columns: 1fr; align-items: center; }
+@media (min-width: 640px) { .conn-main { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); } .conn-flow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; } }
+@media (max-width: 639px) { .conn-rm { justify-self: start; } }
 .conn-rm { justify-self: end; white-space: nowrap; min-height: 40px; }
 .conns.invalid .conn:first-child .input:first-of-type { box-shadow: inset 0 0 0 1.5px var(--warn); }
 .conns-view { padding-top: 32px; box-shadow: inset 0 1px 0 var(--rule); }

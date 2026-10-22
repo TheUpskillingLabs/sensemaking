@@ -110,7 +110,7 @@ export function ReadTheField() {
           <b>Who keeps showing up?</b> Players many people wrote about are probably central. Players only one person saw might be blind spots for the rest of us. <ReadMore id="field">Field mapping</ReadMore>
         </li>
         <li>
-          <b>Which capitals are strong, and which are thin?</b> Use the “Capital rated” filter. A capital almost nobody rates high is something our area may be missing. <ReadMore id="capitals">The seven capitals</ReadMore>
+          <b>Which capitals are strong, and which are thin?</b> Use the “Rated for a capital” filter. A capital almost nobody rates high is something our area may be missing. <ReadMore id="capitals">The seven capitals</ReadMore>
         </li>
         <li>
           <b>Served, contributing, or both?</b> Some players are people The Labs serves, some contribute to that work by paying, hosting, hiring, or volunteering, and some are both. Where what one side wants clashes with what the other needs, write it down. That's a tension worth talking about. <ReadMore id="customers">Two kinds of customers</ReadMore>

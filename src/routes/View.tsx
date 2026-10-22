@@ -42,7 +42,7 @@ export default function View() {
           <>
             {justSubmitted && (
               <div className="notice notice-done" role="status">
-                <p><Tick /> <strong>Submitted.</strong> {membership?.unlocked ? <>You've unlocked everyone's profiles. <Link to="/gallery" viewTransition>Open the gallery</Link>.</> : <>Thank you. <Link to="/" viewTransition>Back to your profiles</Link> to write the next one.</>}</p>
+                <p><Tick /> <strong>Submitted.</strong> {membership?.unlocked ? <>Everyone's profiles are open to you. <Link to="/gallery" viewTransition>Open the gallery</Link>.</> : <>Thank you. <Link to="/" viewTransition>Back to your profiles</Link>.</>}</p>
               </div>
             )}
             {mine && p.status === "draft" && membership?.config.submissions_open && (

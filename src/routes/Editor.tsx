@@ -11,13 +11,13 @@ import { EDITABLE_FIELDS, type EditableField, type ProfileDraft, type ProfileRow
 const AUTOSAVE_MS = 800;
 const SECTIONS = [
   { id: "s-own", label: "In your own words" },
-  { id: "s-ring", label: "Ring" },
+  { id: "s-ring", label: "Inner or wider" },
   { id: "s-capitals", label: "Capitals" },
   { id: "s-connections", label: "Connections" },
   { id: "s-needs", label: "Needs and values" },
   { id: "s-influence", label: "Influence" },
   { id: "s-stake", label: "Stake" },
-  { id: "s-connection", label: "And The Labs" },
+  { id: "s-connection", label: "The Labs" },
 ];
 const MAX_BACKOFF_MS = 30_000;
 type SaveState = "idle" | "saving" | "saved" | "retrying" | "locked" | "incomplete";
@@ -218,7 +218,7 @@ export default function Editor() {
   const saveLabel =
     save === "saving" ? "Saving…" :
     save === "saved" ? "Saved" :
-    save === "retrying" ? "Couldn't save, retrying" :
+    save === "retrying" ? "Couldn't save. Trying again…" :
     save === "locked" ? "Not saved" :
     save === "incomplete" ? "Not saved: fill in what's missing" :
     dirty.current.size ? "Unsaved changes" : "All changes saved";
@@ -235,8 +235,8 @@ export default function Editor() {
         <div className="form-head">
           <h1 className="h-title">{draft.name?.trim() || "A new player"}</h1>
           <p className="lede">{isSubmitted
-            ? "You're editing a submitted profile. Changes save as you go, and it stays submitted. Facilitators can see that it was edited after you submitted it."
-            : "Start in your own words, then give it some structure. Everything saves as you go. Nobody else sees this until you've submitted all of yours."}{!isSubmitted && <> <Link to="/tutorial" viewTransition>See an example first</Link>.</>}</p>
+            ? "This profile is submitted. Changes save as you type, and it stays submitted. Facilitators can see that it was edited afterward."
+            : "Start in your own words, then give it some structure. Everything saves as you type. Nobody else sees this until the gallery opens."}{!isSubmitted && <> <Link to="/tutorial" viewTransition>Watch an example first</Link>.</>}</p>
           {readOnly && <p className="note note-error" role="alert">{closed ? "Submissions are closed, so this profile can't be changed." : lockedMsg}</p>}
         </div>
 
@@ -251,7 +251,7 @@ export default function Editor() {
           </div>
 
           <div className={`field${bad("org_type") ? " invalid" : ""}`}>
-            <label className="label" htmlFor="f-org_type">Type <span className="req" aria-hidden="true">*</span></label>
+            <label className="label" htmlFor="f-org_type">Type of player <span className="req" aria-hidden="true">*</span></label>
             <select id="f-org_type" className="select" value={draft.org_type ?? ""} onChange={(e) => set("org_type", (e.target.value || null) as ProfileDraft["org_type"])} aria-required="true" aria-invalid={bad("org_type") || undefined}>
               <option value="">Choose a type</option>
               {ORG_TYPES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -261,7 +261,7 @@ export default function Editor() {
 
           {draft.org_type === "other" && (
             <div className={`field reveal-in${bad("org_type_other") ? " invalid" : ""}`}>
-              <label className="label" htmlFor="f-org_type_other">What kind of player? <span className="req" aria-hidden="true">*</span></label>
+              <label className="label" htmlFor="f-org_type_other">Say what kind <span className="req" aria-hidden="true">*</span></label>
               <input id="f-org_type_other" className="input" type="text" value={draft.org_type_other ?? ""} onChange={(e) => set("org_type_other", e.target.value)} aria-required="true" aria-invalid={bad("org_type_other") || undefined} maxLength={120} />
               {bad("org_type_other") && <p className="err-text">Say what kind of player this is.</p>}
             </div>
@@ -287,7 +287,8 @@ export default function Editor() {
           <h2 className="h-section part-title">Give it structure</h2>
 
           <div id="s-ring" className={`field${bad("ring") ? " invalid" : ""}`} role="radiogroup" aria-labelledby="l-ring" aria-required="true">
-            <p className="label" id="l-ring">Ring <span className="req" aria-hidden="true">*</span></p>
+            <p className="label" id="l-ring">Inner circle or wider field? <span className="req" aria-hidden="true">*</span></p>
+            <p className="hint">How close are they to The Labs?</p>
             <Why id="field" />
             <div className="choices">
               {RINGS.map((r, i) => (
@@ -297,13 +298,13 @@ export default function Editor() {
                 </label>
               ))}
             </div>
-            {bad("ring") && <p className="err-text">Choose a ring.</p>}
+            {bad("ring") && <p className="err-text">Choose inner circle or wider field.</p>}
           </div>
 
           <div id="s-capitals" className="field">
             <p className="label" id="l-caps">What they bring <span className="req" aria-hidden="true">*</span></p>
-            <p className="hint">Rate each of the seven capitals Low, Medium or High. Add a note wherever it helps.</p>
-            <Why id="capitals" label="What are the capitals?" />
+            <p className="hint">A community has seven kinds of wealth. Rate how much of each this player has: low, medium, or high. Add a note where it helps.</p>
+            <Why id="capitals" label="What are these seven?" />
             <div className="caps" aria-labelledby="l-caps" role="group">
               {CAPITALS.map((c) => {
                 const rf = ratingField(c.key), nf = noteField(c.key);
@@ -350,7 +351,7 @@ export default function Editor() {
 
           <div id="s-influence" className={`field${bad("influence_level") ? " invalid" : ""}`}>
             <p className="label" id="l-influence">Influence <span className="req" aria-hidden="true">*</span></p>
-            <p className="hint" id="h-influence">How much influence do they have in the ecosystem around The Labs?</p>
+            <p className="hint" id="h-influence">How much say do they have over what happens around The Labs?</p>
             <Segmented name="influence_level" value={draft.influence_level} options={LEVELS} onChange={(v) => set("influence_level", v)} labelledBy="l-influence h-influence" idFirst="f-influence_level" invalid={bad("influence_level")} />
             <label className="sr-only" htmlFor="f-influence_note">Influence note (optional)</label>
             <input id="f-influence_note" className="input optional" type="text" placeholder="Note (optional)" value={draft.influence_note ?? ""} onChange={(e) => set("influence_note", e.target.value)} />
@@ -358,7 +359,7 @@ export default function Editor() {
           </div>
 
           <div id="s-stake" className={`field${bad("stake") ? " invalid" : ""}`}>
-            <label className="label" htmlFor="f-stake">Stake <span className="req" aria-hidden="true">*</span></label>
+            <label className="label" htmlFor="f-stake">What's at stake for them <span className="req" aria-hidden="true">*</span></label>
             <p className="hint" id="h-stake">What do they stand to gain or lose?</p>
             <textarea id="f-stake" className="textarea" value={draft.stake ?? ""} onChange={(e) => set("stake", e.target.value)} aria-describedby="h-stake" aria-required="true" aria-invalid={bad("stake") || undefined} />
             {bad("stake") && <p className="err-text">What's at stake for them?</p>}
@@ -366,7 +367,7 @@ export default function Editor() {
 
           <div id="s-connection" className="field" role="radiogroup" aria-labelledby="l-role">
             <p className="label" id="l-role">Served, contributing, or both? <span className="opt">(optional)</span></p>
-            <p className="hint">Every nonprofit has two kinds of customers: the people it helps and the people who keep it going. Pick one if you know.</p>
+            <p className="hint">Is this a player The Labs serves, one who helps keep The Labs going, or both? Pick one if you know.</p>
             <Why id="customers" />
             <div className="choices choices-4">
               {CUSTOMER_ROLES.map((r, i) => (
