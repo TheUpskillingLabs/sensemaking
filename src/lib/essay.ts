@@ -34,7 +34,7 @@ export const ESSAY = {
     "Most programs around us count jobs, wages, and devices. Those numbers matter, but they miss what gets made.",
     "Start from what a neighborhood already has, not what it lacks.",
     "Hard problems need a new way of looking before they need a fix. Step one: look at what's been tried. Step two: map who's involved. That's what your profiles are for.",
-    "Every nonprofit has two kinds of customers: the people it serves and the people who contribute. Where they want different things, there's something worth talking about.",
+    "Every nonprofit has two kinds of customers: the people it serves and the people who keep it going. Where they want different things, there's something worth talking about.",
   ],
   closing: "All of it starts with three profiles, written on your own, from what you know. And this guide is one of the things we'll revise once we've read them. If a section held up, say so. If it didn't, say that louder.",
   checked: "Links checked October 2026.",
@@ -138,14 +138,14 @@ export const SECTIONS: Section[] = [
     id: "customers",
     topic: "customers",
     title: "Two kinds of customers",
-    lead: "A nonprofit has the people it serves and the people who contribute, and they don't always want the same thing.",
+    lead: "A nonprofit has the people it serves and the people who keep it going, and they don't always want the same thing.",
     body: [
-      "Peter Drucker, who spent his life studying how organizations work, said a nonprofit has two kinds of customers.[^20] The **primary customer** is “the person whose life is changed through your work.” For The Labs, that's an Upskiller. The **supporting customers** are everyone who has to be satisfied for the work to continue: funders who pay, partners who host, employers who hire, mentors who volunteer their time.[^21]",
-      "A shoe store gets one clear signal: if people like the shoes, they buy more. A nonprofit doesn't, because the person served and the person contributing are almost never the same. It has to keep two groups happy at once.[^22]",
-      "This is where section 2 comes back. The supporting customers around The Labs mostly want the workforce numbers and the digital-equity numbers, by the end of the grant year. The Upskiller may need something neither counts: time to finish something real, a mentor who knows the tool, a bus pass. Where what the people served need differs from what the contributors count, programs quietly bend out of shape. That's also where the best ideas hide.[^23]",
+      "Peter Drucker, who spent his life studying how organizations work, said a nonprofit has two kinds of customers.[^20] The **primary customer** is “the person whose life is changed through your work.” For The Labs, that's an Upskiller. The **supporting customers** are everyone who has to be satisfied for the work to continue. We split them in two: the **contributing**, who host it, hire from it, refer people to it, or give their time, and the **sustaining**, who pay for it.[^21]",
+      "A shoe store gets one clear signal: if people like the shoes, they buy more. A nonprofit doesn't, because the person served and the person paying are almost never the same. It has to keep all of them happy at once.[^22]",
+      "This is where section 2 comes back. The supporting customers around The Labs mostly want the workforce numbers and the digital-equity numbers, by the end of the grant year. The Upskiller may need something neither counts: time to finish something real, a mentor who knows the tool, a bus pass. Where what the people served need differs from what the sustainers count, programs quietly bend out of shape. That's also where the best ideas hide.[^23]",
     ],
-    terms: ["primary customer", "supporting customers"],
-    forProfile: "Say whether this player is served, contributing, both, or neither, and what each side wants. A library that hosts Upskillers and runs a digital-equity grant is both.",
+    terms: ["primary customer", "supporting customers", "served, contributing, sustaining"],
+    forProfile: "Tick whether this player is served, contributing, sustaining, any mix, or none, and say what each side wants. A library that hosts Upskillers and funds a digital-skills class is contributing and sustaining.",
     talk: "Have you seen a program bend toward its funder and away from the people in it? What happened?",
   },
   {
@@ -153,7 +153,7 @@ export const SECTIONS: Section[] = [
     title: "What happens next",
     lead: "On sensemaking day we read the field together, then start the rest of the method.",
     body: [
-      "We'll open the gallery and look for players many of us saw and players only one of us saw. We'll look at which capitals are strong and which are thin. And we'll look for the tensions: served versus contributing, and the work The Labs is pointed at versus the numbers the field counts. From there the Build Cycle moves into the rest of Dorst's method: finding a frame that makes the problem look different, and building something to test it.",
+      "We'll open the gallery and look for players many of us saw and players only one of us saw. We'll look at which capitals are strong and which are thin. And we'll look for the tensions: served versus sustaining, and the work The Labs is pointed at versus the numbers the field counts. From there the Build Cycle moves into the rest of Dorst's method: finding a frame that makes the problem look different, and building something to test it.",
     ],
   },
 ];

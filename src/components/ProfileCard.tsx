@@ -1,5 +1,5 @@
 import { kindOf } from "./bits";
-import { CAPITALS, CUSTOMER_ROLE_LABEL, LEVEL_LABEL, flowLabel, isRated, namedConnections, noteField, ratingField } from "../lib/capitals";
+import { CAPITALS, LEVEL_LABEL, flowLabel, isRated, namedConnections, noteField, ratingField, rolesLabel } from "../lib/capitals";
 import type { Level, ProfileRow } from "../lib/types";
 
 function Lvl({ v }: { v: Level | null }) {
@@ -79,7 +79,7 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant =
         <div><dt>What they fear or want to avoid</dt><dd><Text v={p.fears} /></dd></div>
         <div><dt>Influence</dt><dd><Lvl v={p.influence_level} />{p.influence_note?.trim() ? <span className="capnote">{p.influence_note}</span> : null}</dd></div>
         <div><dt>What's at stake for them</dt><dd><Text v={p.stake} /></dd></div>
-        <div><dt>Served, contributing, or both</dt><dd>{p.customer_role ? CUSTOMER_ROLE_LABEL[p.customer_role] : <span className="muted">—</span>}</dd></div>
+        <div><dt>Served, contributing, sustaining</dt><dd>{rolesLabel(p.roles) || <span className="muted">No tie to {centre} today</span>}</dd></div>
         <div><dt>Could they connect to {centre}?</dt><dd><Text v={p.connection_to_labs} /></dd></div>
       </dl>
     </article>

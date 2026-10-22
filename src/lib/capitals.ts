@@ -1,4 +1,4 @@
-import type { CapitalKey, Connection, CustomerRole, EditableField, FlowDirection, Level, OrgType, ProfileRow, Ring } from "./types";
+import type { CapitalKey, Connection, EditableField, FlowDirection, Level, OrgType, ProfileRow, Ring, Role } from "./types";
 
 /** The seven Community Capitals, in the order they're always shown. */
 export const CAPITALS: { key: CapitalKey; label: string; prompt: string }[] = [
@@ -56,16 +56,28 @@ export function flowLabel(c: Connection): string {
   return `${CAPITAL_LABEL[c.capital]} capital${c.direction ? `, ${DIRECTION_LABEL[c.direction]}` : ""}`;
 }
 
-/** Drucker's two kinds of customers, as one choice. */
-export const CUSTOMER_ROLES: { value: CustomerRole; label: string; hint: string }[] = [
-  { value: "helped", label: "Served", hint: "The Labs' work changes things for them." },
-  { value: "paying", label: "Contributing", hint: "They fund it, host it, hire from it, or give their time." },
-  { value: "both", label: "Both", hint: "Served by it, and helps keep it going." },
-  { value: "neither", label: "Neither", hint: "No real tie to The Labs today." },
+/** Drucker's two kinds of customers, with the supporting kind split in two. Any mix; "unsure" stands alone. */
+export const ROLES: { value: Role; label: string; hint: string }[] = [
+  { value: "served", label: "Served", hint: "The Labs' work changes things for them." },
+  { value: "contributing", label: "Contributing", hint: "They host it, hire from it, refer people, or give their time." },
+  { value: "sustaining", label: "Sustaining", hint: "They pay for it, or otherwise keep it going." },
   { value: "unsure", label: "Not sure", hint: "That's fine. Say what you'd need to know." },
 ];
-/* Database values stay helped/paying; the words people see are served/contributing. */
-export const CUSTOMER_ROLE_LABEL: Record<CustomerRole, string> = { helped: "Served", paying: "Contributing", both: "Served and contributing", neither: "Neither", unsure: "Not sure" };
+export const ROLE_LABEL: Record<Role, string> = { served: "Served", contributing: "Contributing", sustaining: "Sustaining", unsure: "Not sure" };
+/** "Served and sustaining", "Not sure", or "" when there's no tie. */
+export function rolesLabel(roles: Role[] | null | undefined): string {
+  const r = roles ?? [];
+  if (r.includes("unsure")) return "Not sure";
+  const names = ROLES.filter((o) => o.value !== "unsure" && r.includes(o.value)).map((o) => o.label.toLowerCase());
+  if (!names.length) return "";
+  const s = names.length === 1 ? names[0] as string : names.slice(0, -1).join(", ") + " and " + names[names.length - 1];
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+/** Toggle one role; "unsure" clears the others and the others clear it. */
+export function toggleRole(roles: Role[], r: Role): Role[] {
+  if (roles.includes(r)) return roles.filter((x) => x !== r);
+  return r === "unsure" ? ["unsure"] : [...roles.filter((x) => x !== "unsure"), r];
+}
 
 export const RING_LABEL: Record<Ring, string> = { inner_circle: "Inner circle", wider_field: "Wider field" };
 

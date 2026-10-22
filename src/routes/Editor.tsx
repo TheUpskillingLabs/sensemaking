@@ -5,7 +5,7 @@ import { Why } from "../components/Learn";
 import { ConnectionsEditor } from "../components/Connections";
 import { CapGlyph, LocalNav, ConfirmDialog, ErrorNote, Loader, Segmented, Tick, useTitle } from "../components/bits";
 import { ApiError, api } from "../lib/api";
-import { CAPITALS, CUSTOMER_ROLES, LEVELS, ORG_TYPES, RINGS, missingFields, noteField, ratingField, type Missing } from "../lib/capitals";
+import { CAPITALS, LEVELS, ORG_TYPES, RINGS, ROLES, missingFields, toggleRole, noteField, ratingField, type Missing } from "../lib/capitals";
 import { EDITABLE_FIELDS, type EditableField, type ProfileDraft, type ProfileRow } from "../lib/types";
 
 const AUTOSAVE_MS = 800;
@@ -365,19 +365,19 @@ export default function Editor() {
             {bad("stake") && <p className="err-text">What's at stake for them?</p>}
           </div>
 
-          <div id="s-connection" className="field" role="radiogroup" aria-labelledby="l-role">
-            <p className="label" id="l-role">Served, contributing, or both? <span className="opt">(optional)</span></p>
-            <p className="hint">Is this a player The Labs serves, one who helps keep The Labs going, both, or neither? Pick one if you know.</p>
+          <fieldset id="s-connection" className="field">
+            <legend className="label">Served, contributing, sustaining <span className="opt">(optional)</span></legend>
+            <p className="hint">Does The Labs' work serve this player, do they contribute to it, do they sustain it, or none of these? Tick any that fit.</p>
             <Why id="customers" />
             <div className="choices choices-4">
-              {CUSTOMER_ROLES.map((r, i) => (
+              {ROLES.map((r, i) => (
                 <label key={r.value} className="choice">
-                  <input type="radio" name="customer_role" id={i === 0 ? "f-customer_role" : undefined} value={r.value} checked={draft.customer_role === r.value} onChange={() => set("customer_role", r.value)} />
+                  <input type="checkbox" name="roles" id={i === 0 ? "f-roles" : undefined} value={r.value} checked={(draft.roles ?? []).includes(r.value)} onChange={() => set("roles", toggleRole(draft.roles ?? [], r.value))} />
                   <b>{r.label}</b><span>{r.hint}</span>
                 </label>
               ))}
             </div>
-          </div>
+          </fieldset>
 
           <div className={`field${bad("connection_to_labs") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-connection_to_labs">Could they connect to The Labs? <span className="req" aria-hidden="true">*</span></label>

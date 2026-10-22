@@ -1,4 +1,4 @@
-import { CAPITALS, CUSTOMER_ROLE_LABEL, LEVEL_LABEL, ORG_TYPE_LABEL, RING_LABEL, flowLabel, namedConnections, noteField, ratingField } from "./capitals";
+import { CAPITALS, LEVEL_LABEL, ORG_TYPE_LABEL, RING_LABEL, flowLabel, namedConnections, noteField, ratingField, rolesLabel } from "./capitals";
 import type { ProfileRow } from "./types";
 
 type Col = { header: string; get: (p: ProfileRow) => string };
@@ -28,7 +28,7 @@ const cols = (withAuthor: (id: string) => string | undefined): Col[] => {
     { header: "Influence", get: (p) => (p.influence_level ? LEVEL_LABEL[p.influence_level] : "") },
     { header: "Influence note", get: (p) => p.influence_note ?? "" },
     { header: "Stake", get: (p) => p.stake ?? "" },
-    { header: "Served, contributing, or both", get: (p) => (p.customer_role ? CUSTOMER_ROLE_LABEL[p.customer_role] : "") },
+    { header: "Served, contributing, sustaining", get: (p) => rolesLabel(p.roles) },
     { header: "Could they connect to The Labs", get: (p) => p.connection_to_labs ?? "" },
   );
   base.push({ header: "Author", get: (p) => withAuthor(p.author_id) ?? "" });

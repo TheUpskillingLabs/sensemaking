@@ -4,7 +4,7 @@
    businesses get started. Everything here is invented. */
 
 import { CAPITALS, ratingField } from "./capitals";
-import type { CapitalKey, Connection, CustomerRole, Level, OrgType, Ring } from "./types";
+import type { CapitalKey, Connection, Level, OrgType, Ring, Role } from "./types";
 
 export const CASE = {
   org: "Millbrook Kitchen Collective",
@@ -30,7 +30,7 @@ export interface Example {
   influence_level: Level;
   influence_note: string | null;
   stake: string;
-  customer_role: CustomerRole;
+  roles: Role[];
   connection: string;
   /** Captions that differ from the defaults, by step key. */
   captions: Partial<Record<string, string>>;
@@ -59,12 +59,12 @@ export const EXAMPLES: Example[] = [
     influence_level: "medium",
     influence_note: "Everyone knows it; it decides little.",
     stake: "Without a steady stream of new vendors, the winter market dies, and the lease goes with it.",
-    customer_role: "both",
+    roles: ["served", "contributing"],
     connection: "It's where the Collective's cooks start selling, and it could help pick which products to train for.",
     captions: {
       org_type: "The list has the common kinds. A market isn't one of them, so this one is Other, and you say what kind.",
       ring: "The market already works with the Collective every week, so it's inner circle.",
-      customer_role: "The market is served by the Collective's new vendors and contributes by giving them somewhere to sell. That's both.",
+      roles: "The market is served by the Collective's new vendors, and it contributes by giving them somewhere to sell. Tick both.",
     },
   },
   {
@@ -89,13 +89,13 @@ export const EXAMPLES: Example[] = [
     influence_level: "high",
     influence_note: null,
     stake: "Its standing with donors rests on grants that visibly work.",
-    customer_role: "paying",
+    roles: ["sustaining"],
     connection: "Could fund the Collective's next cohort, but only if it can see who got hired and what they're making.",
     captions: {
       org_type: "Funder is on the list because the two-customers idea needs it.",
       tried_before: "This is the archaeology. The foundation tried something like this before. Say what, and what got in the way. That history is evidence for the whole group.",
       ring: "The foundation gave one small grant and isn't in the room week to week. Wider field.",
-      customer_role: "The foundation contributes. It isn't the one whose life the work changes.",
+      roles: "The foundation sustains the work: it pays. It isn't the one whose life the work changes.",
       connection: "In the real form this question is about The Labs. Here it's about the Collective, but the shape is the same: could they connect, and what would each side want?",
     },
   },
@@ -119,7 +119,7 @@ const DEFAULT_CAPTIONS: Record<string, string> = {
   fears: "What do they fear or want to avoid? Optional.",
   influence_level: "How much say do they have over what happens around the organization at the center?",
   stake: "What's at stake for them, if anything? What do they stand to gain or lose?",
-  customer_role: "Are they served by the work, contributing to it, both, or neither? Optional. Not sure is a real answer.",
+  roles: "Does the work serve them, do they contribute to it, do they sustain it? Tick any that fit, or none. Not sure is a real answer.",
   connection: "Last, could they connect to the organization at the center? How, or why not?",
 };
 
@@ -140,7 +140,7 @@ export function stepsFor(ex: Example): Step[] {
   if (ex.fears) steps.push({ key: "fears", kind: "text", caption: cap("fears") });
   steps.push({ key: "influence_level", kind: "segment", caption: cap("influence_level") });
   steps.push({ key: "stake", kind: "text", caption: cap("stake") });
-  steps.push({ key: "customer_role", kind: "choice", caption: cap("customer_role") });
+  steps.push({ key: "roles", kind: "choice", caption: cap("roles") });
   steps.push({ key: "connection", kind: "text", caption: cap("connection") });
   return steps;
 }

@@ -1,11 +1,11 @@
 import { CAPITALS, ratingField, typeLabel } from "./capitals";
-import type { CapitalKey, CustomerRole, Level, OrgType, ProfileRow, Ring } from "./types";
+import type { CapitalKey, Level, OrgType, ProfileRow, Ring, Role } from "./types";
 
 /** Gallery filters. They live in the URL so a filtered view can be shared or printed. */
 export interface Filters {
   type: OrgType | "";
   ring: Ring | "";
-  role: CustomerRole | "";
+  role: Role | "none" | "";
   cap: CapitalKey | "";
   level: Level | "";
   q: string;
@@ -13,7 +13,7 @@ export interface Filters {
 }
 
 const TYPES: OrgType[] = ["library", "employer", "workforce_agency", "community_group", "training_provider", "funder", "other"];
-const ROLES: CustomerRole[] = ["helped", "paying", "both", "neither", "unsure"];
+const ROLES: (Role | "none")[] = ["served", "contributing", "sustaining", "unsure", "none"];
 const RINGS: Ring[] = ["inner_circle", "wider_field"];
 const LEVELS: Level[] = ["low", "medium", "high", "unsure"];
 
@@ -22,7 +22,7 @@ export function readFilters(sp: URLSearchParams): Filters {
   return {
     type: (TYPES as string[]).includes(t) ? (t as OrgType) : "",
     ring: (RINGS as string[]).includes(r) ? (r as Ring) : "",
-    role: (ROLES as string[]).includes(ro) ? (ro as CustomerRole) : "",
+    role: (ROLES as string[]).includes(ro) ? (ro as Role | "none") : "",
     cap: CAPITALS.some((x) => x.key === c) ? (c as CapitalKey) : "",
     level: (LEVELS as string[]).includes(l) ? (l as Level) : "",
     q: sp.get("q") ?? "",
@@ -50,7 +50,7 @@ export function applyFilters(rows: ProfileRow[], f: Filters, canSeeDrafts: boole
     if (p.status === "draft" && !(f.drafts && canSeeDrafts)) return false;
     if (f.type && p.org_type !== f.type) return false;
     if (f.ring && p.ring !== f.ring) return false;
-    if (f.role && p.customer_role !== f.role) return false;
+    if (f.role === "none" ? (p.roles ?? []).length > 0 : f.role && !(p.roles ?? []).includes(f.role)) return false;
     if (f.cap && f.level && p[ratingField(f.cap)] !== f.level) return false;
     if (terms.length) {
       const hay = norm([p.name, typeLabel(p), p.description, p.tried_before, ...(p.connections ?? []).map((c) => c.name), p.needs, p.connection_to_labs].filter(Boolean).join(" "));

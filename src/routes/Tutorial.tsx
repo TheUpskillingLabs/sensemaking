@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CapGlyph, Segmented, useTitle } from "../components/bits";
 import { ProfileCard } from "../components/ProfileCard";
-import { CAPITALS, CUSTOMER_ROLES, LEVELS, ORG_TYPES, RINGS, blankConnection, noteField, ratingField } from "../lib/capitals";
+import { CAPITALS, LEVELS, ORG_TYPES, RINGS, ROLES, blankConnection, noteField, ratingField } from "../lib/capitals";
 import { CASE, EXAMPLES, stepsFor, type Example, type Step } from "../lib/tutorial";
 import type { Connection, ProfileDraft, ProfileRow } from "../lib/types";
 
@@ -22,7 +22,7 @@ const blank = (): ProfileDraft => ({
   capital_human_rating: null, capital_human_note: "", capital_social_rating: null, capital_social_note: "",
   capital_political_rating: null, capital_political_note: "", capital_financial_rating: null, capital_financial_note: "",
   capital_built_rating: null, capital_built_note: "", connections: [],
-  needs: "", values_held: "", fears: "", influence_level: null, influence_note: "", stake: "", customer_role: null, connection_to_labs: "",
+  needs: "", values_held: "", fears: "", influence_level: null, influence_note: "", stake: "", roles: [], connection_to_labs: "",
 });
 
 /** The full value a step writes. */
@@ -30,6 +30,7 @@ function fullValue(ex: Example, key: string): string | Connection {
   if (key.startsWith("connection:")) return ex.connections[Number(key.split(":")[1])] as Connection;
   if (key.startsWith("capital_")) return ex.ratings[key.replace("capital_", "").replace("_rating", "") as keyof typeof ex.ratings];
   if (key === "connection") return ex.connection;
+  if (key === "roles") return ex.roles.join(",");
   return String((ex as unknown as Record<string, unknown>)[key] ?? "");
 }
 
@@ -51,6 +52,7 @@ function draftAt(ex: Example, steps: Step[], done: number, chars: number): Profi
       if (s.key === "connection") d.connection_to_labs = out; else (d as unknown as Record<string, unknown>)[s.key] = out;
       return;
     }
+    if (s.key === "roles") { d.roles = ex.roles; return; }
     (d as unknown as Record<string, unknown>)[s.key] = text;
     if (s.key.startsWith("capital_")) { const k = s.key.replace("capital_", "").replace("_rating", "") as keyof typeof ex.notes; const n = ex.notes[k]; if (n) (d as unknown as Record<string, unknown>)[noteField(k)] = n; }
     if (s.key === "influence_level" && ex.influence_note) d.influence_note = ex.influence_note;
@@ -177,8 +179,8 @@ export default function Tutorial() {
                 {(ex.fears || live("fears")) && <div className={`field${live("fears")}`}><p className="label">What they fear or want to avoid <span className="opt">(optional)</span></p><textarea className="textarea" readOnly value={draft.fears ?? ""} /></div>}
                 <div className={`field${live("influence_level")}`}><p className="label">Influence</p><Segmented name="t-influence" value={draft.influence_level} options={LEVELS} onChange={() => undefined} /><input className="input optional" readOnly placeholder="Note (optional)" value={draft.influence_note ?? ""} /></div>
                 <div className={`field${live("stake")}`}><p className="label">What's at stake for them</p><textarea className="textarea" readOnly value={draft.stake ?? ""} /></div>
-                <div className={`field${live("customer_role")}`}><p className="label">Served, contributing, or both? <span className="opt">(optional)</span></p>
-                  <div className="choices choices-4">{CUSTOMER_ROLES.map((r) => <label key={r.value} className="choice"><input type="radio" readOnly checked={draft.customer_role === r.value} /><b>{r.label}</b><span>{r.hint}</span></label>)}</div></div>
+                <div className={`field${live("roles")}`}><p className="label">Served, contributing, sustaining <span className="opt">(optional)</span></p>
+                  <div className="choices choices-4">{ROLES.map((r) => <label key={r.value} className="choice"><input type="checkbox" readOnly checked={draft.roles.includes(r.value)} /><b>{r.label}</b><span>{r.hint}</span></label>)}</div></div>
                 <div className={`field${live("connection")}`}><p className="label">Could they connect to {CASE.short}?</p><textarea className="textarea" readOnly value={draft.connection_to_labs ?? ""} /></div>
               </div>
             </div>

@@ -4,7 +4,7 @@
 
 export type Status = "draft" | "submitted";
 export type OrgType = "library" | "employer" | "workforce_agency" | "community_group" | "training_provider" | "funder" | "other";
-export type CustomerRole = "helped" | "paying" | "both" | "neither" | "unsure";
+export type Role = "served" | "contributing" | "sustaining" | "unsure";
 export type FlowDirection = "gives" | "gets" | "both";
 
 /** One connection from this player to another, with the capital that flows along it, if known. */
@@ -61,8 +61,8 @@ export interface ProfileRow {
   influence_level: Level | null;
   influence_note: string | null;
   stake: string | null;
-  /** Drucker's two kinds of customers: helped by the work, paying for it, both, or not sure. */
-  customer_role: CustomerRole | null;
+  /** Served by the work, contributing to it, sustaining it: any mix; or unsure alone. Empty: no tie today. */
+  roles: Role[];
   connection_to_labs: string | null;
 }
 
@@ -80,7 +80,7 @@ export const EDITABLE_FIELDS: EditableField[] = [
   "capital_financial_rating", "capital_financial_note",
   "capital_built_rating", "capital_built_note",
   "connections",
-  "needs", "values_held", "fears", "influence_level", "influence_note", "stake", "customer_role", "connection_to_labs",
+  "needs", "values_held", "fears", "influence_level", "influence_note", "stake", "roles", "connection_to_labs",
 ];
 
 export interface ConfigRow {
