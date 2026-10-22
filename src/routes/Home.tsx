@@ -122,6 +122,7 @@ export default function Home() {
         {rows && !unlocked && !membership.facilitator && (
           <p>Until you've submitted your {inWords(required)}, nobody sees yours and you don't see theirs. That keeps everyone's view independent.</p>
         )}
+        <p>New to this? <Link to="/tutorial" viewTransition>Watch a profile get written</Link>, two made-up examples in about two minutes each.</p>
         <p><Link to="/reading" viewTransition>Background reading</Link>: where these questions come from, in plain words.</p>
       </aside>
     </div>

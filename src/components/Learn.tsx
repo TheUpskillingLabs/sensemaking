@@ -113,7 +113,7 @@ export function ReadTheField() {
           <b>Which capitals are strong, and which are thin?</b> Use the “Capital rated” filter. A capital almost nobody rates high is something our area may be missing. <ReadMore id="capitals">The seven capitals</ReadMore>
         </li>
         <li>
-          <b>Helped, paying, or both?</b> Some players are people The Labs could help, some could pay for that help, and some are both. Where what one side wants clashes with what the other needs, write it down. That's a tension worth talking about. <ReadMore id="customers">Two kinds of customers</ReadMore>
+          <b>Served, contributing, or both?</b> Some players are people The Labs serves, some contribute to that work by paying, hosting, hiring, or volunteering, and some are both. Where what one side wants clashes with what the other needs, write it down. That's a tension worth talking about. <ReadMore id="customers">Two kinds of customers</ReadMore>
         </li>
       </ol>
     </details>
@@ -133,7 +133,7 @@ export function DiscussionPrompts() {
         <li>Does what the funder pays for depend on people really being helped? If not, where's the gap?</li>
         <li>What proof would make both of them happy, and who would collect it?</li>
         <li>Which players are on both sides, like a library that hosts Upskillers and also pays for programs?</li>
-        <li>Where does what a funder wants clash with what the people being helped need? Write each one down as a tension.</li>
+        <li>Where does what a contributor wants clash with what the people being served need? Write each one down as a tension.</li>
       </ol>
       <p className="small muted">Background: <ReadMore id="customers">two kinds of customers</ReadMore> and <ReadMore id="frames">frame innovation</ReadMore>.</p>
     </details>

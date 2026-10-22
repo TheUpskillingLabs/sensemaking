@@ -15,12 +15,12 @@ So the picture answers questions a list can't:
 
 ## Why it waits
 
-Today each stakeholder profile is one person's view of one player. There are no player records shared across profiles, and no ties between players. A picture of flows needs both.
+Today each stakeholder profile is one person's view of one player. Since 2026-10-22 each profile also lists its **connections** (`sensemaking_profiles.connections`, JSON): who the player is connected to, and optionally which capital flows along the tie and which way. That's the raw material for the flows. What's still missing is identity: "DC Public Library" in one profile and "the library" in another are not yet the same node, so the ties can't be joined into one picture.
 
 ## What the data needs first
 
 1. **Players as entities.** One record per real organization, with the profiles that describe it linked to it. Duplicates need merging: several people will profile "DC Public Library".
-2. **Relationships between players.** One record per tie: from player, to player, capital (one of the seven), direction, strength or confidence, and who asserted it (which profile, which person). Flows are claims from many independent views. Disagreement between them is data, not noise.
+2. **Relationships between players.** One record per tie: from player, to player, capital (one of the seven), direction, strength or confidence, and who asserted it (which profile, which person). The profile's `connections` rows become these once each name resolves to a player. Flows are claims from many independent views. Disagreement between them is data, not noise.
 3. **The Labs as a player,** so flows to and from it can be drawn and compared.
 4. **Row-level security that keeps the independence rule.** Relationships stay hidden from a participant until they've submitted their own required profiles, like profiles today.
 

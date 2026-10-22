@@ -1,4 +1,4 @@
-import type { CapitalKey, EditableField, Level, OrgType, ProfileRow, Ring } from "./types";
+import type { CapitalKey, Connection, CustomerRole, EditableField, FlowDirection, Level, OrgType, ProfileRow, Ring } from "./types";
 
 /** The seven Community Capitals, in the order they're always shown. */
 export const CAPITALS: { key: CapitalKey; label: string; prompt: string }[] = [
@@ -27,14 +27,41 @@ export const ORG_TYPES: { value: OrgType; label: string }[] = [
   { value: "workforce_agency", label: "Workforce agency" },
   { value: "community_group", label: "Community group" },
   { value: "training_provider", label: "Training provider" },
+  { value: "funder", label: "Funder" },
   { value: "other", label: "Other" },
 ];
 export const ORG_TYPE_LABEL: Record<OrgType, string> = Object.fromEntries(ORG_TYPES.map((o) => [o.value, o.label])) as Record<OrgType, string>;
 
 export const RINGS: { value: Ring; label: string; hint: string }[] = [
-  { value: "inner_circle", label: "Inner circle", hint: "Directly involved with The Labs or the people it serves." },
-  { value: "wider_field", label: "Wider field", hint: "Part of the surrounding ecosystem, less directly involved." },
+  { value: "inner_circle", label: "Inner circle", hint: "Already involved with The Labs or the people it serves." },
+  { value: "wider_field", label: "Wider field", hint: "Could be affected or could help, including people nobody has asked yet." },
 ];
+/** Which way a capital moves along a connection, from this player's side. */
+export const DIRECTIONS: { value: FlowDirection; label: string }[] = [
+  { value: "gives", label: "They give it" },
+  { value: "gets", label: "They get it" },
+  { value: "both", label: "Both ways" },
+];
+export const DIRECTION_LABEL: Record<FlowDirection, string> = { gives: "gives", gets: "gets", both: "gives and gets" };
+export const CAPITAL_LABEL: Record<CapitalKey, string> = Object.fromEntries(CAPITALS.map((c) => [c.key, c.label])) as Record<CapitalKey, string>;
+export const blankConnection = (): Connection => ({ name: "", capital: null, direction: null, note: "" });
+export const namedConnections = (c: Connection[] | null | undefined): Connection[] => (c ?? []).filter((x) => x.name.trim() !== "");
+/** "Social capital, they give it" */
+export function flowLabel(c: Connection): string {
+  if (!c.capital) return "";
+  return `${CAPITAL_LABEL[c.capital]} capital${c.direction ? `, ${DIRECTION_LABEL[c.direction]}` : ""}`;
+}
+
+/** Drucker's two kinds of customers, as one choice. */
+export const CUSTOMER_ROLES: { value: CustomerRole; label: string; hint: string }[] = [
+  { value: "helped", label: "Served", hint: "Someone the work changes things for." },
+  { value: "paying", label: "Contributing", hint: "Pays for it, hosts it, hires from it, or gives time to keep it going." },
+  { value: "both", label: "Both", hint: "Served by it and keeps it going." },
+  { value: "unsure", label: "Not sure yet", hint: "Say what you'd need to know." },
+];
+/* Database values stay helped/paying; the words people see are served/contributing. */
+export const CUSTOMER_ROLE_LABEL: Record<CustomerRole, string> = { helped: "Served", paying: "Contributing", both: "Served and contributing", unsure: "Not sure yet" };
+
 export const RING_LABEL: Record<Ring, string> = { inner_circle: "Inner circle", wider_field: "Wider field" };
 
 export function typeLabel(p: Pick<ProfileRow, "org_type" | "org_type_other">): string {
@@ -56,6 +83,7 @@ export function missingFields(p: Pick<ProfileRow, EditableField>): Missing[] {
   if (blank(p.description)) out.push({ field: "description", label: "Who they are" });
   if (!p.ring) out.push({ field: "ring", label: "Ring" });
   for (const c of CAPITALS) if (!p[ratingField(c.key)]) out.push({ field: ratingField(c.key), label: `${c.label} capital` });
+  if (namedConnections(p.connections).length === 0) out.push({ field: "connections", label: "At least one connection" });
   if (blank(p.needs)) out.push({ field: "needs", label: "What they need" });
   if (!p.influence_level) out.push({ field: "influence_level", label: "Influence" });
   if (blank(p.stake)) out.push({ field: "stake", label: "Stake" });

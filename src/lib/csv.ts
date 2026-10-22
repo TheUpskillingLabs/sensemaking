@@ -1,4 +1,4 @@
-import { CAPITALS, LEVEL_LABEL, ORG_TYPE_LABEL, RING_LABEL, noteField, ratingField } from "./capitals";
+import { CAPITALS, CUSTOMER_ROLE_LABEL, LEVEL_LABEL, ORG_TYPE_LABEL, RING_LABEL, flowLabel, namedConnections, noteField, ratingField } from "./capitals";
 import type { ProfileRow } from "./types";
 
 type Col = { header: string; get: (p: ProfileRow) => string };
@@ -13,6 +13,7 @@ const cols = (withAuthor: (id: string) => string | undefined): Col[] => {
     { header: "Type", get: (p) => (p.org_type ? ORG_TYPE_LABEL[p.org_type] : "") },
     { header: "Type (other)", get: (p) => p.org_type_other ?? "" },
     { header: "Who they are", get: (p) => p.description ?? "" },
+    { header: "What they've tried before", get: (p) => p.tried_before ?? "" },
     { header: "Ring", get: (p) => (p.ring ? RING_LABEL[p.ring] : "") },
   ];
   for (const c of CAPITALS) {
@@ -20,12 +21,14 @@ const cols = (withAuthor: (id: string) => string | undefined): Col[] => {
     base.push({ header: `${c.label} capital note`, get: (p) => p[noteField(c.key)] ?? "" });
   }
   base.push(
+    { header: "Connections", get: (p) => namedConnections(p.connections).map((c) => [c.name.trim(), flowLabel(c), c.note.trim()].filter(Boolean).join(" — ")).join("; ") },
     { header: "What they need", get: (p) => p.needs ?? "" },
     { header: "What they value", get: (p) => p.values_held ?? "" },
     { header: "What they fear or want to avoid", get: (p) => p.fears ?? "" },
     { header: "Influence", get: (p) => (p.influence_level ? LEVEL_LABEL[p.influence_level] : "") },
     { header: "Influence note", get: (p) => p.influence_note ?? "" },
     { header: "Stake", get: (p) => p.stake ?? "" },
+    { header: "Served, contributing, or both", get: (p) => (p.customer_role ? CUSTOMER_ROLE_LABEL[p.customer_role] : "") },
     { header: "How they could connect to The Labs", get: (p) => p.connection_to_labs ?? "" },
   );
   base.push({ header: "Author", get: (p) => withAuthor(p.author_id) ?? "" });

@@ -4,7 +4,7 @@ import { useAuth } from "../auth";
 import { DiscussionPrompts, ReadTheField } from "../components/Learn";
 import { CapGlyph, ErrorNote, GlyphKey, Loader, Words, kindOf, useTitle } from "../components/bits";
 import { api } from "../lib/api";
-import { CAPITALS, LEVELS, ORG_TYPES, RINGS } from "../lib/capitals";
+import { CAPITALS, CUSTOMER_ROLES, CUSTOMER_ROLE_LABEL, LEVELS, ORG_TYPES, RINGS } from "../lib/capitals";
 import { CYCLE } from "../lib/config";
 import { downloadCsv, toCsv } from "../lib/csv";
 import { applyFilters, readFilters, sortRows, writeFilters, type Filters } from "../lib/filters";
@@ -48,7 +48,7 @@ export default function Gallery() {
   }
 
   const nameOf = (id: string) => names.find((n) => n.author_id === id)?.display_name;
-  const filtered = Boolean(f.type || f.ring || (f.cap && f.level) || f.q.trim());
+  const filtered = Boolean(f.type || f.ring || f.role || (f.cap && f.level) || f.q.trim());
   const qs = sp.toString();
 
   return (
@@ -82,6 +82,13 @@ export default function Gallery() {
             {RINGS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
+        <div className="field">
+          <label className="label" htmlFor="fro">Served or contributing</label>
+          <select id="fro" className="select" value={f.role} onChange={(e) => update({ role: e.target.value as Filters["role"] })}>
+            <option value="">Any</option>
+            {CUSTOMER_ROLES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
+        </div>
         <fieldset className="field">
           <legend className="label">Capital rated</legend>
           <div className="capfilter">
@@ -105,7 +112,7 @@ export default function Gallery() {
           {facilitator && rows && <span className="count-sub">{counts.submitted} submitted, {counts.drafts} {counts.drafts === 1 ? "draft" : "drafts"} in progress</span>}
         </p>
         <div className="act">
-          {filtered && <button type="button" className="btn-link" onClick={() => { setQ(""); setSp(writeFilters({ type: "", ring: "", cap: "", level: "", q: "", drafts: f.drafts }), { replace: true }); }}>Clear filters</button>}
+          {filtered && <button type="button" className="btn-link" onClick={() => { setQ(""); setSp(writeFilters({ type: "", ring: "", role: "", cap: "", level: "", q: "", drafts: f.drafts }), { replace: true }); }}>Clear filters</button>}
           {facilitator && (
             <label className="toggle"><input type="checkbox" checked={f.drafts} onChange={(e) => update({ drafts: e.target.checked })} /> Include drafts</label>
           )}
@@ -129,7 +136,7 @@ export default function Gallery() {
                 <CapGlyph p={p} size={64} />
                 <div className="gbody">
                   <h3><Link to={`/profiles/${p.id}`} viewTransition>{p.name?.trim() || "Untitled player"}</Link></h3>
-                  <p className="gkind">{kindOf(p)}{p.status === "draft" && <span className="state state-draft">Draft</span>}{facilitator && p.edited_at && <span className="state">Edited</span>}</p>
+                  <p className="gkind">{kindOf(p)}{p.customer_role && <span>{CUSTOMER_ROLE_LABEL[p.customer_role]}</span>}{p.status === "draft" && <span className="state state-draft">Draft</span>}{facilitator && p.edited_at && <span className="state">Edited</span>}</p>
                   <p className="gdesc">{p.description}</p>
                   {facilitator && nameOf(p.author_id) && <p className="gauthor">{nameOf(p.author_id)}</p>}
                 </div>

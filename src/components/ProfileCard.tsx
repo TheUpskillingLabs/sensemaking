@@ -1,5 +1,5 @@
 import { kindOf } from "./bits";
-import { CAPITALS, LEVEL_LABEL, noteField, ratingField } from "../lib/capitals";
+import { CAPITALS, CUSTOMER_ROLE_LABEL, LEVEL_LABEL, flowLabel, namedConnections, noteField, ratingField } from "../lib/capitals";
 import type { Level, ProfileRow } from "../lib/types";
 
 function Lvl({ v }: { v: Level | null }) {
@@ -36,7 +36,7 @@ export function CapRing({ p }: { p: ProfileRow }) {
   );
 }
 
-export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant = "page" }: { p: ProfileRow; author?: string; headingLevel?: 1 | 2; showStatus?: boolean; variant?: "page" | "print" }) {
+export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant = "page", centre = "The Labs" }: { p: ProfileRow; author?: string; headingLevel?: 1 | 2; showStatus?: boolean; variant?: "page" | "print"; centre?: string }) {
   const H = headingLevel === 1 ? "h1" : "h2";
   return (
     <article className={`card card-${variant}`} aria-label={p.name ?? "Untitled profile"}>
@@ -52,6 +52,7 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant =
 
       <section aria-label="Who they are">
         <p className="desc"><Text v={p.description} /></p>
+        {p.tried_before?.trim() && <p className="tried"><span>What they've tried before</span>{p.tried_before}</p>}
       </section>
 
       {variant === "page" ? (
@@ -61,13 +62,25 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant =
         </div>
       ) : <CapTable p={p} />}
 
+      <section className="conns-view" aria-labelledby={`c-${p.id}`}>
+        <h3 className="conns-h" id={`c-${p.id}`}>Connected to</h3>
+        {namedConnections(p.connections).length === 0 ? <p className="muted">No connections listed.</p> : (
+          <ul className="conns-list">
+            {namedConnections(p.connections).map((c, i) => (
+              <li key={i}><b>{c.name.trim()}</b>{flowLabel(c) && <span className="flow">{flowLabel(c)}</span>}{c.note.trim() && <span className="cnote">{c.note.trim()}</span>}</li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       <dl className="kv">
         <div><dt>What they need</dt><dd><Text v={p.needs} /></dd></div>
         <div><dt>What they value</dt><dd><Text v={p.values_held} /></dd></div>
         <div><dt>What they fear or want to avoid</dt><dd><Text v={p.fears} /></dd></div>
         <div><dt>Influence</dt><dd><Lvl v={p.influence_level} />{p.influence_note?.trim() ? <span className="capnote">{p.influence_note}</span> : null}</dd></div>
         <div><dt>Stake: what they stand to gain or lose</dt><dd><Text v={p.stake} /></dd></div>
-        <div><dt>How they could connect to The Labs</dt><dd><Text v={p.connection_to_labs} /></dd></div>
+        <div><dt>Served, contributing, or both</dt><dd>{p.customer_role ? CUSTOMER_ROLE_LABEL[p.customer_role] : <span className="muted">—</span>}</dd></div>
+        <div><dt>How they could connect to {centre}</dt><dd><Text v={p.connection_to_labs} /></dd></div>
       </dl>
     </article>
   );

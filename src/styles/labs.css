@@ -205,6 +205,9 @@ a.prow-name:hover { text-decoration: underline; text-decoration-color: var(--tex
 .card-page { padding: 0; display: grid; gap: 48px; background: none; box-shadow: none; color: var(--text); }
 .card-page .card-head { display: grid; gap: 14px; }
 .card-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; font-size: 15px; color: var(--text-2); }
+.card-page .tried { margin-top: 20px; font-size: 16px; line-height: 1.6; color: var(--text-2); max-width: 60ch; }
+.card-page .tried span { display: block; font-size: var(--fs-small); font-weight: 500; color: var(--text-2); margin-bottom: 4px; }
+.card-page .tried { color: var(--text); }
 .card-page .desc { font-size: var(--fs-lead); line-height: 1.55; color: var(--text); max-width: 38em; text-wrap: pretty; }
 .caps-view { display: grid; gap: 32px; align-items: center; padding-top: 32px; box-shadow: inset 0 1px 0 var(--rule); }
 @media (min-width: 900px) { .caps-view { grid-template-columns: minmax(280px, 360px) minmax(0, 1fr); column-gap: 64px; } }
@@ -258,6 +261,7 @@ a.prow-name:hover { text-decoration: underline; text-decoration-color: var(--tex
 .field.invalid .input:not(.optional), .field.invalid .textarea, .field.invalid .select, .field.invalid .seg, .cap.invalid .seg { box-shadow: inset 0 0 0 1.5px var(--warn); }
 .err-text { color: var(--warn); font-size: var(--fs-small); }
 .choices { gap: 10px; }
+@media (min-width: 640px) { .choices-4 { grid-template-columns: 1fr 1fr; } }
 .choice { border-radius: var(--r-btn); background: var(--surface); box-shadow: inset 0 0 0 1px var(--rule-2); }
 .choice:has(input:checked) { background: rgba(0, 120, 130, 0.22); box-shadow: inset 0 0 0 1.5px var(--link); }
 .choice b { color: var(--text); font-weight: 600; }
@@ -283,6 +287,24 @@ a.prow-name:hover { text-decoration: underline; text-decoration-color: var(--tex
 .dialog { border-radius: var(--r-panel); background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--rule), 0 24px 64px -16px rgba(0, 0, 0, 0.7); }
 .dialog .muted, .dialog p { color: var(--text-2); }
 .dialog h2 { color: var(--text); font-variation-settings: "SHRP" 60; }
+
+/* Connections: one row each; name and note on one line, the flow on the next */
+.conn-list { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 10px; }
+.conn { display: grid; gap: 8px; padding: 14px 0; box-shadow: inset 0 1px 0 var(--rule); }
+.conn:first-child { box-shadow: inset 0 1px 0 var(--rule-2); }
+.conn-main { display: grid; gap: 8px; }
+.conn-flow { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: center; }
+@media (min-width: 640px) { .conn-main { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); } }
+.conn-rm { justify-self: end; white-space: nowrap; min-height: 40px; }
+.conns.invalid .conn:first-child .input:first-of-type { box-shadow: inset 0 0 0 1.5px var(--warn); }
+.conns-view { padding-top: 32px; box-shadow: inset 0 1px 0 var(--rule); }
+.conns-h { font-size: var(--fs-small); font-weight: 500; color: var(--text-2); margin-bottom: 12px; }
+.conns-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.conns-list li { display: grid; gap: 2px; font-size: 17px; line-height: 1.5; }
+.conns-list b { font-weight: 600; color: var(--text); }
+.conns-list .flow { font-size: 15px; color: var(--link); }
+.conns-list .cnote { font-size: 15px; color: var(--text-2); }
+@media (min-width: 720px) { .conns-list { grid-template-columns: 1fr 1fr; gap: 16px 40px; } }
 
 /* "Why we ask": a quiet link that opens a short note in place */
 .why-toggle { display: inline-flex; align-items: center; min-height: 32px; font-size: var(--fs-small); font-weight: 500; color: var(--link); text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 4px; }
@@ -352,6 +374,35 @@ a.prow-name:hover { text-decoration: underline; text-decoration-color: var(--tex
 .reading-sheet .es-title { font-size: 24px; }
 .reading-sheet .es-lead { font-size: 20px; }
 .reading-sheet .es-notes { padding-top: 24px; }
+
+/* ── Tutorial: captions beside a form that fills itself in ── */
+.tut-layout { display: grid; gap: 24px; }
+@media (min-width: 1000px) { .tut-layout { grid-template-columns: 320px minmax(0, 720px); gap: 56px; align-items: start; } .tut-side { position: sticky; top: calc(var(--bar) + 24px); } }
+.tut-side { display: grid; gap: 14px; }
+.tut-ex { font-size: var(--fs-small); color: var(--text-3); }
+.tut-intro { font-size: 16px; line-height: 1.5; color: var(--text-2); }
+.tut-caption { min-height: 96px; padding: 16px 18px; border-radius: var(--r-panel); background: var(--surface); font-size: 18px; line-height: 1.5; color: var(--text); }
+.tut-caption b { font-weight: 600; }
+.tut-progress { height: 2px; background: var(--rule); border-radius: 1px; overflow: hidden; }
+.tut-progress span { display: block; height: 100%; background: var(--shape); transition: width .3s linear; }
+.tut-controls, .tut-after { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.tut-step { font-size: var(--fs-meta); color: var(--text-3); font-variant-numeric: tabular-nums; }
+.tut-form { max-height: min(72vh, 820px); overflow: auto; padding: 0 16px 24px; border-radius: var(--r-panel); box-shadow: inset 0 0 0 1px var(--rule); scrollbar-width: thin; }
+@media (max-width: 999px) { .tut-form { max-height: 60vh; } .tut-side { position: sticky; top: calc(var(--bar) + 8px); z-index: 5; background: var(--ink); padding-bottom: 8px; } }
+.tut-form .form-head { padding-top: 20px; }
+.tut-form .part { padding-top: 32px; margin-top: 32px; gap: 24px; }
+.tut-form .field, .tut-form .cap { transition: box-shadow .3s ease, background-color .3s ease; border-radius: var(--r-btn); }
+.tut-form .is-live { background: rgba(92, 207, 217, 0.06); box-shadow: 0 0 0 10px rgba(92, 207, 217, 0.06); }
+.tut-form .is-live .input, .tut-form .is-live .textarea, .tut-form .is-live .select { box-shadow: inset 0 0 0 1.5px var(--link); }
+.tut-form .is-live .choice:has(input:checked) { box-shadow: inset 0 0 0 2px var(--link); }
+.tut-form .choice { pointer-events: none; }
+.tut-form .conn-flow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.tut-shape { display: grid; gap: 0; }
+.tut-done .card-page .card-title { font-size: var(--fs-title); }
+.tut-transcript { margin-top: 40px; max-width: 64ch; color: var(--text-2); font-size: 15px; }
+.tut-transcript summary { cursor: pointer; color: var(--text-2); min-height: 44px; display: flex; align-items: center; }
+.tut-transcript ol { padding-left: 20px; display: grid; gap: 8px; margin: 8px 0 0; }
+@media (prefers-reduced-motion: reduce) { .tut-form .field, .tut-form .cap, .tut-progress span { transition: none; } }
 
 /* ── Gate and loader ── */
 .gate .h2 { font-size: var(--fs-title); font-weight: 640; line-height: 1.06; letter-spacing: -0.03em; font-variation-settings: "SHRP" 100; }

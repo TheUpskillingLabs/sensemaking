@@ -1,8 +1,19 @@
-// Mirrors supabase/migrations/20261021120000_sensemaking_stakeholder_profiles.sql.
+// Mirrors supabase/migrations/20261021120000_sensemaking_stakeholder_profiles.sql
+// and the 20261022 migrations (two_customers, connections).
 // If the migration changes, change this file with it.
 
 export type Status = "draft" | "submitted";
-export type OrgType = "library" | "employer" | "workforce_agency" | "community_group" | "training_provider" | "other";
+export type OrgType = "library" | "employer" | "workforce_agency" | "community_group" | "training_provider" | "funder" | "other";
+export type CustomerRole = "helped" | "paying" | "both" | "unsure";
+export type FlowDirection = "gives" | "gets" | "both";
+
+/** One connection from this player to another, with the capital that flows along it, if known. */
+export interface Connection {
+  name: string;
+  capital: CapitalKey | null;
+  direction: FlowDirection | null;
+  note: string;
+}
 export type Ring = "inner_circle" | "wider_field";
 export type Level = "low" | "medium" | "high";
 export type CapitalKey = "natural" | "cultural" | "human" | "social" | "political" | "financial" | "built";
@@ -22,6 +33,8 @@ export interface ProfileRow {
   org_type: OrgType | null;
   org_type_other: string | null;
   description: string | null;
+  /** Archaeology: what they have already tried here, and what got in the way. */
+  tried_before: string | null;
   ring: Ring | null;
 
   capital_natural_rating: Level | null;
@@ -39,12 +52,17 @@ export interface ProfileRow {
   capital_built_rating: Level | null;
   capital_built_note: string | null;
 
+  /** Who they're connected to. At least one is required to submit. */
+  connections: Connection[];
+
   needs: string | null;
   values_held: string | null;
   fears: string | null;
   influence_level: Level | null;
   influence_note: string | null;
   stake: string | null;
+  /** Drucker's two kinds of customers: helped by the work, paying for it, both, or not sure. */
+  customer_role: CustomerRole | null;
   connection_to_labs: string | null;
 }
 
@@ -53,7 +71,7 @@ export type EditableField = Exclude<keyof ProfileRow, "id" | "cycle" | "author_i
 export type ProfileDraft = Pick<ProfileRow, EditableField>;
 
 export const EDITABLE_FIELDS: EditableField[] = [
-  "name", "org_type", "org_type_other", "description", "ring",
+  "name", "org_type", "org_type_other", "description", "tried_before", "ring",
   "capital_natural_rating", "capital_natural_note",
   "capital_cultural_rating", "capital_cultural_note",
   "capital_human_rating", "capital_human_note",
@@ -61,7 +79,8 @@ export const EDITABLE_FIELDS: EditableField[] = [
   "capital_political_rating", "capital_political_note",
   "capital_financial_rating", "capital_financial_note",
   "capital_built_rating", "capital_built_note",
-  "needs", "values_held", "fears", "influence_level", "influence_note", "stake", "connection_to_labs",
+  "connections",
+  "needs", "values_held", "fears", "influence_level", "influence_note", "stake", "customer_role", "connection_to_labs",
 ];
 
 export interface ConfigRow {

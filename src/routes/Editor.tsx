@@ -2,9 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth";
 import { Why } from "../components/Learn";
+import { ConnectionsEditor } from "../components/Connections";
 import { CapGlyph, LocalNav, ConfirmDialog, ErrorNote, Loader, Segmented, Tick, useTitle } from "../components/bits";
 import { ApiError, api } from "../lib/api";
-import { CAPITALS, LEVELS, ORG_TYPES, RINGS, missingFields, noteField, ratingField, type Missing } from "../lib/capitals";
+import { CAPITALS, CUSTOMER_ROLES, LEVELS, ORG_TYPES, RINGS, missingFields, noteField, ratingField, type Missing } from "../lib/capitals";
 import { EDITABLE_FIELDS, type EditableField, type ProfileDraft, type ProfileRow } from "../lib/types";
 
 const AUTOSAVE_MS = 800;
@@ -12,10 +13,11 @@ const SECTIONS = [
   { id: "s-own", label: "In your own words" },
   { id: "s-ring", label: "Ring" },
   { id: "s-capitals", label: "Capitals" },
+  { id: "s-connections", label: "Connections" },
   { id: "s-needs", label: "Needs and values" },
   { id: "s-influence", label: "Influence" },
   { id: "s-stake", label: "Stake" },
-  { id: "s-connection", label: "Connection" },
+  { id: "s-connection", label: "And The Labs" },
 ];
 const MAX_BACKOFF_MS = 30_000;
 type SaveState = "idle" | "saving" | "saved" | "retrying" | "locked" | "incomplete";
@@ -234,7 +236,7 @@ export default function Editor() {
           <h1 className="h-title">{draft.name?.trim() || "A new player"}</h1>
           <p className="lede">{isSubmitted
             ? "You're editing a submitted profile. Changes save as you go, and it stays submitted. Facilitators can see that it was edited after you submitted it."
-            : "Start in your own words, then give it some structure. Everything saves as you go. Nobody else sees this until you've submitted all of yours."}</p>
+            : "Start in your own words, then give it some structure. Everything saves as you go. Nobody else sees this until you've submitted all of yours."}{!isSubmitted && <> <Link to="/tutorial" viewTransition>See an example first</Link>.</>}</p>
           {readOnly && <p className="note note-error" role="alert">{closed ? "Submissions are closed, so this profile can't be changed." : lockedMsg}</p>}
         </div>
 
@@ -267,10 +269,16 @@ export default function Editor() {
 
           <div className={`field${bad("description") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-description">Who they are <span className="req" aria-hidden="true">*</span></label>
-            <p className="hint" id="h-description">Describe this player in your own words: who they are, what they do, and how they show up in the DC area. If you know what they've tried before, include it.</p>
-            <Why id="archaeology" />
+            <p className="hint" id="h-description">In your own words: who they are, what real things they make, fix, teach, or help others make, and how they show up in the DC area.</p>
             <textarea id="f-description" className="textarea big" value={draft.description ?? ""} onChange={(e) => set("description", e.target.value)} aria-describedby="h-description" aria-required="true" aria-invalid={bad("description") || undefined} />
             {bad("description") && <p className="err-text">Write a few lines about who they are.</p>}
+          </div>
+
+          <div className="field">
+            <label className="label" htmlFor="f-tried_before">What they've tried before <span className="opt">(optional)</span></label>
+            <p className="hint" id="h-tried_before">Anything they've already tried in this area, and what got in the way. That history is evidence.</p>
+            <Why id="archaeology" />
+            <textarea id="f-tried_before" className="textarea" value={draft.tried_before ?? ""} onChange={(e) => set("tried_before", e.target.value)} aria-describedby="h-tried_before" />
           </div>
         </fieldset>
 
@@ -316,6 +324,14 @@ export default function Editor() {
             </div>
           </div>
 
+          <div id="s-connections" className={`field${bad("connections") ? " invalid" : ""}`}>
+            <p className="label" id="l-connections">Who they're connected to <span className="req" aria-hidden="true">*</span></p>
+            <p className="hint" id="h-connections">Other players this one works with, funds, hires from, hosts, or depends on. If you know which capital moves between them, say which and which way. One is enough to start.</p>
+            <Why id="field" label="Why connections?" />
+            <ConnectionsEditor value={draft.connections ?? []} onChange={(v) => set("connections", v)} invalid={bad("connections")} />
+            {bad("connections") && <p className="err-text">Name at least one player this one is connected to.</p>}
+          </div>
+
           <div id="s-needs" className={`field${bad("needs") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-needs">What they need <span className="req" aria-hidden="true">*</span></label>
             <textarea id="f-needs" className="textarea" value={draft.needs ?? ""} onChange={(e) => set("needs", e.target.value)} aria-required="true" aria-invalid={bad("needs") || undefined} />
@@ -348,10 +364,24 @@ export default function Editor() {
             {bad("stake") && <p className="err-text">What's at stake for them?</p>}
           </div>
 
-          <div id="s-connection" className={`field${bad("connection_to_labs") ? " invalid" : ""}`}>
+          <div id="s-connection" className="field" role="radiogroup" aria-labelledby="l-role">
+            <p className="label" id="l-role">Served, contributing, or both? <span className="opt">(optional)</span></p>
+            <p className="hint">Every nonprofit has two kinds of customers: the people it helps and the people who keep it going. Pick one if you know.</p>
+            <Why id="customers" />
+            <div className="choices choices-4">
+              {CUSTOMER_ROLES.map((r, i) => (
+                <label key={r.value} className="choice">
+                  <input type="radio" name="customer_role" id={i === 0 ? "f-customer_role" : undefined} value={r.value} checked={draft.customer_role === r.value} onChange={() => set("customer_role", r.value)} />
+                  <b>{r.label}</b><span>{r.hint}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className={`field${bad("connection_to_labs") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-connection_to_labs">How they could connect to The Labs <span className="req" aria-hidden="true">*</span></label>
-            <Why id="customers" label="Helped, paying, or both?" />
-            <textarea id="f-connection_to_labs" className="textarea" value={draft.connection_to_labs ?? ""} onChange={(e) => set("connection_to_labs", e.target.value)} aria-required="true" aria-invalid={bad("connection_to_labs") || undefined} />
+            <p className="hint" id="h-connection">What would each side want from it?</p>
+            <textarea id="f-connection_to_labs" className="textarea" value={draft.connection_to_labs ?? ""} onChange={(e) => set("connection_to_labs", e.target.value)} aria-describedby="h-connection" aria-required="true" aria-invalid={bad("connection_to_labs") || undefined} />
             {bad("connection_to_labs") && <p className="err-text">How could they connect to The Labs?</p>}
           </div>
         </fieldset>
