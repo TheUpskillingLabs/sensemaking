@@ -4,7 +4,7 @@ import { useAuth } from "../auth";
 import { DiscussionPrompts, ReadTheField } from "../components/Learn";
 import { CapGlyph, ErrorNote, GlyphKey, Loader, Words, kindOf, useTitle } from "../components/bits";
 import { api } from "../lib/api";
-import { CAPITALS, CUSTOMER_ROLES, CUSTOMER_ROLE_LABEL, LEVELS, ORG_TYPES, RINGS } from "../lib/capitals";
+import { CAPITALS, CUSTOMER_ROLES, CUSTOMER_ROLE_LABEL, LEVELS, ORG_TYPES, RINGS, opensLabel, opensLater } from "../lib/capitals";
 import { CYCLE } from "../lib/config";
 import { downloadCsv, toCsv } from "../lib/csv";
 import { applyFilters, readFilters, sortRows, writeFilters, type Filters } from "../lib/filters";
@@ -44,7 +44,8 @@ export default function Gallery() {
 
   if (!membership) return <Loader center />;
   if (!allowed) {
-    return <Navigate to="/" replace state={{ flash: `The gallery opens once you've submitted ${membership.config.required_profiles} profiles. That keeps everyone's view independent.` }} />;
+    const when = opensLater(membership.config.gallery_opens_at) ? opensLabel(membership.config.gallery_opens_at, true) : null;
+    return <Navigate to="/" replace state={{ flash: when ? `The gallery opens ${when}, to everyone who has submitted ${membership.config.required_profiles} profiles.` : `The gallery opens once you've submitted ${membership.config.required_profiles} profiles. That keeps everyone's view independent.` }} />;
   }
 
   const nameOf = (id: string) => names.find((n) => n.author_id === id)?.display_name;

@@ -87,6 +87,8 @@ export interface ConfigRow {
   cycle: string;
   required_profiles: number;
   submissions_open: boolean;
+  /** Others' profiles stay hidden from participants until this time; null means as soon as they've submitted. */
+  gallery_opens_at: string | null;
 }
 
 export interface AuthorName {

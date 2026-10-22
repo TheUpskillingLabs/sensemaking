@@ -5,7 +5,7 @@
 --   psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/rls.sql
 -- Everything runs in one transaction and is rolled back, so it leaves no rows
 -- behind. Any failed check raises an exception and aborts the run; reaching the
--- final SELECT means all nine checks passed.
+-- final SELECT means all ten checks passed.
 --
 -- Simulated people:
 --   A  member, submits three profiles (unlocked)
@@ -37,6 +37,9 @@ select id, 'lab_lead', 'rls test fixture' from public.participants where email =
 
 insert into public.participant_roles (participant_id, role, note)
 select id, 'poderator', 'rls test fixture' from public.participants where email = 'rls-f@test.invalid';
+
+-- The gate: the gallery opens at a set time. Open it for the tests; test 10 checks the gate itself.
+update public.sensemaking_config set gallery_opens_at = now() - interval '1 hour' where cycle = 'C04';
 
 -- A complete profile body, reused below.
 create temp table rls_full as select
@@ -233,6 +236,21 @@ begin
 end $$;
 
 reset role;
-select 'All 9 RLS checks passed' as result;
+-- ── Test 10: before gallery_opens_at, A (three submitted) sees nobody else; facilitators still do ──
+reset role;
+update public.sensemaking_config set gallery_opens_at = now() + interval '1 day' where cycle = 'C04';
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000a","role":"authenticated"}', true);
+do $$ begin
+  if public.sensemaking_has_unlocked('C04') then raise exception 'test 10 failed: unlocked before the gallery opens'; end if;
+  if exists (select 1 from public.sensemaking_profiles where author_id <> auth.uid()) then raise exception 'test 10 failed: A can read others before the gallery opens'; end if;
+end $$;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000f","role":"authenticated"}', true);
+do $$ begin
+  if not exists (select 1 from public.sensemaking_profiles where author_id <> auth.uid()) then raise exception 'test 10 failed: facilitator blocked by the gate'; end if;
+end $$;
+reset role;
+
+select 'All 10 RLS checks passed' as result;
 
 rollback;

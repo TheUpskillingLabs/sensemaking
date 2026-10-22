@@ -21,7 +21,7 @@ let signedIn = (() => { try { return sessionStorage.getItem("mock.signedIn") !==
 const listeners = new Set<(u: SessionUser | null) => void>();
 const wait = (ms = 180) => new Promise((r) => setTimeout(r, ms));
 
-const config: ConfigRow = { cycle: CYCLE, required_profiles: 3, submissions_open: true };
+const config: ConfigRow = { cycle: CYCLE, required_profiles: 3, submissions_open: true, gallery_opens_at: new URLSearchParams(location.search).get("opens") === "later" ? "2026-10-24T12:00:00Z" : null };
 
 const blankRow = (id: string, author: string): ProfileRow => ({
   id, cycle: CYCLE, author_id: author, status: "draft", created_at: new Date().toISOString(), updated_at: new Date().toISOString(), submitted_at: null, edited_at: null,
@@ -62,7 +62,7 @@ initMine();
 
 let n = 0;
 const mine = () => rows.filter((r) => r.author_id === ME);
-const unlocked = () => mine().filter((r) => r.status === "submitted").length >= config.required_profiles;
+const unlocked = () => (!config.gallery_opens_at || Date.now() >= Date.parse(config.gallery_opens_at)) && mine().filter((r) => r.status === "submitted").length >= config.required_profiles;
 const facilitator = () => who() === "facilitator";
 const visible = (r: ProfileRow) => r.author_id === ME || facilitator() || (r.status === "submitted" && unlocked());
 const user = (): SessionUser | null => (signedIn ? { id: ME, email: "you@example.org" } : null);

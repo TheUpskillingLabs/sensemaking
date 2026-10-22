@@ -90,3 +90,14 @@ export function missingFields(p: Pick<ProfileRow, EditableField>): Missing[] {
   if (blank(p.connection_to_labs)) out.push({ field: "connection_to_labs", label: "How they could connect to The Labs" });
   return out;
 }
+
+/** "Saturday at 8:00 am" or "Saturday, October 25 at 8:00 am", in the reader's own time zone. */
+export function opensLabel(iso: string | null | undefined, withDate = false): string | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  const day = d.toLocaleDateString(undefined, withDate ? { weekday: "long", month: "long", day: "numeric" } : { weekday: "long" });
+  const time = d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  return `${day} at ${time}`;
+}
+export const opensLater = (iso: string | null | undefined): boolean => Boolean(iso && Date.now() < Date.parse(iso));

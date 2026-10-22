@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
 import { CapGlyph, ErrorNote, Loader, Words, kindOf, useTitle } from "../components/bits";
+import { opensLabel, opensLater } from "../lib/capitals";
 import { api } from "../lib/api";
 import type { ProfileRow } from "../lib/types";
 
@@ -29,7 +30,10 @@ export default function Home() {
   const required = membership.config.required_profiles;
   const open = membership.config.submissions_open;
   const submitted = rows?.filter((r) => r.status === "submitted").length ?? 0;
-  const unlocked = membership.unlocked || submitted >= required;
+  const later = opensLater(membership.config.gallery_opens_at);
+  const opens = opensLabel(membership.config.gallery_opens_at);
+  const unlocked = membership.unlocked || (submitted >= required && !later);
+  const allDone = submitted >= required;
 
   async function create() {
     setCreating(true); setCreateError(null);
@@ -62,7 +66,10 @@ export default function Home() {
         <div className="mine-head">
           <h2 className="h-section" id="h-yours">{rows ? <><span className="num">{submitted}</span> of <span className="num">{required}</span> submitted</> : "Your profiles"}</h2>
           <p className="aside-note" aria-live="polite">
-            {membership.facilitator ? "As a facilitator you can read every profile." : unlocked ? "You can read everyone's profiles." : `Others' profiles open to you after your ${ordinal[required - 1] ?? inWords(required)}.`}
+            {membership.facilitator ? "As a facilitator you can read every profile."
+              : unlocked ? "You can read everyone's profiles."
+              : later && opens ? (allDone ? `Everyone's profiles open ${opens}.` : `Others' profiles open ${opens}, once you've submitted your ${ordinal[required - 1] ?? inWords(required)}.`)
+              : `Others' profiles open to you after your ${ordinal[required - 1] ?? inWords(required)}.`}
           </p>
         </div>
         {error ? <ErrorNote message={error} onRetry={() => void load()} />
@@ -117,10 +124,18 @@ export default function Home() {
           <Link className="btn btn-primary" to="/gallery" viewTransition>Open the gallery</Link>
         </section>
       )}
+      {rows && !unlocked && !membership.facilitator && allDone && later && (
+        <section className="next" aria-labelledby="h-waiting">
+          <div>
+            <h2 className="h-section" id="h-waiting">Your {inWords(required)} are in.</h2>
+            <p>Everyone's profiles open {opensLabel(membership.config.gallery_opens_at, true)}. Until then you can still edit yours, or add another player.</p>
+          </div>
+        </section>
+      )}
 
       <aside className="home-foot">
         {rows && !unlocked && !membership.facilitator && (
-          <p>Until you've submitted your {inWords(required)}, nobody sees yours and you don't see theirs. That keeps everyone's view independent.</p>
+          <p>{later && opens ? `Until ${opens}, nobody sees yours and you don't see theirs.` : `Until you've submitted your ${inWords(required)}, nobody sees yours and you don't see theirs.`} That keeps everyone's view independent.</p>
         )}
         <p>New to this? <Link to="/tutorial" viewTransition>Watch a profile get written</Link>, two made-up examples in about two minutes each.</p>
         <p><Link to="/reading" viewTransition>Background reading</Link>: where these questions come from, in plain words.</p>
