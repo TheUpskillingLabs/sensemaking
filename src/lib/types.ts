@@ -4,7 +4,7 @@
 
 export type Status = "draft" | "submitted";
 export type OrgType = "library" | "employer" | "workforce_agency" | "community_group" | "training_provider" | "funder" | "other";
-export type CustomerRole = "helped" | "paying" | "both" | "unsure";
+export type CustomerRole = "helped" | "paying" | "both" | "neither" | "unsure";
 export type FlowDirection = "gives" | "gets" | "both";
 
 /** One connection from this player to another, with the capital that flows along it, if known. */
@@ -15,7 +15,7 @@ export interface Connection {
   note: string;
 }
 export type Ring = "inner_circle" | "wider_field";
-export type Level = "low" | "medium" | "high";
+export type Level = "low" | "medium" | "high" | "unsure";
 export type CapitalKey = "natural" | "cultural" | "human" | "social" | "political" | "financial" | "built";
 
 export interface ProfileRow {

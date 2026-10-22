@@ -52,7 +52,7 @@ export const SECTIONS: Section[] = [
       "Why talk about the *future* of work? Because the tools are changing fast, and the evidence is calmer than the headlines. A large MIT study found that new technology hasn't wiped out work. It removes some jobs, creates others, and mostly helps workers rather than replacing them. The real problem is that the gains have gone to a few, and people without a four-year degree have the fewest clear paths to better work.[^3] So the question isn't whether work will exist. It's what a person needs to stay good at real work while the tools keep changing. Researchers have a name for that: **adaptive expertise**, knowing something well enough to handle a situation you've never seen and to invent a new way when the old one stops working.[^4] That's what The Labs means by upskilling.",
     ],
     terms: ["labor, work, action", "real economy", "adaptive expertise"],
-    forProfile: "Ask first what real things this player makes or helps others make. Then who they hire. Then what they pay.",
+    forProfile: "Ask what this player does or makes, then who they hire, then what they pay. Say so if the answer to any of these is nothing.",
     talk: "Does putting work ahead of jobs match your experience, or does it feel like a luxury? Both answers are useful.",
   },
   {
@@ -66,7 +66,7 @@ export const SECTIONS: Section[] = [
     ],
     terms: ["workforce development", "digital equity", "the five WIOA numbers"],
     forProfile: "Many players describe themselves in one of these two languages. Notice what that language leaves out.",
-    talk: "What would a sixth number look like, one that counted what people made?",
+    talk: "Should there be a sixth number? If so, what would it count?",
   },
   {
     id: "assets",
@@ -79,7 +79,7 @@ export const SECTIONS: Section[] = [
     ],
     terms: ["asset-based community development", "community economic development"],
     forProfile: "You're writing down one piece of what this part of DC already has, and who gets a say.",
-    talk: "What does this neighborhood have that outsiders usually miss?",
+    talk: "What does this neighborhood have that's easy to miss?",
   },
   {
     id: "capitals",
@@ -106,7 +106,7 @@ export const SECTIONS: Section[] = [
     ],
     terms: ["frame", "frame innovation"],
     forProfile: "You're not solving anything yet. You're looking.",
-    talk: "What's a frame you've seen work, at a job or in your neighborhood?",
+    talk: "Have you seen a new way of looking at a problem change what people did? What was it?",
   },
   {
     id: "archaeology",
@@ -117,8 +117,8 @@ export const SECTIONS: Section[] = [
       "Dorst calls this step **archaeology**. Who tried what? What happened? What did everyone assume?[^15] Workforce and digital-equity programs leave a lot of history: grants that ran three years and stopped, device giveaways, partnerships that looked good on paper, classes that filled and classes that didn't. That history saves you from repeating what's been tried. More importantly, it points at the real reason a gap keeps coming back, which is rarely the reason in the final report.[^16]",
     ],
     terms: ["archaeology"],
-    forProfile: "If this player has tried something here before, say what, and what got in the way. That's evidence, not background.",
-    talk: "What's been tried in this neighborhood that nobody talks about anymore? Why did it stop?",
+    forProfile: "If this player has tried something here before, say what, and how it went. That's evidence, not background.",
+    talk: "What's been tried here before? If it stopped, why?",
   },
   {
     id: "map",
@@ -132,7 +132,7 @@ export const SECTIONS: Section[] = [
     ],
     terms: ["inner circle", "wider field", "field map"],
     forProfile: "Choose inner circle or wider field honestly, and write what this player wants and what they worry about.",
-    talk: "Who's in the wider field that nobody has asked yet?",
+    talk: "Is there anyone in the wider field nobody has asked yet? Who?",
   },
   {
     id: "customers",
@@ -145,8 +145,8 @@ export const SECTIONS: Section[] = [
       "This is where section 2 comes back. The supporting customers around The Labs mostly want the workforce numbers and the digital-equity numbers, by the end of the grant year. The Upskiller may need something neither counts: time to finish something real, a mentor who knows the tool, a bus pass. Where what the people served need differs from what the contributors count, programs quietly bend out of shape. That's also where the best ideas hide.[^23]",
     ],
     terms: ["primary customer", "supporting customers"],
-    forProfile: "Say whether this player is served, contributing, or both, and what each side wants. A library that hosts Upskillers and runs a digital-equity grant is both.",
-    talk: "Where have you seen a program bend toward its funder and away from the people in it?",
+    forProfile: "Say whether this player is served, contributing, both, or neither, and what each side wants. A library that hosts Upskillers and runs a digital-equity grant is both.",
+    talk: "Have you seen a program bend toward its funder and away from the people in it? What happened?",
   },
   {
     id: "next",

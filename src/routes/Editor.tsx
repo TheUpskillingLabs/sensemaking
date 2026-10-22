@@ -269,14 +269,14 @@ export default function Editor() {
 
           <div className={`field${bad("description") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-description">Who they are <span className="req" aria-hidden="true">*</span></label>
-            <p className="hint" id="h-description">In your own words: who they are, what real things they make, fix, teach, or help others make, and how they show up in the DC area.</p>
+            <p className="hint" id="h-description">In your own words: who they are, what they do or make, and how they show up in the DC area.</p>
             <textarea id="f-description" className="textarea big" value={draft.description ?? ""} onChange={(e) => set("description", e.target.value)} aria-describedby="h-description" aria-required="true" aria-invalid={bad("description") || undefined} />
             {bad("description") && <p className="err-text">Write a few lines about who they are.</p>}
           </div>
 
           <div className="field">
             <label className="label" htmlFor="f-tried_before">What they've tried before <span className="opt">(optional)</span></label>
-            <p className="hint" id="h-tried_before">Anything they've already tried in this area, and what got in the way. That history is evidence.</p>
+            <p className="hint" id="h-tried_before">Anything they've already tried in this area, and how it went. That history is evidence.</p>
             <Why id="archaeology" />
             <textarea id="f-tried_before" className="textarea" value={draft.tried_before ?? ""} onChange={(e) => set("tried_before", e.target.value)} aria-describedby="h-tried_before" />
           </div>
@@ -327,7 +327,7 @@ export default function Editor() {
 
           <div id="s-connections" className={`field${bad("connections") ? " invalid" : ""}`}>
             <p className="label" id="l-connections">Who they're connected to <span className="req" aria-hidden="true">*</span></p>
-            <p className="hint" id="h-connections">Other players this one works with, funds, hires from, hosts, or depends on. If you know which capital moves between them, say which and which way. One is enough to start.</p>
+            <p className="hint" id="h-connections">Other players this one deals with in any way: works with, funds, hires from, hosts, competes with, depends on. If you know which capital moves between them, say which and which way. One is enough to start.</p>
             <Why id="field" label="Why connections?" />
             <ConnectionsEditor value={draft.connections ?? []} onChange={(v) => set("connections", v)} invalid={bad("connections")} />
             {bad("connections") && <p className="err-text">Name at least one player this one is connected to.</p>}
@@ -360,14 +360,14 @@ export default function Editor() {
 
           <div id="s-stake" className={`field${bad("stake") ? " invalid" : ""}`}>
             <label className="label" htmlFor="f-stake">What's at stake for them <span className="req" aria-hidden="true">*</span></label>
-            <p className="hint" id="h-stake">What do they stand to gain or lose?</p>
+            <p className="hint" id="h-stake">What do they stand to gain or lose, if anything?</p>
             <textarea id="f-stake" className="textarea" value={draft.stake ?? ""} onChange={(e) => set("stake", e.target.value)} aria-describedby="h-stake" aria-required="true" aria-invalid={bad("stake") || undefined} />
             {bad("stake") && <p className="err-text">What's at stake for them?</p>}
           </div>
 
           <div id="s-connection" className="field" role="radiogroup" aria-labelledby="l-role">
             <p className="label" id="l-role">Served, contributing, or both? <span className="opt">(optional)</span></p>
-            <p className="hint">Is this a player The Labs serves, one who helps keep The Labs going, or both? Pick one if you know.</p>
+            <p className="hint">Is this a player The Labs serves, one who helps keep The Labs going, both, or neither? Pick one if you know.</p>
             <Why id="customers" />
             <div className="choices choices-4">
               {CUSTOMER_ROLES.map((r, i) => (
@@ -380,10 +380,10 @@ export default function Editor() {
           </div>
 
           <div className={`field${bad("connection_to_labs") ? " invalid" : ""}`}>
-            <label className="label" htmlFor="f-connection_to_labs">How they could connect to The Labs <span className="req" aria-hidden="true">*</span></label>
-            <p className="hint" id="h-connection">What would each side want from it?</p>
+            <label className="label" htmlFor="f-connection_to_labs">Could they connect to The Labs? <span className="req" aria-hidden="true">*</span></label>
+            <p className="hint" id="h-connection">How, or why not? If yes, what would each side want from it?</p>
             <textarea id="f-connection_to_labs" className="textarea" value={draft.connection_to_labs ?? ""} onChange={(e) => set("connection_to_labs", e.target.value)} aria-describedby="h-connection" aria-required="true" aria-invalid={bad("connection_to_labs") || undefined} />
-            {bad("connection_to_labs") && <p className="err-text">How could they connect to The Labs?</p>}
+            {bad("connection_to_labs") && <p className="err-text">Say whether they could connect to The Labs, and how or why not.</p>}
           </div>
         </fieldset>
 

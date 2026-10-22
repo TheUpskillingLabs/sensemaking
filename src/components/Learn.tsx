@@ -130,10 +130,10 @@ export function DiscussionPrompts() {
         <li>Who is the main person this program helps? Describe a real person, not a big group.</li>
         <li>Who pays for it, and who else has to be happy for it to keep going?</li>
         <li>What does each of them want? Use their own words from the profiles.</li>
-        <li>Does what the funder pays for depend on people really being helped? If not, where's the gap?</li>
+        <li>Does what the funder pays for depend on people actually being served? If not, where's the gap?</li>
         <li>What proof would make both of them happy, and who would collect it?</li>
-        <li>Which players are on both sides, like a library that hosts Upskillers and also pays for programs?</li>
-        <li>Where does what a contributor wants clash with what the people being served need? Write each one down as a tension.</li>
+        <li>Are any players on both sides, like a library that hosts Upskillers and also pays for programs?</li>
+        <li>Where, if anywhere, does what a contributor wants clash with what the people being served need? Write each one down as a tension.</li>
       </ol>
       <p className="small muted">Background: <ReadMore id="customers">two kinds of customers</ReadMore> and <ReadMore id="frames">frame innovation</ReadMore>.</p>
     </details>

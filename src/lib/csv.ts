@@ -29,7 +29,7 @@ const cols = (withAuthor: (id: string) => string | undefined): Col[] => {
     { header: "Influence note", get: (p) => p.influence_note ?? "" },
     { header: "Stake", get: (p) => p.stake ?? "" },
     { header: "Served, contributing, or both", get: (p) => (p.customer_role ? CUSTOMER_ROLE_LABEL[p.customer_role] : "") },
-    { header: "How they could connect to The Labs", get: (p) => p.connection_to_labs ?? "" },
+    { header: "Could they connect to The Labs", get: (p) => p.connection_to_labs ?? "" },
   );
   base.push({ header: "Author", get: (p) => withAuthor(p.author_id) ?? "" });
   return base;

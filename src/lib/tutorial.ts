@@ -96,7 +96,7 @@ export const EXAMPLES: Example[] = [
       tried_before: "This is the archaeology. The foundation tried something like this before. Say what, and what got in the way. That history is evidence for the whole group.",
       ring: "The foundation gave one small grant and isn't in the room week to week. Wider field.",
       customer_role: "The foundation contributes. It isn't the one whose life the work changes.",
-      connection: "In the real form this question is about The Labs. Here it's about the Collective, but the shape is the same: what would each side want?",
+      connection: "In the real form this question is about The Labs. Here it's about the Collective, but the shape is the same: could they connect, and what would each side want?",
     },
   },
 ];
@@ -109,18 +109,18 @@ const DEFAULT_CAPTIONS: Record<string, string> = {
   name: "Name the player. Use the name people in the neighborhood use.",
   org_type: "Pick the closest type from the list.",
   org_type_other: "When the list doesn't fit, say what kind of player this is in a word or two.",
-  description: "Who they are, in your own words: what real things they make, fix, teach, or help others make, and how they show up here. A few lines is plenty.",
-  tried_before: "If they've tried something in this area before, say what, and what got in the way. Optional, but it's evidence.",
+  description: "Who they are, in your own words: what they do or make, and how they show up here. A few lines is plenty.",
+  tried_before: "If they've tried something in this area before, say what, and how it went. Optional, but it's evidence.",
   ring: "Inner circle if they already work with the organization at the center. Wider field if they could be affected or could help but aren't involved yet.",
-  capitals: "Rate how much of each of the seven kinds of wealth this player has: low, medium, or high. Add a note where it helps. Watch the shape take form as you go.",
+  capitals: "Rate how much of each of the seven kinds of wealth this player has: low, medium, high, or not sure. Add a note where it helps. Watch the shape take form as you go.",
   connections: "Now the heart of it: who are they connected to? One row per connection. If you know which capital moves between them and which way, say so. That's optional, and it's what lets us draw the field later.",
   needs: "What do they need? One or two sentences.",
   values_held: "What do they value? Optional.",
   fears: "What do they fear or want to avoid? Optional.",
   influence_level: "How much say do they have over what happens around the organization at the center?",
-  stake: "What's at stake for them? What do they stand to gain or lose?",
-  customer_role: "Are they served by the work, contributing to it, or both? Optional, but it's the pattern we look for most on sensemaking day.",
-  connection: "Last, how could they connect to the organization at the center? What would each side want from it?",
+  stake: "What's at stake for them, if anything? What do they stand to gain or lose?",
+  customer_role: "Are they served by the work, contributing to it, both, or neither? Optional. Not sure is a real answer.",
+  connection: "Last, could they connect to the organization at the center? How, or why not?",
 };
 
 export function stepsFor(ex: Example): Step[] {
@@ -134,7 +134,7 @@ export function stepsFor(ex: Example): Step[] {
   if (ex.tried_before) steps.push({ key: "tried_before", kind: "text", caption: cap("tried_before") });
   steps.push({ key: "ring", kind: "choice", caption: cap("ring") });
   CAPITALS.forEach((c, i) => steps.push({ key: ratingField(c.key), kind: "segment", caption: i === 0 ? cap("capitals") : `${c.label}: ${c.prompt.toLowerCase()}.` }));
-  ex.connections.forEach((_, i) => steps.push({ key: `connection:${i}`, kind: "connection", caption: i === 0 ? cap("connections") : i === 1 ? "Add another. Most players have at least two or three." : "One more. You can always come back and add to this." }));
+  ex.connections.forEach((_, i) => steps.push({ key: `connection:${i}`, kind: "connection", caption: i === 0 ? cap("connections") : i === 1 ? "Add as many as you know of. One is fine if that's what you know." : "You can always come back and add to this." }));
   steps.push({ key: "needs", kind: "text", caption: cap("needs") });
   if (ex.values_held) steps.push({ key: "values_held", kind: "text", caption: cap("values_held") });
   if (ex.fears) steps.push({ key: "fears", kind: "text", caption: cap("fears") });

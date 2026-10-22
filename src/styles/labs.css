@@ -267,7 +267,8 @@ a.prow-name:hover { text-decoration: underline; text-decoration-color: var(--tex
 .choice b { color: var(--text); font-weight: 600; }
 .choice span { color: var(--text-2); }
 .seg { border-radius: var(--r-btn); background: var(--surface); box-shadow: inset 0 0 0 1px var(--rule-2); }
-.seg label { border-radius: var(--r-field); color: var(--text-2); font-weight: 500; }
+.seg label { border-radius: var(--r-field); color: var(--text-2); font-weight: 500; font-size: 14px; padding: 0 4px; }
+@media (min-width: 760px) { .cap { grid-template-columns: 1fr 330px; } }
 .seg input:checked + label { color: #032026; font-weight: 600; }
 .seg .thumb { border-radius: var(--r-field); background: var(--shape); box-shadow: none; }
 .caps { border-radius: 0; background: none; box-shadow: inset 0 1px 0 var(--rule-2); }

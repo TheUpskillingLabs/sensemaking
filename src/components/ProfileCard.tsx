@@ -1,5 +1,5 @@
 import { kindOf } from "./bits";
-import { CAPITALS, CUSTOMER_ROLE_LABEL, LEVEL_LABEL, flowLabel, namedConnections, noteField, ratingField } from "../lib/capitals";
+import { CAPITALS, CUSTOMER_ROLE_LABEL, LEVEL_LABEL, flowLabel, isRated, namedConnections, noteField, ratingField } from "../lib/capitals";
 import type { Level, ProfileRow } from "../lib/types";
 
 function Lvl({ v }: { v: Level | null }) {
@@ -18,20 +18,20 @@ export function CapRing({ p }: { p: ProfileRow }) {
   const pts = CAPITALS.map((cap, i) => {
     const a = -Math.PI / 2 + (i * 2 * Math.PI) / CAPITALS.length;
     const v = p[ratingField(cap.key)];
-    const k = v ? R[v] : 0;
+    const k = isRated(v) ? R[v] : 0;
     return { cap, a, v, x: c + Math.cos(a) * r * k, y: c + Math.sin(a) * r * k, lx: c + Math.cos(a) * (r + 30), ly: c + Math.sin(a) * (r + 30), ex: c + Math.cos(a) * r, ey: c + Math.sin(a) * r };
   });
-  const rated = pts.filter((q) => q.v);
+  const rated = pts.filter((q) => isRated(q.v));
   return (
     <figure className="capring">
       <svg viewBox={`0 0 ${size} ${size}`} role="img" aria-label={pts.map((q) => `${q.cap.label}: ${q.v ? LEVEL_LABEL[q.v] : "not rated"}`).join(", ")}>
         {[0.4, 0.7, 1].map((k) => <polygon key={k} className="cr-ring" points={pts.map((q) => `${c + Math.cos(q.a) * r * k},${c + Math.sin(q.a) * r * k}`).join(" ")} />)}
         {pts.map((q) => <line key={q.cap.key} x1={c} y1={c} x2={q.ex} y2={q.ey} className="cr-spoke" />)}
-        {rated.length > 0 && <polygon points={pts.map((q) => q.v ? `${q.x},${q.y}` : `${c + Math.cos(q.a) * r * 0.08},${c + Math.sin(q.a) * r * 0.08}`).join(" ")} className="cr-area" />}
-        {pts.map((q) => q.v && <circle key={q.cap.key} cx={q.x} cy={q.y} r={4} className="cr-dot" />)}
+        {rated.length > 0 && <polygon points={pts.map((q) => isRated(q.v) ? `${q.x},${q.y}` : `${c + Math.cos(q.a) * r * 0.08},${c + Math.sin(q.a) * r * 0.08}`).join(" ")} className="cr-area" />}
+        {pts.map((q) => isRated(q.v) && <circle key={q.cap.key} cx={q.x} cy={q.y} r={4} className="cr-dot" />)}
         {pts.map((q) => <text key={q.cap.key} x={q.lx} y={q.ly} className="cr-label" textAnchor={Math.abs(Math.cos(q.a)) < 0.3 ? "middle" : Math.cos(q.a) > 0 ? "start" : "end"} dominantBaseline="middle">{q.cap.label}</text>)}
       </svg>
-      <figcaption>Further from the center means rated higher.</figcaption>
+      <figcaption>Further from the center means rated higher. "Not sure" sits at the center.</figcaption>
     </figure>
   );
 }
@@ -80,7 +80,7 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant =
         <div><dt>Influence</dt><dd><Lvl v={p.influence_level} />{p.influence_note?.trim() ? <span className="capnote">{p.influence_note}</span> : null}</dd></div>
         <div><dt>What's at stake for them</dt><dd><Text v={p.stake} /></dd></div>
         <div><dt>Served, contributing, or both</dt><dd>{p.customer_role ? CUSTOMER_ROLE_LABEL[p.customer_role] : <span className="muted">—</span>}</dd></div>
-        <div><dt>How they could connect to {centre}</dt><dd><Text v={p.connection_to_labs} /></dd></div>
+        <div><dt>Could they connect to {centre}?</dt><dd><Text v={p.connection_to_labs} /></dd></div>
       </dl>
     </article>
   );

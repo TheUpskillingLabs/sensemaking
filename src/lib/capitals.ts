@@ -18,16 +18,20 @@ export const LEVELS: { value: Level; label: string }[] = [
   { value: "low", label: "Low" },
   { value: "medium", label: "Medium" },
   { value: "high", label: "High" },
+  { value: "unsure", label: "Not sure" },
 ];
-export const LEVEL_LABEL: Record<Level, string> = { low: "Low", medium: "Medium", high: "High" };
+export const LEVEL_LABEL: Record<Level, string> = { low: "Low", medium: "Medium", high: "High", unsure: "Not sure" };
+/** A rating that places a point on the shape; "not sure" doesn't. */
+export const isRated = (v: Level | null | undefined): v is "low" | "medium" | "high" => v === "low" || v === "medium" || v === "high";
 
+/** Alphabetical, so the order doesn't suggest an answer. */
 export const ORG_TYPES: { value: OrgType; label: string }[] = [
-  { value: "library", label: "Library" },
-  { value: "employer", label: "Employer" },
-  { value: "workforce_agency", label: "Workforce agency" },
   { value: "community_group", label: "Community group" },
-  { value: "training_provider", label: "Training provider" },
+  { value: "employer", label: "Employer" },
   { value: "funder", label: "Funder" },
+  { value: "library", label: "Library" },
+  { value: "training_provider", label: "Training provider" },
+  { value: "workforce_agency", label: "Workforce agency" },
   { value: "other", label: "Other" },
 ];
 export const ORG_TYPE_LABEL: Record<OrgType, string> = Object.fromEntries(ORG_TYPES.map((o) => [o.value, o.label])) as Record<OrgType, string>;
@@ -57,10 +61,11 @@ export const CUSTOMER_ROLES: { value: CustomerRole; label: string; hint: string 
   { value: "helped", label: "Served", hint: "The Labs' work changes things for them." },
   { value: "paying", label: "Contributing", hint: "They fund it, host it, hire from it, or give their time." },
   { value: "both", label: "Both", hint: "Served by it, and helps keep it going." },
-  { value: "unsure", label: "Not sure yet", hint: "That's fine. Say what you'd need to know." },
+  { value: "neither", label: "Neither", hint: "No real tie to The Labs today." },
+  { value: "unsure", label: "Not sure", hint: "That's fine. Say what you'd need to know." },
 ];
 /* Database values stay helped/paying; the words people see are served/contributing. */
-export const CUSTOMER_ROLE_LABEL: Record<CustomerRole, string> = { helped: "Served", paying: "Contributing", both: "Served and contributing", unsure: "Not sure yet" };
+export const CUSTOMER_ROLE_LABEL: Record<CustomerRole, string> = { helped: "Served", paying: "Contributing", both: "Served and contributing", neither: "Neither", unsure: "Not sure" };
 
 export const RING_LABEL: Record<Ring, string> = { inner_circle: "Inner circle", wider_field: "Wider field" };
 
@@ -87,7 +92,7 @@ export function missingFields(p: Pick<ProfileRow, EditableField>): Missing[] {
   if (blank(p.needs)) out.push({ field: "needs", label: "What they need" });
   if (!p.influence_level) out.push({ field: "influence_level", label: "Influence" });
   if (blank(p.stake)) out.push({ field: "stake", label: "What's at stake for them" });
-  if (blank(p.connection_to_labs)) out.push({ field: "connection_to_labs", label: "How they could connect to The Labs" });
+  if (blank(p.connection_to_labs)) out.push({ field: "connection_to_labs", label: "Could they connect to The Labs" });
   return out;
 }
 

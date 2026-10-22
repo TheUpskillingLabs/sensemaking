@@ -13,9 +13,9 @@ export interface Filters {
 }
 
 const TYPES: OrgType[] = ["library", "employer", "workforce_agency", "community_group", "training_provider", "funder", "other"];
-const ROLES: CustomerRole[] = ["helped", "paying", "both", "unsure"];
+const ROLES: CustomerRole[] = ["helped", "paying", "both", "neither", "unsure"];
 const RINGS: Ring[] = ["inner_circle", "wider_field"];
-const LEVELS: Level[] = ["low", "medium", "high"];
+const LEVELS: Level[] = ["low", "medium", "high", "unsure"];
 
 export function readFilters(sp: URLSearchParams): Filters {
   const t = sp.get("type") ?? "", r = sp.get("ring") ?? "", c = sp.get("cap") ?? "", l = sp.get("level") ?? "", ro = sp.get("role") ?? "";

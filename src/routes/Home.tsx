@@ -97,7 +97,7 @@ export default function Home() {
                     <span className="glyph-slot" aria-hidden="true" />
                     <div className="prow-main">
                       <span className="prow-name">{ordered.length + i === 0 ? "Your first player" : `Your ${ordinal[ordered.length + i] ?? "next"} player`}</span>
-                      <span className="prow-kind">{ordered.length + i === 0 ? "Start with someone you know well." : "Someone different from the others: a funder, a neighbor, a rival."}</span>
+                      <span className="prow-kind">{ordered.length + i === 0 ? "Start with someone you know well." : "Anyone who matters here. Different from the first, if you can."}</span>
                     </div>
                     <span className="state" />
                     <span className="prow-act">

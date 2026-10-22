@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { CAPITALS, LEVEL_LABEL, RING_LABEL, ratingField, typeLabel } from "../lib/capitals";
+import { CAPITALS, LEVEL_LABEL, RING_LABEL, isRated, ratingField, typeLabel } from "../lib/capitals";
 import type { Level, ProfileRow } from "../lib/types";
 
 export function Loader({ label = "Loading", center = false }: { label?: string; center?: boolean }) {
@@ -114,14 +114,14 @@ export function CapGlyph({ p, size = 44, label = true }: { p: ProfileRow; size?:
   const c = 50, r = 44;
   const at = (i: number, k: number) => { const a = -Math.PI / 2 + (i * 2 * Math.PI) / CAPITALS.length; return `${(c + Math.cos(a) * r * k).toFixed(1)},${(c + Math.sin(a) * r * k).toFixed(1)}`; };
   const vals = CAPITALS.map((cap) => p[ratingField(cap.key)] as Level | null);
-  const rated = vals.filter(Boolean).length;
+  const rated = vals.filter(isRated).length;
   const desc = CAPITALS.map((cap, i) => `${cap.label} ${vals[i] ? LEVEL_LABEL[vals[i] as Level].toLowerCase() : "not rated"}`).join(", ");
   return (
     <svg className={`glyph${rated ? "" : " glyph-empty"}`} viewBox="0 0 100 100" width={size} height={size}
       role={label ? "img" : undefined} aria-label={label ? `Capitals: ${desc}` : undefined} aria-hidden={label ? undefined : true}>
       <polygon className="g-frame" points={CAPITALS.map((_, i) => at(i, 1)).join(" ")} />
       {CAPITALS.map((_, i) => <line key={i} className="g-spoke" x1={c} y1={c} x2={at(i, 1).split(",")[0]} y2={at(i, 1).split(",")[1]} />)}
-      {rated > 0 && <polygon className="g-shape" points={vals.map((v, i) => at(i, v ? K[v] : 0.08)).join(" ")} />}
+      {rated > 0 && <polygon className="g-shape" points={vals.map((v, i) => at(i, isRated(v) ? K[v] : 0.08)).join(" ")} />}
     </svg>
   );
 }
@@ -129,7 +129,7 @@ export function CapGlyph({ p, size = 44, label = true }: { p: ProfileRow; size?:
 /** How to read the mark: one worked example, labelled, instead of a colour legend. */
 export function GlyphKey() {
   const K = { low: 0.4, medium: 0.7, high: 1 } as const;
-  const ex: Level[] = ["high", "medium", "low", "high", "medium", "low", "medium"];
+  const ex: ("low" | "medium" | "high")[] = ["high", "medium", "low", "high", "medium", "low", "medium"];
   const c = 60, r = 40;
   const at = (i: number, k: number) => { const a = -Math.PI / 2 + (i * 2 * Math.PI) / CAPITALS.length; return [c + Math.cos(a) * r * k, c + Math.sin(a) * r * k]; };
   return (
@@ -140,7 +140,7 @@ export function GlyphKey() {
         <polygon className="g-shape" points={ex.map((v, i) => at(i, K[v]).join(",")).join(" ")} />
         {CAPITALS.map((cap, i) => { const [x, y] = at(i, 1.32); return <text key={cap.key} className="g-label" x={x} y={y} textAnchor="middle" dominantBaseline="middle">{cap.label.slice(0, 3)}</text>; })}
       </svg>
-      <figcaption>Each profile's mark shows the seven capitals, clockwise from Natural at the top. The further a point reaches toward the edge, the higher that capital was rated.</figcaption>
+      <figcaption>Each profile's mark shows the seven capitals, clockwise from Natural at the top. The further a point reaches toward the edge, the higher that capital was rated. "Not sure" sits at the center.</figcaption>
     </figure>
   );
 }

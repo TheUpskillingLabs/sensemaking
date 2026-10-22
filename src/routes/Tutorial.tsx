@@ -179,7 +179,7 @@ export default function Tutorial() {
                 <div className={`field${live("stake")}`}><p className="label">What's at stake for them</p><textarea className="textarea" readOnly value={draft.stake ?? ""} /></div>
                 <div className={`field${live("customer_role")}`}><p className="label">Served, contributing, or both? <span className="opt">(optional)</span></p>
                   <div className="choices choices-4">{CUSTOMER_ROLES.map((r) => <label key={r.value} className="choice"><input type="radio" readOnly checked={draft.customer_role === r.value} /><b>{r.label}</b><span>{r.hint}</span></label>)}</div></div>
-                <div className={`field${live("connection")}`}><p className="label">How they could connect to {CASE.short}</p><textarea className="textarea" readOnly value={draft.connection_to_labs ?? ""} /></div>
+                <div className={`field${live("connection")}`}><p className="label">Could they connect to {CASE.short}?</p><textarea className="textarea" readOnly value={draft.connection_to_labs ?? ""} /></div>
               </div>
             </div>
           </div>
