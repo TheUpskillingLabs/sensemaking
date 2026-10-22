@@ -1,40 +1,16 @@
 import { createContext, useCallback, useContext, useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { topic, type Topic, type TopicId } from "../lib/reading";
+import { topic, type TopicId } from "../lib/reading";
+import { SectionAlone } from "./Essay";
+import { sectionFor } from "../lib/essay";
 
 /* Background, delivered without getting in the way of the profile:
    - <Why id> sits beside a question: one quiet "Why we ask" link. Tapping it
      opens a short explanation in place (two or three sentences). Nothing opens
      on its own, and only one is open at a time.
-   - "Read more" opens the full topic in a side sheet (a bottom sheet on a
-     phone). The page stays where it was, so typing and autosave carry on;
-     Escape or Close puts focus back where it was.
-   - The Reading tab holds the same topics as a library for the curious. */
-
-/** The full topic: explanation, how it shows up here, checked sources. */
-export function TopicBody({ t, headingLevel = 2 }: { t: Topic; headingLevel?: 2 | 3 }) {
-  const H = headingLevel === 2 ? "h2" : "h3";
-  return (
-    <>
-      <div className="topic-head">
-        <H className={headingLevel === 2 ? "h-section" : "h3"} id={`h-${t.id}`}>{t.title}</H>
-      </div>
-      <div className="topic-body">
-      {t.body.map((p, i) => <p key={i}>{p}</p>)}
-      <p className="here"><strong>In this app:</strong> {t.here}</p>
-      <ul className="sources">
-        {t.sources.map((s) => (
-          <li key={s.href + s.title} className="source">
-            <span className={`kind kind-${s.kind.replace(/\s+/g, "-").toLowerCase()}`}>{s.kind}</span>
-            <a href={s.href} target="_blank" rel="noopener noreferrer">{s.title}<span className="sr-only"> (opens in a new tab)</span></a>
-            <span className="by">{s.by}</span>
-            {s.note && <span className="snote">{s.note}</span>}
-          </li>
-        ))}
-      </ul>
-      </div>
-    </>
-  );
-}
+   - "Read more" opens the matching section of the reading essay in a side
+     sheet (a bottom sheet on a phone). The page stays where it was, so typing
+     and autosave carry on; Escape or Close puts focus back where it was.
+   - The Reading tab holds the whole essay. */
 
 interface SheetApi { open: (id: TopicId) => void; openWhy: string | null; setOpenWhy: (key: string | null) => void }
 const SheetCtx = createContext<SheetApi | null>(null);
@@ -63,7 +39,7 @@ export function ReadingSheetProvider({ children }: { children: ReactNode }) {
       <dialog
         ref={dialog}
         className="reading-sheet reading"
-        aria-labelledby={id ? `h-${id}` : undefined}
+        aria-labelledby={id ? `sh-h-${sectionFor(id).id}` : undefined}
         onClose={() => { setId(null); returnTo.current?.focus?.({ preventScroll: true }); }}
         onClick={(e) => { if (e.target === dialog.current) close(); }}
       >
@@ -73,7 +49,7 @@ export function ReadingSheetProvider({ children }: { children: ReactNode }) {
               <span className="sheet-label">Background reading</span>
               <button type="button" className="btn btn-ghost btn-sm" onClick={close} autoFocus>Close</button>
             </div>
-            <div className="sheet-body topic"><TopicBody t={topic(id)} /></div>
+            <div className="sheet-body essay"><SectionAlone s={sectionFor(id)} /></div>
           </div>
         )}
       </dialog>

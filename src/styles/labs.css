@@ -312,23 +312,46 @@ a.prow-name:hover { text-decoration: underline; text-decoration-color: var(--tex
   .doc-rail { position: sticky; top: calc(var(--bar) + 32px); }
 }
 .doc-main { max-width: 760px; }
-.reading .topic { display: block; padding: 40px 0 8px; margin: 0; box-shadow: inset 0 1px 0 var(--rule); scroll-margin-top: calc(var(--bar) + 64px); background: none; border-radius: 0; }
-.doc-main .topic:first-child { box-shadow: none; padding-top: 8px; }
-.reading .topic-head { position: static; display: block; margin-bottom: 16px; }
-.reading .topic-body { display: grid; gap: 16px; }
-.reading .topic-body > p { font-size: 18px; line-height: 1.65; color: var(--text); max-width: 64ch; text-wrap: pretty; }
-.reading .topic-body > p.here { padding: 16px 20px; border-radius: var(--r-panel); background: var(--surface); box-shadow: none; font-size: 16px; color: var(--text); }
-.reading .sources { list-style: none; margin: 8px 0 24px; padding: 0; display: grid; gap: 0; }
-.reading .source { display: grid; gap: 2px; padding: 14px 0; border-radius: 0; background: none; box-shadow: inset 0 1px 0 var(--rule); }
-.reading .source a { font-size: 16px; font-weight: 600; color: var(--text); text-decoration: none; }
-.reading .source a:hover { text-decoration: underline; text-decoration-color: var(--text-3); }
-.reading .kind { order: -1; font-size: var(--fs-meta); font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--text-3); background: none; padding: 0; }
-.reading .kind-start-here { color: var(--link); }
-.reading .by { font-size: var(--fs-small); color: var(--text-2); }
-.reading .snote { font-size: var(--fs-small); color: var(--text-3); }
+/* The essay. Two ways through: a skim reads the brief, the lead lines and the
+   two short lines under each section; a full read takes everything. */
+.essay { max-width: 680px; }
+.es-time { font-size: var(--fs-small); color: var(--text-2); }
+.es-note { display: grid; gap: 12px; padding: 0 0 28px; font-size: 16px; line-height: 1.6; color: var(--text-2); max-width: 62ch; }
+.es-note p:first-child { color: var(--text); }
+.es-brief { padding: 24px 0 32px; box-shadow: inset 0 1px 0 var(--rule-2); scroll-margin-top: calc(var(--bar) + 64px); }
+.es-brief-h { font-size: var(--fs-small); font-weight: 600; color: var(--text-2); margin-bottom: 12px; }
+.es-brief ul { margin: 0; padding: 0 0 0 20px; display: grid; gap: 10px; font-size: 17px; line-height: 1.5; color: var(--text); max-width: 60ch; }
+.es-brief li::marker { color: var(--text-3); }
+.es { display: grid; gap: 18px; padding: 44px 0 36px; box-shadow: inset 0 1px 0 var(--rule); scroll-margin-top: calc(var(--bar) + 56px); }
+.es-title { display: flex; gap: 14px; align-items: baseline; }
+.es-n { flex: none; font-size: var(--fs-small); font-weight: 600; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.es-lead { font-size: clamp(21px, 2vw, 26px); line-height: 1.35; font-weight: 500; letter-spacing: -0.015em; color: var(--text); max-width: 30em; text-wrap: pretty; }
+.es-body { display: grid; gap: 16px; }
+.es-body p { font-size: 17px; line-height: 1.65; color: var(--text-2); max-width: 64ch; text-wrap: pretty; }
+.es-body b { color: var(--text); font-weight: 600; }
+.es-terms, .es-for, .es-talk { font-size: 15px; line-height: 1.55; max-width: 60ch; color: var(--text-2); }
+.es-terms span, .es-for span, .es-talk span { display: block; font-size: var(--fs-meta); font-weight: 600; color: var(--text-3); margin-bottom: 2px; }
+.es-for { color: var(--text); font-style: italic; }
+.es-talk { padding: 12px 16px; border-radius: var(--r-btn); background: var(--surface); }
+.es-talk span { color: var(--link); }
+.es-closing { padding: 32px 0 8px; font-size: 17px; line-height: 1.65; color: var(--text); max-width: 60ch; }
+.fn { font-size: 0.7em; line-height: 0; vertical-align: super; }
+.fn a { padding: 0 2px; font-weight: 600; text-decoration: none; }
+.es-notes { padding-top: 40px; margin-top: 24px; box-shadow: inset 0 1px 0 var(--rule-2); scroll-margin-top: calc(var(--bar) + 56px); }
+.es-notes-h { font-size: var(--fs-section); font-weight: 600; letter-spacing: -0.02em; font-variation-settings: "SHRP" 60; margin-bottom: 16px; }
+.es-notes ol { margin: 0; padding: 0 0 0 28px; display: grid; gap: 10px; font-size: var(--fs-small); line-height: 1.55; color: var(--text-2); }
+.es-notes li { scroll-margin-top: calc(var(--bar) + 24px); }
+.es-notes li:target { color: var(--text); }
+.es-notes li::marker { color: var(--text-3); font-variant-numeric: tabular-nums; }
+.es-notes i { font-style: italic; }
+.es-notes a { color: var(--link); }
+.fn-back { text-decoration: none; margin-left: 4px; }
 .reading-sheet { background: var(--surface-2); color: var(--text); }
 .reading-sheet .sheet-label { font-size: var(--fs-small); color: var(--text-2); }
-.reading-sheet .topic-head .h-section { font-size: 26px; }
+.reading-sheet .es { padding-top: 8px; box-shadow: none; }
+.reading-sheet .es-title { font-size: 24px; }
+.reading-sheet .es-lead { font-size: 20px; }
+.reading-sheet .es-notes { padding-top: 24px; }
 
 /* ── Gate and loader ── */
 .gate .h2 { font-size: var(--fs-title); font-weight: 640; line-height: 1.06; letter-spacing: -0.03em; font-variation-settings: "SHRP" 100; }
