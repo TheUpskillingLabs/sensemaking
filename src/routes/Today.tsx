@@ -39,7 +39,7 @@ export default function Today() {
                 {b.produces && <p className="rs-out"><span>Leaves behind</span>{b.produces}</p>}
                 {b.app && (
                   <p className="rs-app">
-                    {b.app.map((a) => a.to ? <Link key={a.text} className="btn btn-quiet btn-sm" to={a.to} viewTransition>{a.text}</Link> : <span key={a.text}>{a.text}</span>)}
+                    {b.app.map((a) => a.to ? <Link key={a.text} className="btn btn-quiet btn-sm" to={a.to} viewTransition>{a.text}</Link> : a.href ? <a key={a.text} className="btn btn-quiet btn-sm" href={a.href}>{a.text}</a> : <span key={a.text}>{a.text}</span>)}
                   </p>
                 )}
               </div>

@@ -15,7 +15,7 @@ export interface Block {
   /** What the block leaves behind. */
   produces: string;
   /** What to do in the app, if anything. */
-  app?: { text: string; to?: string }[];
+  app?: { text: string; to?: string; href?: string }[];
 }
 
 export const BLOCKS: Block[] = [
@@ -29,7 +29,7 @@ export const BLOCKS: Block[] = [
     start: "10:30", end: "10:55", title: "Arrive, read, discuss the tensions", who: "Everyone",
     what: ["Read cards you didn't write.", "Walk the seven tensions from the October 3 retreat. Is one missing? Add it to the \"new\" sheet with a name and one sentence. Are two the same? Merge them.", "Name the nonnegotiables: what The Labs won't change this cycle. They go on the sheet by the door.", "Lunch isn't provided today. The break is 11:50 to 12:30."],
     produces: "The tensions everyone will test today.",
-    app: [{ text: "Open the gallery", to: "/gallery" }],
+    app: [{ text: "The deck: The Labs, and Greater Washington", href: "/deck/" }, { text: "Open the gallery", to: "/gallery" }],
   },
   {
     start: "10:55", end: "11:40", title: "Archaeology together", who: "Everyone",

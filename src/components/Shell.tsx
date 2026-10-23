@@ -91,6 +91,7 @@ function Bar() {
             <nav aria-label="Main">
               {links("menu-link")}
               <Link className="menu-link menu-sub" to="/tutorial" viewTransition>How to write a profile</Link>
+              <a className="menu-link menu-sub" href="/deck/">Saturday's deck</a>
             </nav>
             <div className="menu-foot">
               {user.email && <p className="menu-who">Signed in as {user.email}</p>}
