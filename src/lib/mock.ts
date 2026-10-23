@@ -47,6 +47,9 @@ seed.forEach((s, i) => {
   rows.push(r);
 });
 rows.push({ ...blankRow("seed-draft", others[0] as string), name: "Community college (draft)", org_type: "training_provider" });
+// ?many=N fills the field out to N submitted profiles, to check print layouts against the sheet allowance.
+{ const many = Number(new URLSearchParams(location.search).get("many") ?? 0); const base = rows.filter((r) => r.status === "submitted");
+  for (let i = rows.length; base.length && i < many; i++) { const src = base[i % base.length] as ProfileRow; rows.push({ ...src, id: `seed-many-${i}`, name: `${src.name} (${i})` }); } }
 // ?long=1 adds a profile with every answer at its longest, to check printed cards stay inside their margins.
 if (new URLSearchParams(location.search).get("long") === "1") {
   const L = (s: string, n: number) => Array.from({ length: n }, () => s).join(" ");

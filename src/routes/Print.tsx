@@ -12,14 +12,29 @@ import "../styles/print.css";
 /* Cut-out cards on US Letter. /print?<gallery filters>&size=half|quarter
    - half: two 5.5 x 8.5 in cards on a landscape sheet. One cut down the middle.
    - quarter: four 4.25 x 5.5 in cards on a portrait sheet. One cut each way.
+   - sixth: six 3.67 x 4.25 in cards on a landscape sheet. Three cuts.
+   DCPL allows twenty printed sheets, so the page counts sheets against that
+   and, unless someone picks a size, uses the roomiest layout that fits.
    The page margin is zero and each card keeps its own inner margin, so the
    paper's edges are the cards' outer edges and the cut lines are the only
    lines to cut. Text is clamped to fit; the full profile is always in the app.
    Cards are read together in the room, so they never carry an author. */
 
-type Size = "half" | "quarter";
-const PER: Record<Size, number> = { half: 2, quarter: 4 };
-const SHEET_PX: Record<Size, number> = { half: 1056, quarter: 816 }; // 11in and 8.5in at 96px/in
+type Size = "half" | "quarter" | "sixth";
+const SIZES: Size[] = ["half", "quarter", "sixth"];
+const PER: Record<Size, number> = { half: 2, quarter: 4, sixth: 6 };
+const GRID: Record<Size, [number, number]> = { half: [2, 1], quarter: [2, 2], sixth: [3, 2] }; // columns, rows
+const LANDSCAPE: Record<Size, boolean> = { half: true, quarter: false, sixth: true };
+const SHEET_PX: Record<Size, number> = { half: 1056, quarter: 816, sixth: 1056 }; // 11in or 8.5in at 96px/in
+const SHEET_LIMIT = 20; // DCPL's print allowance
+const sheetsFor = (n: number, s: Size) => Math.ceil(n / PER[s]);
+/** The roomiest layout that fits the allowance, else the most compact one. */
+const bestFit = (n: number): Size => SIZES.find((s) => sheetsFor(n, s) <= SHEET_LIMIT) ?? "sixth";
+const ABOUT: Record<Size, string> = {
+  half: "Each card is 5.5 × 8.5 in with the full profile. Cut once, down the dashed line.",
+  quarter: "Each card is 4.25 × 5.5 in, a short version for sorting on a table. Cut once each way.",
+  sixth: "Each card is 3.67 × 4.25 in, just enough to sort and talk about. Three cuts.",
+};
 
 function chunk<T>(rows: T[], n: number): T[][] {
   const out: T[][] = [];
@@ -104,6 +119,20 @@ function QuarterCard({ p }: { p: ProfileRow }) {
       {t(p.touchpoints) && <p className="cc-field cl-2"><b>Where people meet them</b> {t(p.touchpoints)}</p>}
       {conns.length > 0 && <p className="cc-field cl-3"><b>Connected to</b> {conns.map((c) => c.name.trim()).join(", ")}</p>}
       {t(p.needs) && <p className="cc-field cl-3"><b>Needs</b> {t(p.needs)}</p>}
+      {t(p.stake) && <p className="cc-field cl-2"><b>At stake</b> {t(p.stake)}</p>}
+      <p className="cc-foot">Build Cycle {CYCLE}</p>
+    </article>
+  );
+}
+
+function SixthCard({ p }: { p: ProfileRow }) {
+  const conns = namedConnections(p.connections);
+  return (
+    <article className="cc cc-sixth" aria-label={p.name ?? "Untitled profile"}>
+      <Head p={p} shape={78} />
+      {t(p.description) && <p className="cc-desc cl-4">{t(p.description)}</p>}
+      {conns.length > 0 && <p className="cc-field cl-2"><b>Connected to</b> {conns.map((c) => c.name.trim()).join(", ")}</p>}
+      {t(p.needs) && <p className="cc-field cl-2"><b>Needs</b> {t(p.needs)}</p>}
       <p className="cc-foot">Build Cycle {CYCLE}</p>
     </article>
   );
@@ -114,15 +143,16 @@ export default function Print() {
   const { membership } = useAuth();
   const [sp, setSp] = useSearchParams();
   const f = readFilters(sp);
-  const size: Size = sp.get("size") === "quarter" ? "quarter" : "half";
+  const asked = sp.get("size");
   const facilitator = Boolean(membership?.facilitator);
   const { rows, error, reload } = useGalleryData(facilitator);
   const shown = useMemo(() => (rows ? applyFilters(rows, f, facilitator) : []), [rows, sp, facilitator]); // eslint-disable-line react-hooks/exhaustive-deps
+  const size: Size = (SIZES as string[]).includes(asked ?? "") ? (asked as Size) : bestFit(shown.length);
 
   // Paper size and orientation have to be set at the document level.
   useEffect(() => {
     const s = document.createElement("style");
-    s.textContent = `@page { size: letter ${size === "half" ? "landscape" : "portrait"}; margin: 0; }`;
+    s.textContent = `@page { size: letter ${LANDSCAPE[size] ? "landscape" : "portrait"}; margin: 0; }`;
     document.head.appendChild(s);
     return () => s.remove();
   }, [size]);
@@ -143,6 +173,8 @@ export default function Print() {
 
   const back = new URLSearchParams(sp); back.delete("size"); back.delete("per");
   const sheets = chunk(shown, PER[size]);
+  const over = sheets.length > SHEET_LIMIT;
+  const [cols, rowsN] = GRID[size];
 
   return (
     <>
@@ -152,15 +184,24 @@ export default function Print() {
           <span className="sr-only" id="size-l">Card size</span>
           <div className="size-seg">
             <Segmented dark name="size" labelledBy="size-l" value={size}
-              options={[{ value: "half", label: "2 per sheet" }, { value: "quarter", label: "4 per sheet" }]}
-              onChange={(v) => { const n = new URLSearchParams(sp); n.delete("per"); if (v === "quarter") n.set("size", "quarter"); else n.delete("size"); setSp(n, { replace: true }); }} />
+              options={SIZES.map((s) => ({ value: s, label: `${PER[s]} per sheet` }))}
+              onChange={(v) => { const n = new URLSearchParams(sp); n.delete("per"); n.set("size", v); setSp(n, { replace: true }); }} />
           </div>
           <button type="button" className="btn btn-primary btn-sm" onClick={() => window.print()} disabled={!rows || shown.length === 0}>Print</button>
         </div>
+        {rows && (
+          <div className={`budget${over ? " is-over" : ""}`} role="status" aria-live="polite">
+            <p className="budget-n"><b>{sheets.length}</b> of {SHEET_LIMIT} sheets</p>
+            <p className="budget-meter" aria-hidden="true">{Array.from({ length: SHEET_LIMIT }, (_, i) => <i key={i} className={i < sheets.length ? "on" : ""} />)}</p>
+            <p className="budget-note">
+              {shown.length} {shown.length === 1 ? "card" : "cards"}.{" "}
+              {over ? (size === "sixth" ? `That's over DCPL's ${SHEET_LIMIT}-sheet allowance even at 6 per sheet. Filter to fewer profiles in the gallery (one type or one ring at a time) and print in batches.` : `That's over DCPL's ${SHEET_LIMIT}-sheet allowance. Choose more per sheet.`)
+                : SIZES.filter((s) => PER[s] < PER[size] && sheetsFor(shown.length, s) <= SHEET_LIMIT).length > 0 && asked ? "A roomier layout would also fit." : `Fits DCPL's ${SHEET_LIMIT}-sheet allowance.`}
+            </p>
+          </div>
+        )}
         <p className="print-how">
-          {rows ? <><b>{shown.length} {shown.length === 1 ? "card" : "cards"}</b> on {sheets.length} {sheets.length === 1 ? "sheet" : "sheets"} of US Letter. </> : "Loading… "}
-          {size === "half" ? "Each card is 5.5 × 8.5 in, the full profile. Cut once, down the dashed line." : "Each card is 4.25 × 5.5 in, a short version for sorting on a table. Cut once each way."}
-          {" "}In the print dialog choose Letter, scale 100%, and margins None or Default.
+          {ABOUT[size]} In the print dialog choose Letter, one-sided, scale 100%, and margins None or Default.
         </p>
       </div>
       <main id="main" className="print-main" ref={wrap}>
@@ -173,11 +214,11 @@ export default function Print() {
                 <section key={group[0]?.id ?? i} className={`sheet sheet-${size}`} aria-label={`Sheet ${i + 1} of ${sheets.length}`}>
                   {Array.from({ length: PER[size] }, (_, j) => group[j]).map((p, j) => (
                     <div key={p?.id ?? `blank-${j}`} className="slot">
-                      {p ? (size === "half" ? <HalfCard p={p} /> : <QuarterCard p={p} />) : null}
+                      {p ? (size === "half" ? <HalfCard p={p} /> : size === "quarter" ? <QuarterCard p={p} /> : <SixthCard p={p} />) : null}
                     </div>
                   ))}
-                  <span className="cut cut-v" aria-hidden="true" />
-                  {size === "quarter" && <span className="cut cut-h" aria-hidden="true" />}
+                  {Array.from({ length: cols - 1 }, (_, k) => <span key={`v${k}`} className="cut cut-v" style={{ left: `${((k + 1) / cols) * 100}%` }} aria-hidden="true" />)}
+                  {Array.from({ length: rowsN - 1 }, (_, k) => <span key={`h${k}`} className="cut cut-h" style={{ top: `${((k + 1) / rowsN) * 100}%` }} aria-hidden="true" />)}
                 </section>
               ))}
             </div>

@@ -5,7 +5,16 @@
 .print-bar { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 10px 16px;
   padding: 12px var(--g); background: rgba(2, 26, 32, 0.95); box-shadow: inset 0 -1px 0 var(--rule); }
 .print-bar .act { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; }
-.size-seg { width: 260px; max-width: 100%; }
+.size-seg { width: 360px; max-width: 100%; }
+.budget { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.budget-n { font-size: 15px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.budget-n b { color: var(--text); font-weight: 650; }
+.budget-meter { display: flex; gap: 3px; }
+.budget-meter i { width: 9px; height: 12px; border-radius: 2px; box-shadow: inset 0 0 0 1px var(--rule-2); }
+.budget-meter i.on { background: var(--shape); box-shadow: none; }
+.budget.is-over .budget-meter i.on { background: var(--warn); }
+.budget.is-over .budget-n b, .budget.is-over .budget-note { color: var(--warn); }
+.budget-note { font-size: 13px; color: var(--text-2); }
 .print-how { grid-column: 1 / -1; font-size: 13px; line-height: 1.5; color: var(--text-2); max-width: 90ch; }
 .print-how b { color: var(--text); font-weight: 600; }
 @media (max-width: 599px) { .print-bar { grid-template-columns: 1fr; } .print-bar .act { justify-content: flex-start; } .size-seg { width: 100%; } }
@@ -18,12 +27,13 @@
   font-family: var(--font); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .sheet-half { width: 11in; height: 8.5in; grid-template-columns: 5.5in 5.5in; }
 .sheet-quarter { width: 8.5in; height: 11in; grid-template-columns: 4.25in 4.25in; grid-template-rows: 5.5in 5.5in; }
+.sheet-sixth { width: 11in; height: 8.5in; grid-template-columns: repeat(3, calc(11in / 3)); grid-template-rows: 4.25in 4.25in; }
 .slot { position: relative; overflow: hidden; }
 
 /* Cut lines: dashed, light, edge to edge, with a solid tick at each end in the margin. */
 .cut { position: absolute; pointer-events: none; }
-.cut-v { top: 0; bottom: 0; left: 50%; width: 0; border-left: 0.75pt dashed #9aa5a8; }
-.cut-h { left: 0; right: 0; top: 50%; height: 0; border-top: 0.75pt dashed #9aa5a8; }
+.cut-v { top: 0; bottom: 0; width: 0; border-left: 0.75pt dashed #9aa5a8; }
+.cut-h { left: 0; right: 0; height: 0; border-top: 0.75pt dashed #9aa5a8; }
 .cut-v::before, .cut-v::after { content: ""; position: absolute; left: -0.5pt; width: 0; height: 0.22in; border-left: 1pt solid #5e6b6e; }
 .cut-v::before { top: 0; } .cut-v::after { bottom: 0; }
 .cut-h::before, .cut-h::after { content: ""; position: absolute; top: -0.5pt; width: 0.22in; height: 0; border-top: 1pt solid #5e6b6e; }
@@ -34,6 +44,14 @@
 .cc > * { flex-shrink: 0; }
 .cc-half { padding: 0.42in 0.45in 0.36in; }
 .cc-quarter { padding: 0.36in 0.36in 0.3in; gap: 6pt; }
+.cc-sixth { padding: 0.3in 0.3in 0.26in; gap: 5pt; font-size: 8.5pt; }
+.cc-sixth .cc-head { gap: 7pt; }
+.cc-sixth .cc-name { font-size: 12.5pt; }
+.cc-sixth .cc-kind { font-size: 8pt; }
+.cc-sixth .cc-roles { font-size: 7.5pt; }
+.cc-sixth .cc-desc { font-size: 8.5pt; line-height: 1.32; }
+.cc-sixth .cc-field { font-size: 8pt; }
+.cc-sixth .ps-label { font-size: 12px; }
 .cc b { font-weight: 650; }
 .cc-head { display: flex; align-items: center; gap: 10pt; }
 .cc-id { min-width: 0; display: grid; gap: 1.5pt; }
