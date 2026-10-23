@@ -196,6 +196,7 @@ body[data-slide="10"].gl #gl { opacity: 0.28; }
   .words .ccf-viz { left: 50%; right: auto; transform: translateX(-50%) !important; top: calc(var(--gut) * 2.4); height: 42vh; max-width: calc(100vw - 2 * var(--gut)); }
 }
 @media (prefers-reduced-motion: reduce) { .ccf-viz * { transition: none !important; } }
+.quote.big p { font-size: max(24px, calc(62 * var(--u))); font-weight: 700; line-height: 1.02; letter-spacing: -0.035em; text-wrap: balance; color: var(--teal-hi); }
 </style>
 
 </head>
@@ -2324,6 +2325,17 @@ const SLIDES = [
       "“The national nonprofit maintains the core. Each region runs its own instance, like Greater Washington will. And every core volunteer is a contributor: that’s the rule. So the whole network builds the platform it runs on. That’s also how this Cycle works: everyone who takes part ends with their name in the code.” Advance.",
     ],
     pocket: "Two adoption bars: Greater Washington decides what goes into its own instance; the national board decides what is committed to OLOS core. Spin-outs are copies that credit their origins, never forks that compete.",
+  },
+  {
+    label: "Everyone a contributor", make: () => aiScene(),
+    words: `<p class="kicker">At the root of upskilling</p>
+      <h2 class="h">Everyone a core contributor</h2>
+      <p class="lead dim">The hope under every workshop and every Cycle: that anyone who comes through The Labs can help build the system they depend on. Not only use OLOS. Shape it.</p>
+      <blockquote class="quote big" data-at="1"><p>In the age of AI, if you aren’t in the kitchen, you’re on the menu.</p></blockquote>`,
+    notes: [
+      "“Underneath all of this is one hope. Decisions that shape people’s livelihoods are usually made by someone else, like roads paved by someone else. Upskilling, for us, means learning to chart and pave your own: that anyone who comes through The Labs can become a core contributor to the system they depend on. Not only use OLOS. Shape it.” Let the towers fall behind you.",
+      "“Because in the age of AI, if you aren’t in the kitchen, you’re on the menu.” Pause. Let it land before you advance.",
+    ],
   },
   {
     label: "C04", make: () => clusterScene(false),
