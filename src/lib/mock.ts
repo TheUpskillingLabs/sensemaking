@@ -47,6 +47,18 @@ seed.forEach((s, i) => {
   rows.push(r);
 });
 rows.push({ ...blankRow("seed-draft", others[0] as string), name: "Community college (draft)", org_type: "training_provider" });
+// ?long=1 adds a profile with every answer at its longest, to check printed cards stay inside their margins.
+if (new URLSearchParams(location.search).get("long") === "1") {
+  const L = (s: string, n: number) => Array.from({ length: n }, () => s).join(" ");
+  rows.push({ ...blankRow("seed-long", others[1 % others.length] as string), status: "submitted", submitted_at: new Date().toISOString(),
+    name: "Metropolitan Regional Workforce and Economic Opportunity Partnership Council", org_type: "workforce_agency", ring: "wider_field", roles: ["serving", "contributing", "sustaining"],
+    description: L("A very long description that keeps going well past what fits on a printed card.", 12), touchpoints: L("Front desks, hotlines, job fairs, caseworkers, a website, and more.", 8),
+    capital_natural_rating: "low", capital_cultural_rating: "medium", capital_human_rating: "high", capital_social_rating: "unsure", capital_political_rating: "high", capital_financial_rating: "high", capital_built_rating: "medium",
+    capital_natural_note: L("Long note", 20), capital_cultural_note: L("Long note", 20), capital_human_note: L("Long note", 20), capital_social_note: L("Long note", 20), capital_political_note: L("Long note", 20), capital_financial_note: L("Long note", 20), capital_built_note: L("Long note", 20),
+    connections: Array.from({ length: 9 }, (_, i) => ({ name: `A connected organization with a long name number ${i + 1}`, capital: "financial", direction: "both", note: "note" })),
+    needs: L("They need a great many things, described at length.", 10), values_held: L("Values described at length.", 10), fears: L("Fears described at length.", 10),
+    influence_level: "high", stake: L("What is at stake, described at length.", 10), connection_to_labs: L("How they could connect, described at length.", 10) });
+}
 
 function initMine() {
   const w = who();

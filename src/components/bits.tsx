@@ -138,9 +138,9 @@ export function GlyphKey() {
         <polygon className="g-frame" points={CAPITALS.map((_, i) => at(i, 1).join(",")).join(" ")} />
         {CAPITALS.map((_, i) => { const [x, y] = at(i, 1); return <line key={i} className="g-spoke" x1={c} y1={c} x2={x} y2={y} />; })}
         <polygon className="g-shape" points={ex.map((v, i) => at(i, K[v]).join(",")).join(" ")} />
-        {CAPITALS.map((cap, i) => { const [x, y] = at(i, 1.32); return <text key={cap.key} className="g-label" x={x} y={y} textAnchor="middle" dominantBaseline="middle">{cap.label.slice(0, 3)}</text>; })}
+        {CAPITALS.map((cap, i) => { const [x, y] = at(i, 1.32); return <text key={cap.key} className="g-label" x={x} y={y} textAnchor="middle" dominantBaseline="middle">{cap.label.charAt(0)}</text>; })}
       </svg>
-      <figcaption>Each profile's mark shows the seven capitals, clockwise from Natural at the top. The further a point reaches toward the edge, the higher that capital was rated. "Not sure" sits at the center.</figcaption>
+      <figcaption>Each profile's mark shows the seven capitals, clockwise from Natural at the top: Natural, Cultural, Human, Social, Political, Financial, Built. The further a point reaches toward the edge, the higher that capital was rated. "Not sure" sits at the center.</figcaption>
     </figure>
   );
 }

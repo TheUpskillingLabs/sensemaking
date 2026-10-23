@@ -1,0 +1,82 @@
+/* Cut-out cards on US Letter (src/routes/Print.tsx).
+   Everything on the sheet is in inches and points so print matches the paper.
+   On screen the sheets are scaled to fit (--zoom) and shown as white paper. */
+
+.print-bar { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 10px 16px;
+  padding: 12px var(--g); background: rgba(2, 26, 32, 0.95); box-shadow: inset 0 -1px 0 var(--rule); }
+.print-bar .act { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; }
+.size-seg { width: 260px; max-width: 100%; }
+.print-how { grid-column: 1 / -1; font-size: 13px; line-height: 1.5; color: var(--text-2); max-width: 90ch; }
+.print-how b { color: var(--text); font-weight: 600; }
+@media (max-width: 599px) { .print-bar { grid-template-columns: 1fr; } .print-bar .act { justify-content: flex-start; } .size-seg { width: 100%; } }
+
+.print-main { padding: 24px var(--g) 64px; overflow: hidden; }
+.sheets { display: grid; justify-content: center; gap: 24px; zoom: var(--zoom, 1); }
+
+/* ── A sheet of paper ── */
+.sheet { position: relative; display: grid; border-radius: 0; background: #fff; color: #10181b; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -16px rgba(0, 0, 0, 0.7);
+  font-family: var(--font); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.sheet-half { width: 11in; height: 8.5in; grid-template-columns: 5.5in 5.5in; }
+.sheet-quarter { width: 8.5in; height: 11in; grid-template-columns: 4.25in 4.25in; grid-template-rows: 5.5in 5.5in; }
+.slot { position: relative; overflow: hidden; }
+
+/* Cut lines: dashed, light, edge to edge, with a solid tick at each end in the margin. */
+.cut { position: absolute; pointer-events: none; }
+.cut-v { top: 0; bottom: 0; left: 50%; width: 0; border-left: 0.75pt dashed #9aa5a8; }
+.cut-h { left: 0; right: 0; top: 50%; height: 0; border-top: 0.75pt dashed #9aa5a8; }
+.cut-v::before, .cut-v::after { content: ""; position: absolute; left: -0.5pt; width: 0; height: 0.22in; border-left: 1pt solid #5e6b6e; }
+.cut-v::before { top: 0; } .cut-v::after { bottom: 0; }
+.cut-h::before, .cut-h::after { content: ""; position: absolute; top: -0.5pt; width: 0.22in; height: 0; border-top: 1pt solid #5e6b6e; }
+.cut-h::before { left: 0; } .cut-h::after { right: 0; }
+
+/* ── A card ── */
+.cc { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 7pt; overflow: hidden; font-size: 9pt; line-height: 1.32; color: #10181b; }
+.cc > * { flex-shrink: 0; }
+.cc-half { padding: 0.42in 0.45in 0.36in; }
+.cc-quarter { padding: 0.36in 0.36in 0.3in; gap: 6pt; }
+.cc b { font-weight: 650; }
+.cc-head { display: flex; align-items: center; gap: 10pt; }
+.cc-id { min-width: 0; display: grid; gap: 1.5pt; }
+.cc-name { font-size: 17pt; line-height: 1.05; font-weight: 680; letter-spacing: -0.02em; font-variation-settings: "SHRP" 100; color: #0b1215; text-wrap: balance; overflow-wrap: anywhere; }
+.cc-quarter .cc-name { font-size: 15pt; }
+.cc-kind { font-size: 9pt; color: #3e4d51; }
+.cc-roles { font-size: 8.5pt; color: #00626b; font-weight: 600; }
+.cc-draft { justify-self: start; margin-top: 2pt; padding: 0.5pt 5pt; border-radius: 3pt; font-size: 7.5pt; font-weight: 700; letter-spacing: 0.04em; color: #6b4a0e; box-shadow: inset 0 0 0 0.75pt #c79a45; }
+.cc-desc { font-size: 10pt; line-height: 1.38; color: #10181b; }
+.cc-quarter .cc-desc { font-size: 9.5pt; }
+.cc-field { font-size: 8.5pt; color: #24323a; }
+.cc-field b { color: #0b1215; margin-right: 2pt; }
+.cc-h { font-size: 7.5pt; font-weight: 700; letter-spacing: 0.02em; color: #4a585c; margin-bottom: 2pt; }
+.cc-caps table { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
+.cc-caps th, .cc-caps td { padding: 1.6pt 0; text-align: left; vertical-align: baseline; border-bottom: 0.5pt solid #d5dbdc; }
+.cc-caps tr:first-child th, .cc-caps tr:first-child td { border-top: 0.75pt solid #a9b3b5; }
+.cc-caps th { width: 0.82in; font-weight: 600; }
+.cc-caps td.lv { width: 0.62in; font-weight: 600; }
+.cc-caps td.cn { color: #4a585c; font-size: 8pt; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 0; }
+.lv-high { color: #00474e; } .lv-medium { color: #0a6b73; } .lv-low { color: #7a5410; } .lv-unsure, .lv-none { color: #6b777a; font-weight: 500 !important; }
+.cc-conns ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1pt; font-size: 8.5pt; }
+.cc-conns li { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cc-conns li span { color: #00626b; }
+.cc-more { font-size: 8pt; color: #4a585c; }
+.cc-two { display: grid; grid-template-columns: 1fr 1fr; gap: 5pt 12pt; }
+.cc-foot { margin-top: auto; padding-top: 4pt; border-top: 0.5pt solid #d5dbdc; font-size: 7pt; color: #6b777a; }
+
+/* Clamp long answers to fit; the full profile is in the app. */
+.cl-2, .cl-3, .cl-4, .cl-5, .cl-6 { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+.cl-2 { -webkit-line-clamp: 2; } .cl-3 { -webkit-line-clamp: 3; } .cl-4 { -webkit-line-clamp: 4; } .cl-5 { -webkit-line-clamp: 5; } .cl-6 { -webkit-line-clamp: 6; }
+
+/* The capitals' shape, in ink */
+.ps { flex: none; overflow: visible; }
+.ps-frame { fill: #f3f7f7; stroke: #8f9c9f; stroke-width: 1; stroke-linejoin: round; }
+.ps-ring { fill: none; stroke: #d3dadb; stroke-width: 0.6; stroke-linejoin: round; }
+.ps-spoke { stroke: #d3dadb; stroke-width: 0.6; }
+.ps-shape { fill: rgba(0, 120, 130, 0.22); stroke: #007882; stroke-width: 1.6; stroke-linejoin: round; }
+.ps-label { font-size: 11px; font-weight: 700; fill: #4a585c; font-family: var(--font); }
+
+@media print {
+  html, body, .print-main { background: #fff !important; }
+  .print-main { padding: 0; overflow: visible; }
+  .sheets { display: block; zoom: 1 !important; }
+  .sheet { box-shadow: none; break-after: page; page-break-after: always; break-inside: avoid; }
+  .sheet:last-child { break-after: auto; page-break-after: auto; }
+}
