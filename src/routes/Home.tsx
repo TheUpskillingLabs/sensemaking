@@ -94,7 +94,7 @@ export default function Home() {
               <li className={allDone ? "is-done" : ""}>
                 <div>
                   <p className="before-t">Write your {inWords(required)} profiles</p>
-                  <p className="before-d">{allDone ? "All submitted." : `${submitted} of ${required} submitted${drafts ? `, ${drafts === 1 ? "1 draft" : `${drafts} drafts`} still to submit (drafts aren't printed)` : ""}. The cards are printed at ${opens.replace(/^\w+ at /, "")}, so anything later won't be on the table.`}</p>
+                  <p className="before-d">{allDone ? "All submitted." : `About 10 minutes each. ${submitted} of ${required} submitted${drafts ? `, ${drafts === 1 ? "1 draft" : `${drafts} drafts`} still to submit (drafts aren't printed)` : ""}. The cards are printed at ${opens.replace(/^\w+ at /, "")}, so anything later won't be on the table.`}</p>
                 </div>
               </li>
               <li className="is-info">
