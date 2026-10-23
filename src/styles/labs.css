@@ -437,6 +437,12 @@ a.prow-name:hover { text-decoration: underline; text-decoration-color: var(--tex
 html.has-sheet { overflow: hidden; }
 .tut-dialog { padding: 0; border: 0; color: var(--text); background: var(--ink); width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; }
 .tut-dialog::backdrop { background: rgba(0, 10, 14, 0.72); }
+/* The question before the tutorial: a small card, never full screen. */
+.tut-dialog.tut-ask { width: min(520px, calc(100vw - 32px)); max-width: none; height: fit-content; max-height: calc(100dvh - 32px); margin: auto; border-radius: var(--r-panel); box-shadow: inset 0 0 0 1px var(--rule), 0 32px 80px -24px rgba(0, 0, 0, 0.8); }
+.tut-ask-inner { display: grid; gap: 14px; padding: 24px; }
+.tut-ask-inner p { font-size: 16px; line-height: 1.55; color: var(--text-2); }
+.tut-ask-act { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+@media (max-width: 599px) { .tut-ask-act .btn { flex: 1 1 100%; } }
 .tut-dialog-inner { display: grid; grid-template-rows: auto 1fr; height: 100%; }
 .tut-dialog-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 12px; box-shadow: inset 0 -1px 0 var(--rule); }
 .tut-dialog-h { font-size: 20px; line-height: 1.25; font-weight: 640; letter-spacing: -0.015em; font-variation-settings: "SHRP" 60; }
