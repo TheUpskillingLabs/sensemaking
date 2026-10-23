@@ -18,6 +18,7 @@ const Gallery = lazy(() => import("./routes/Gallery"));
 const Print = lazy(() => import("./routes/Print"));
 const Reading = lazy(() => import("./routes/Reading"));
 const Tutorial = lazy(() => import("./routes/Tutorial"));
+const Today = lazy(() => import("./routes/Today"));
 const Groups = lazy(() => import("./routes/Groups"));
 const GroupScan = lazy(() => import("./routes/GroupScan"));
 const Group = lazy(() => import("./routes/Group"));
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
       { path: "/gallery", element: page(<Gallery />) },
       { path: "/reading", element: page(<Reading />) },
       { path: "/tutorial", element: page(<Tutorial />) },
+      { path: "/today", element: page(<Today />) },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },

@@ -65,6 +65,7 @@ function Bar() {
       {showGallery && <NavLink className={cls} to="/gallery" viewTransition>Gallery</NavLink>}
       {showGallery && <NavLink className={cls} to="/groups" viewTransition>Groups</NavLink>}
       {membership?.member && <NavLink className={cls} to="/reading" viewTransition>Reading</NavLink>}
+      {membership?.member && <NavLink className={cls} to="/today" viewTransition>Today</NavLink>}
     </>
   );
 
