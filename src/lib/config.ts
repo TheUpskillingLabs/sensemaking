@@ -3,3 +3,6 @@ export const CYCLE = "C04";
 
 /** Fallback only, for copy shown before config loads. The real number always comes from sensemaking_config. */
 export const DEFAULT_REQUIRED = 3;
+
+/** The internal cycle's field survey in OLOS. Anonymous, no account needed. Responses stay in OLOS, in one place. */
+export const SURVEY_URL = "https://olos.theupskillinglabs.org/survey/internalq42026";

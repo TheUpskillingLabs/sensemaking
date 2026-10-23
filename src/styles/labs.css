@@ -636,3 +636,17 @@ html.has-sheet { overflow: hidden; }
   .rs-live { margin-top: 0; }
   .rs-what { font-size: 16px; }
 }
+
+/* Home: the two things to do before the gallery opens */
+.before { margin: 0 0 40px; padding: 20px 22px; border-radius: var(--r-panel); background: var(--surface); }
+.before-h { font-size: var(--fs-small); font-weight: 600; color: var(--text-2); margin-bottom: 8px; }
+.before-list { list-style: none; margin: 0; padding: 0; counter-reset: b; }
+.before-list > li { counter-increment: b; display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 4px 14px; align-items: start; padding: 14px 0; box-shadow: inset 0 -1px 0 var(--rule); }
+.before-list > li:last-child { box-shadow: none; padding-bottom: 2px; }
+.before-list > li::before { content: counter(b); display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--rule); font-size: 13px; font-weight: 600; color: var(--text-2); }
+.before-list > li.is-done::before { content: "✓"; background: var(--shape); color: var(--ink); box-shadow: none; }
+.before-t { font-weight: 600; color: var(--text); }
+.before-d { margin-top: 4px; font-size: 15px; line-height: 1.5; color: var(--text-2); max-width: 46em; }
+.before-a { display: flex; align-items: center; gap: 14px; }
+.before-tick { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-small); color: var(--text-2); min-height: 44px; }
+@media (max-width: 599px) { .before-list > li { grid-template-columns: 28px minmax(0, 1fr); } .before-a { grid-column: 2; } }

@@ -1,3 +1,4 @@
+import { SURVEY_URL } from "../lib/config";
 import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
@@ -30,6 +31,9 @@ export default function Home() {
     try { setRows(await api.listMine()); } catch (e) { setError(e instanceof Error ? e.message : "We couldn't load your profiles."); }
   }, []);
   useEffect(() => { void load(); void reloadMembership(); }, [load, reloadMembership]);
+  const surveyKey = `sp.survey.done.${user?.id ?? "anon"}`;
+  const [surveyDone, setSurveyDone] = useState(() => { try { return localStorage.getItem(surveyKey) === "1"; } catch { return false; } });
+  const markSurvey = (v: boolean) => { setSurveyDone(v); try { if (v) localStorage.setItem(surveyKey, "1"); else localStorage.removeItem(surveyKey); } catch { /* storage may be blocked */ } };
 
   if (!membership) return <Loader center />;
   const required = membership.config.required_profiles;
@@ -69,7 +73,29 @@ export default function Home() {
       </header>
 
       {flash && <p className="notice" role="status">{flash}</p>}
-      {open && later && opens && !allDone && <p className="notice notice-due"><strong>Submit all {inWords(required)} by {opens}.</strong> That's when the cards for sensemaking day are printed, so anything later won't be on the table.</p>}
+      {open && later && opens && (
+        <section className="before" aria-labelledby="before-h">
+          <h2 className="before-h" id="before-h">Before {opens}</h2>
+          <ol className="before-list">
+            <li className={surveyDone ? "is-done" : ""}>
+              <div>
+                <p className="before-t">Share what you've seen in the survey</p>
+                <p className="before-d">A few minutes, anonymous, no account needed. It opens in OLOS, where every response stays together; tomorrow morning they go on the wall.</p>
+              </div>
+              <div className="before-a">
+                <a className="btn btn-quiet btn-sm" href={SURVEY_URL} target="_blank" rel="noopener noreferrer" onClick={() => markSurvey(true)}>Open the survey</a>
+                <label className="before-tick"><input type="checkbox" checked={surveyDone} onChange={(e) => markSurvey(e.target.checked)} /> Done</label>
+              </div>
+            </li>
+            <li className={allDone ? "is-done" : ""}>
+              <div>
+                <p className="before-t">Write your {inWords(required)} profiles</p>
+                <p className="before-d">{allDone ? "All in. Thank you." : `${submitted} of ${required} submitted. The cards are printed then, so anything later won't be on the table.`}</p>
+              </div>
+            </li>
+          </ol>
+        </section>
+      )}
       {!open && <p className="notice" role="status"><strong>Submissions are closed.</strong> You can still read your profiles, but you can't start or edit any.</p>}
       {createError && <ErrorNote title="Couldn't start a profile" message={createError} />}
 
