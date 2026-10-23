@@ -70,7 +70,7 @@ export const BLOCKS: Block[] = [
   },
   {
     start: "14:05", end: "14:50", title: "Uncover the paradox, write the proposal", who: "Pods",
-    what: ["Turn the paradox sheet over. Put the group names left and right of it: who pulls toward X, who toward Y. Groups on both sides means this is a paradox worth a pod. No outside player on either side means it's housekeeping; say so.", "Rewrite the because clauses now that they can name groups.", "Which circled themes bear on this paradox? Write them on the sheet. None? The field was read too narrowly; note which groups are missing.", "Check the retreat readout now, not before. Same clusters is confirmation; a split or merge is a finding.", "Fill in the proposal page. Attach the How Might Wes from the wall as first probes. Fifteen minutes.", "Swap pages with the next pod: one hard question each, written on the page."],
+    what: ["Turn the paradox sheet over. Put the group names left and right of it: who pulls toward X, who toward Y. Groups on both sides means this is a paradox worth a pod. No outside player on either side means it's housekeeping; say so.", "Rewrite the because clauses now that they can name groups.", "Which circled themes bear on this paradox? Write them on the sheet. None? The field was read too narrowly; note which groups are missing.", "Check the retreat readout now, not before. Same clusters is confirmation; a split or merge is a finding.", "Name the pod's maintainer and its repo on the page. Fill in the proposal page. Attach the How Might Wes from the wall as first probes. Fifteen minutes.", "Swap pages with the next pod: one hard question each, written on the page."],
     produces: "A one-page Research Pod proposal.",
   },
   {
@@ -80,8 +80,8 @@ export const BLOCKS: Block[] = [
   },
   {
     start: "15:30", end: "15:45", title: "Wrap", who: "Everyone",
-    what: ["Agree who types up each page, where it gets posted (OLOS and #c04-all), and when pods first meet.", "Homework: each pod comes back by November 14 with candidate frames (\"if we approached this as if it were…, then…\") and what players said about them."],
-    produces: "What gets posted, by whom, by when.",
+    what: ["Agree each pod's maintainer and the repo they'll create on The Labs' GitHub (Monday at the latest), where pages get posted (the repo's README, OLOS and #c04-all), and when pods first meet.", "Homework: each pod comes back by November 14 with candidate frames (\"if we approached this as if it were…, then…\") and what players said about them."],
+    produces: "A maintainer and a repo for every pod.",
   },
   {
     start: "15:45", end: "16:00", title: "Cleanup", who: "Facilitators",
