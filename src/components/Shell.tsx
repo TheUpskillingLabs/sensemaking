@@ -178,6 +178,7 @@ export function NotMember() {
         <h1 className="h2 rv">This app is for members of The Labs.</h1>
         <p className="lede rv">Sign in with the Google account you signed up to The Labs with.</p>
         {user?.email && <p className="small muted rv">You're signed in as {user.email}.</p>}
+        <p className="small muted rv">It's usually the address The Labs emails you at. Still stuck? Post in #c04-all and we'll sort it out tonight.</p>
         <div className="act rv"><button type="button" className="btn btn-primary" onClick={() => void signOut()}>Sign out</button></div>
       </div>
     </div>

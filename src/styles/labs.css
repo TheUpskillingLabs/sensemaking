@@ -645,6 +645,10 @@ html.has-sheet { overflow: hidden; }
 .before-list > li:last-child { box-shadow: none; padding-bottom: 2px; }
 .before-list > li::before { content: counter(b); display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--rule); font-size: 13px; font-weight: 600; color: var(--text-2); }
 .before-list > li.is-done::before { content: "✓"; background: var(--shape); color: var(--ink); box-shadow: none; }
+.before-list > li.is-info::before { content: ""; box-shadow: none; background: radial-gradient(circle, var(--text-2) 0 3px, transparent 3.5px); }
+.before.is-ready { box-shadow: inset 0 0 0 1.5px var(--shape); }
+.before.is-ready .before-h { font-size: var(--fs-lead); color: var(--text); }
+.before-ready { color: var(--text-2); margin-bottom: 4px; }
 .before-t { font-weight: 600; color: var(--text); }
 .before-d { margin-top: 4px; font-size: 15px; line-height: 1.5; color: var(--text-2); max-width: 46em; }
 .before-a { display: flex; align-items: center; gap: 14px; }

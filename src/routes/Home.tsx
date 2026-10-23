@@ -73,29 +73,41 @@ export default function Home() {
       </header>
 
       {flash && <p className="notice" role="status">{flash}</p>}
-      {open && later && opens && (
-        <section className="before" aria-labelledby="before-h">
-          <h2 className="before-h" id="before-h">Before {opens}</h2>
-          <ol className="before-list">
-            <li className={surveyDone ? "is-done" : ""}>
-              <div>
-                <p className="before-t">Share what you've seen in the survey</p>
-                <p className="before-d">A few minutes, anonymous, no account needed. It opens in OLOS, where every response stays together; tomorrow morning they go on the wall.</p>
-              </div>
-              <div className="before-a">
-                <a className="btn btn-quiet btn-sm" href={SURVEY_URL} target="_blank" rel="noopener noreferrer" onClick={() => markSurvey(true)}>Open the survey</a>
-                <label className="before-tick"><input type="checkbox" checked={surveyDone} onChange={(e) => markSurvey(e.target.checked)} /> Done</label>
-              </div>
-            </li>
-            <li className={allDone ? "is-done" : ""}>
-              <div>
-                <p className="before-t">Write your {inWords(required)} profiles</p>
-                <p className="before-d">{allDone ? "All in. Thank you." : `${submitted} of ${required} submitted. The cards are printed then, so anything later won't be on the table.`}</p>
-              </div>
-            </li>
-          </ol>
-        </section>
-      )}
+      {open && later && opens && (() => {
+        const drafts = (rows ?? []).filter((r) => r.status === "draft").length;
+        const ready = allDone && surveyDone;
+        return (
+          <section className={`before${ready ? " is-ready" : ""}`} aria-labelledby="before-h">
+            <h2 className="before-h" id="before-h">{ready ? "You're ready for tomorrow" : `Before ${opens}`}</h2>
+            {ready && <p className="before-ready">Both done. Nothing else to do tonight; you can still edit your profiles until {opens}.</p>}
+            <ol className="before-list">
+              <li className={surveyDone ? "is-done" : ""}>
+                <div>
+                  <p className="before-t">Share what you've seen in the survey</p>
+                  <p className="before-d">{surveyDone ? "Sent." : "A few minutes, anonymous, no account needed. It opens in OLOS, where every response stays together; tomorrow morning they go on the wall. Tick Done when you've sent it."}</p>
+                </div>
+                <div className="before-a">
+                  {!surveyDone && <a className="btn btn-quiet btn-sm" href={SURVEY_URL} target="_blank" rel="noopener noreferrer">Open the survey</a>}
+                  <label className="before-tick"><input type="checkbox" checked={surveyDone} onChange={(e) => markSurvey(e.target.checked)} /> Done</label>
+                </div>
+              </li>
+              <li className={allDone ? "is-done" : ""}>
+                <div>
+                  <p className="before-t">Write your {inWords(required)} profiles</p>
+                  <p className="before-d">{allDone ? "All submitted." : `${submitted} of ${required} submitted${drafts ? `, ${drafts === 1 ? "1 draft" : `${drafts} drafts`} still to submit (drafts aren't printed)` : ""}. The cards are printed at ${opens.replace(/^\w+ at /, "")}, so anything later won't be on the table.`}</p>
+                </div>
+              </li>
+              <li className="is-info">
+                <div>
+                  <p className="before-t">Tomorrow at DC Public Library</p>
+                  <p className="before-d">Doors at 10:15, we start at 10:30 sharp and finish at 3:45. Lunch isn't provided: bring your own, or head out from 11:50 to 12:30. Bring a laptop and a charged phone.</p>
+                </div>
+                <div className="before-a"><Link className="btn btn-quiet btn-sm" to="/today" viewTransition>How the day runs</Link></div>
+              </li>
+            </ol>
+          </section>
+        );
+      })()}
       {!open && <p className="notice" role="status"><strong>Submissions are closed.</strong> You can still read your profiles, but you can't start or edit any.</p>}
       {createError && <ErrorNote title="Couldn't start a profile" message={createError} />}
 
@@ -161,7 +173,7 @@ export default function Home() {
           <Link className="btn btn-primary" to="/gallery" viewTransition>Open the gallery</Link>
         </section>
       )}
-      {rows && !unlocked && !membership.facilitator && allDone && later && (
+      {rows && !unlocked && !membership.facilitator && allDone && later && !open && (
         <section className="next" aria-labelledby="h-waiting">
           <div>
             <h2 className="h-section" id="h-waiting">Your {inWords(required)} are in.</h2>
