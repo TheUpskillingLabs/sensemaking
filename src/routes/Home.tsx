@@ -69,6 +69,7 @@ export default function Home() {
       </header>
 
       {flash && <p className="notice" role="status">{flash}</p>}
+      {open && later && opens && !allDone && <p className="notice notice-due"><strong>Submit all {inWords(required)} by {opens}.</strong> That's when the cards for sensemaking day are printed, so anything later won't be on the table.</p>}
       {!open && <p className="notice" role="status"><strong>Submissions are closed.</strong> You can still read your profiles, but you can't start or edit any.</p>}
       {createError && <ErrorNote title="Couldn't start a profile" message={createError} />}
 
