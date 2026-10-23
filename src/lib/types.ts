@@ -85,6 +85,18 @@ export const EDITABLE_FIELDS: EditableField[] = [
   "needs", "values_held", "fears", "influence_level", "influence_note", "stake", "roles", "connection_to_labs",
 ];
 
+/** A stakeholder group: a cluster of profiles made on sensemaking day (src/lib/group.ts averages it). */
+export interface GroupRow {
+  id: string;
+  cycle: string;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+  name: string;
+  note: string | null;
+  profile_ids: string[];
+}
+
 export interface ConfigRow {
   cycle: string;
   required_profiles: number;

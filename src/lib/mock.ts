@@ -7,7 +7,7 @@
 import { ApiError, type Api, type SessionUser } from "./api";
 import { missingFields } from "./capitals";
 import { CYCLE } from "./config";
-import type { ConfigRow, ProfileDraft, ProfileRow } from "./types";
+import type { ConfigRow, ProfileDraft, ProfileRow, GroupRow } from "./types";
 
 type Who = "participant" | "unlocked" | "facilitator" | "nonmember";
 const KEY = "mock.as";
@@ -76,6 +76,9 @@ function initMine() {
 initMine();
 
 let n = 0;
+// One example group, so the groups screens have something to show.
+const groups: GroupRow[] = [{ id: "group-seed", cycle: CYCLE, created_by: "someone-else", created_at: new Date(Date.now() - 6e5).toISOString(), updated_at: new Date().toISOString(),
+  name: "Public institutions", note: "Library, council and hospital ended up together: big, steady, slow to change.", profile_ids: ["seed-0", "seed-3", "seed-2"] }];
 const mine = () => rows.filter((r) => r.author_id === ME);
 const unlocked = () => (!config.gallery_opens_at || Date.now() >= Date.parse(config.gallery_opens_at)) && mine().filter((r) => r.status === "submitted").length >= config.required_profiles;
 const facilitator = () => who() === "facilitator";
@@ -122,4 +125,9 @@ export const mockApi: Api = {
     if (!facilitator()) return [];
     return [{ author_id: ME, display_name: "You" }, { author_id: others[0] as string, display_name: "Jordan Avery" }, { author_id: others[1] as string, display_name: "Sam Okafor" }, { author_id: others[2] as string, display_name: "Riley Chen" }];
   },
+  async listGroups() { await wait(); if (!(facilitator() || unlocked())) return []; return groups.map((g) => ({ ...g })); },
+  async getGroup(id) { await wait(); const g = groups.find((x) => x.id === id); if (!g || !(facilitator() || unlocked())) throw new ApiError("We couldn't find that group, or it isn't open to you yet.", undefined, "notfound"); return { ...g }; },
+  async createGroup(g) { await wait(300); if (!(facilitator() || unlocked())) throw new ApiError("You don't have permission to do that.", "42501", "denied"); const now = new Date().toISOString(); const r: GroupRow = { id: `group-${++n}-${Date.now()}`, cycle: CYCLE, created_by: ME, created_at: now, updated_at: now, ...g }; groups.push(r); return { ...r }; },
+  async updateGroup(id, patch) { await wait(250); const g = groups.find((x) => x.id === id); if (!g || !(g.created_by === ME || facilitator())) throw new ApiError("Only the person who made this group, or a facilitator, can change it.", undefined, "denied"); Object.assign(g, patch, { updated_at: new Date().toISOString() }); return { ...g }; },
+  async deleteGroup(id) { await wait(); const i = groups.findIndex((x) => x.id === id && (x.created_by === ME || facilitator())); if (i < 0) throw new ApiError("Only the person who made this group, or a facilitator, can delete it.", undefined, "denied"); groups.splice(i, 1); },
 };

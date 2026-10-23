@@ -42,6 +42,9 @@
 /* ── A card ── */
 .cc { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 7pt; overflow: hidden; font-size: 9pt; line-height: 1.32; color: #10181b; }
 .cc > * { flex-shrink: 0; }
+/* Last resort if text still runs long: the foot (with the QR code) never shrinks; the description gives way first. */
+.cc > .cc-desc { flex-shrink: 1; min-height: 1.4em; }
+.cc > .cc-foot { flex-shrink: 0; }
 .cc-half { padding: 0.42in 0.45in 0.36in; }
 .cc-quarter { padding: 0.36in 0.36in 0.3in; gap: 6pt; }
 .cc-sixth { padding: 0.3in 0.3in 0.26in; gap: 5pt; font-size: 8.5pt; }
@@ -77,11 +80,13 @@
 .cc-conns li span { color: #00626b; }
 .cc-more { font-size: 8pt; color: #4a585c; }
 .cc-two { display: grid; grid-template-columns: 1fr 1fr; gap: 5pt 12pt; }
-.cc-foot { margin-top: auto; padding-top: 4pt; border-top: 0.5pt solid #d5dbdc; font-size: 7pt; color: #6b777a; }
+.cc-foot { margin-top: auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 8pt; padding-top: 4pt; border-top: 0.5pt solid #d5dbdc; font-size: 7pt; line-height: 1.35; color: #6b777a; }
+.cc-foot .qr { flex: none; margin: 0 -0.06in -0.06in 0; }
+.cc-scan { color: #8a9598; }
 
 /* Clamp long answers to fit; the full profile is in the app. */
-.cl-2, .cl-3, .cl-4, .cl-5, .cl-6 { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
-.cl-2 { -webkit-line-clamp: 2; } .cl-3 { -webkit-line-clamp: 3; } .cl-4 { -webkit-line-clamp: 4; } .cl-5 { -webkit-line-clamp: 5; } .cl-6 { -webkit-line-clamp: 6; }
+.cl-1, .cl-2, .cl-3, .cl-4, .cl-5, .cl-6 { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+.cl-1 { -webkit-line-clamp: 1; } .cl-2 { -webkit-line-clamp: 2; } .cl-3 { -webkit-line-clamp: 3; } .cl-4 { -webkit-line-clamp: 4; } .cl-5 { -webkit-line-clamp: 5; } .cl-6 { -webkit-line-clamp: 6; }
 
 /* The capitals' shape, in ink */
 .ps { flex: none; overflow: visible; }

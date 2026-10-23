@@ -15,9 +15,11 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.2",
+    "qrcode-generator": "^2.0.4",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-router-dom": "6.30.6"
+    "react-router-dom": "6.30.6",
+    "zxing-wasm": "^2.2.4"
   },
   "devDependencies": {
     "@types/react": "18.3.31",

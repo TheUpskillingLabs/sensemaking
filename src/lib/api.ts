@@ -1,6 +1,6 @@
 import { CYCLE } from "./config";
 import { supabase } from "./supabase";
-import type { AuthorName, ConfigRow, ProfileDraft, ProfileRow } from "./types";
+import type { AuthorName, ConfigRow, GroupRow, ProfileDraft, ProfileRow } from "./types";
 
 export interface SessionUser { id: string; email: string | null }
 
@@ -31,6 +31,11 @@ export interface Api {
   submit(id: string, full: ProfileDraft): Promise<ProfileRow>;
   deleteDraft(id: string): Promise<void>;
   authorNames(): Promise<AuthorName[]>;
+  listGroups(): Promise<GroupRow[]>;
+  getGroup(id: string): Promise<GroupRow>;
+  createGroup(g: Pick<GroupRow, "name" | "note" | "profile_ids">): Promise<GroupRow>;
+  updateGroup(id: string, patch: Partial<Pick<GroupRow, "name" | "note" | "profile_ids">>): Promise<GroupRow>;
+  deleteGroup(id: string): Promise<void>;
 }
 
 type PgErr = { code?: string; message: string } | null;
@@ -136,6 +141,33 @@ const realApi: Api = {
     const { data, error } = await supabase().rpc("sensemaking_author_names", { p_cycle: CYCLE });
     if (error) throw wrap(error);
     return (data ?? []) as AuthorName[];
+  },
+  async listGroups() {
+    const { data, error } = await supabase().from("sensemaking_groups").select("*").eq("cycle", CYCLE).order("created_at", { ascending: true });
+    if (error) throw wrap(error);
+    return (data ?? []) as GroupRow[];
+  },
+  async getGroup(id) {
+    const { data, error } = await supabase().from("sensemaking_groups").select("*").eq("id", id).maybeSingle();
+    if (error) throw wrap(error);
+    if (!data) throw new ApiError("We couldn't find that group, or it isn't open to you yet.", undefined, "notfound");
+    return data as GroupRow;
+  },
+  async createGroup(g) {
+    const { data, error } = await supabase().from("sensemaking_groups").insert({ ...g, cycle: CYCLE }).select("*").single();
+    if (error) throw wrap(error);
+    return data as GroupRow;
+  },
+  async updateGroup(id, patch) {
+    const { data, error } = await supabase().from("sensemaking_groups").update(patch).eq("id", id).select("*");
+    if (error) throw wrap(error);
+    if (!data || data.length === 0) throw new ApiError("Only the person who made this group, or a facilitator, can change it.", undefined, "denied");
+    return data[0] as GroupRow;
+  },
+  async deleteGroup(id) {
+    const { data, error } = await supabase().from("sensemaking_groups").delete().eq("id", id).select("id");
+    if (error) throw wrap(error);
+    if (!data || data.length === 0) throw new ApiError("Only the person who made this group, or a facilitator, can delete it.", undefined, "denied");
   },
 };
 

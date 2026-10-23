@@ -5,7 +5,7 @@
 --   psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/rls.sql
 -- Everything runs in one transaction and is rolled back, so it leaves no rows
 -- behind. Any failed check raises an exception and aborts the run; reaching the
--- final SELECT means all ten checks passed.
+-- final SELECT means all twelve checks passed.
 --
 -- Simulated people:
 --   A  member, submits three profiles (unlocked)
@@ -236,6 +236,47 @@ begin
 end $$;
 
 reset role;
+-- ── Test 11: groups follow the gallery. A (unlocked) can make one and see it; B (not unlocked) can't see or make one; F (facilitator) sees it ──
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000a","role":"authenticated"}', true);
+do $$ begin
+  insert into public.sensemaking_groups (cycle, name, profile_ids)
+    select 'C04', 'Libraries', array_agg(id) from public.sensemaking_profiles where author_id = auth.uid();
+  if not exists (select 1 from public.sensemaking_groups) then raise exception 'test 11 failed: A cannot see the group A made'; end if;
+end $$;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000b","role":"authenticated"}', true);
+do $$ begin
+  if exists (select 1 from public.sensemaking_groups) then raise exception 'test 11 failed: B (not unlocked) can see groups'; end if;
+  begin
+    insert into public.sensemaking_groups (cycle, name) values ('C04', 'Sneaky');
+    raise exception 'test 11 failed: B (not unlocked) made a group';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000f","role":"authenticated"}', true);
+do $$ begin
+  if not exists (select 1 from public.sensemaking_groups) then raise exception 'test 11 failed: facilitator cannot see groups'; end if;
+end $$;
+-- ── Test 12: only the creator or a facilitator can change a group ──
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-0000000000cc","role":"authenticated"}', true);
+do $$ declare n int; begin
+  update public.sensemaking_groups set name = 'Renamed by U';
+  get diagnostics n = row_count;
+  -- U is a lab lead (facilitator) via confirmed email, so this one is allowed:
+  if n <> 1 then raise exception 'test 12 failed: facilitator U could not rename'; end if;
+end $$;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000b","role":"authenticated"}', true);
+do $$ declare n int; begin
+  update public.sensemaking_groups set name = 'Renamed by B';
+  get diagnostics n = row_count;
+  if n <> 0 then raise exception 'test 12 failed: B changed a group B did not make'; end if;
+  delete from public.sensemaking_groups;
+  get diagnostics n = row_count;
+  if n <> 0 then raise exception 'test 12 failed: B deleted a group B did not make'; end if;
+end $$;
+reset role;
+
 -- ── Test 10: before gallery_opens_at, A (three submitted) sees nobody else; facilitators still do ──
 reset role;
 update public.sensemaking_config set gallery_opens_at = now() + interval '1 day' where cycle = 'C04';
@@ -251,6 +292,6 @@ do $$ begin
 end $$;
 reset role;
 
-select 'All 10 RLS checks passed' as result;
+select 'All 12 RLS checks passed' as result;
 
 rollback;

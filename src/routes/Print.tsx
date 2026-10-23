@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth";
 import { ErrorNote, Loader, Segmented, kindOf, useTitle } from "../components/bits";
@@ -8,6 +8,8 @@ import { applyFilters, readFilters } from "../lib/filters";
 import type { Level, ProfileRow } from "../lib/types";
 import { useGalleryData } from "./Gallery";
 import "../styles/print.css";
+import { QR } from "../components/QR";
+import { cardCode } from "../lib/group";
 
 /* Cut-out cards on US Letter. /print?<gallery filters>&size=half|quarter
    - half: two 5.5 x 8.5 in cards on a landscape sheet. One cut down the middle.
@@ -53,6 +55,16 @@ function PrintShape({ p, size, labels }: { p: ProfileRow; size: number; labels: 
       {rated && <polygon className="ps-shape" points={vals.map((v, i) => at(i, isRated(v) ? K[v] : 0.08).join(",")).join(" ")} />}
       {labels && CAPITALS.map((cap, i) => { const [x, y] = at(i, 1.3); return <text key={cap.key} className="ps-label" x={x} y={y} textAnchor="middle" dominantBaseline="middle">{cap.label.charAt(0)}</text>; })}
     </svg>
+  );
+}
+
+/** The card's foot: a line of small print, and the QR code the group scanner reads. */
+function Foot({ p, qr, children }: { p: ProfileRow; qr: string; children: ReactNode }) {
+  return (
+    <footer className="cc-foot">
+      <p>{children}<br /><span className="cc-scan">Group code</span></p>
+      <QR text={cardCode(p.id)} size={qr} />
+    </footer>
   );
 }
 
@@ -102,7 +114,7 @@ function HalfCard({ p }: { p: ProfileRow }) {
         {t(p.fears) && <p className="cc-field cl-2"><b>Fears</b> {t(p.fears)}</p>}
       </div>
       {t(p.connection_to_labs) && <p className="cc-field cl-2"><b>And The Labs</b> {t(p.connection_to_labs)}</p>}
-      <p className="cc-foot">Influence: {p.influence_level ? LEVEL_LABEL[p.influence_level].toLowerCase() : "not rated"} · The Upskilling Labs, Build Cycle {CYCLE}</p>
+      <Foot p={p} qr="0.72in">Influence: {p.influence_level ? LEVEL_LABEL[p.influence_level].toLowerCase() : "not rated"}<br />The Upskilling Labs, Build Cycle {CYCLE}</Foot>
     </article>
   );
 }
@@ -117,7 +129,7 @@ function QuarterCard({ p }: { p: ProfileRow }) {
       {conns.length > 0 && <p className="cc-field cl-3"><b>Connected to</b> {conns.map((c) => c.name.trim()).join(", ")}</p>}
       {t(p.needs) && <p className="cc-field cl-3"><b>Needs</b> {t(p.needs)}</p>}
       {t(p.stake) && <p className="cc-field cl-2"><b>At stake</b> {t(p.stake)}</p>}
-      <p className="cc-foot">Build Cycle {CYCLE}</p>
+      <Foot p={p} qr="0.66in">Build Cycle {CYCLE}</Foot>
     </article>
   );
 }
@@ -127,12 +139,12 @@ function SixthCard({ p }: { p: ProfileRow }) {
   return (
     <article className="cc cc-sixth" aria-label={p.name ?? "Untitled profile"}>
       <Head p={p} shape={78} />
-      {t(p.description) && <p className="cc-desc cl-4">{t(p.description)}</p>}
+      {t(p.description) && <p className={`cc-desc ${(p.name ?? "").length > 40 ? "cl-3" : "cl-4"}`}>{t(p.description)}</p>}
       {t(p.touchpoints) && <p className="cc-field cl-2"><b>Meet them</b> {t(p.touchpoints)}</p>}
       {conns.length > 0 && <p className="cc-field cl-2"><b>Connected to</b> {conns.map((c) => c.name.trim()).join(", ")}</p>}
       {t(p.needs) && <p className="cc-field cl-2"><b>Needs</b> {t(p.needs)}</p>}
-      {t(p.stake) && <p className="cc-field cl-2"><b>At stake</b> {t(p.stake)}</p>}
-      <p className="cc-foot">Build Cycle {CYCLE}</p>
+      {t(p.stake) && <p className="cc-field cl-1"><b>At stake</b> {t(p.stake)}</p>}
+      <Foot p={p} qr="0.7in">Build Cycle {CYCLE}</Foot>
     </article>
   );
 }

@@ -1,6 +1,6 @@
 import { StrictMode, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate, useParams } from "react-router-dom";
 import { AuthProvider } from "./auth";
 import { Loader } from "./components/bits";
 import { RequireMember, Shell, World } from "./components/Shell";
@@ -18,6 +18,14 @@ const Gallery = lazy(() => import("./routes/Gallery"));
 const Print = lazy(() => import("./routes/Print"));
 const Reading = lazy(() => import("./routes/Reading"));
 const Tutorial = lazy(() => import("./routes/Tutorial"));
+const Groups = lazy(() => import("./routes/Groups"));
+const GroupScan = lazy(() => import("./routes/GroupScan"));
+const Group = lazy(() => import("./routes/Group"));
+
+function CardLink() {
+  const { id = "" } = useParams();
+  return <Navigate to={`/profiles/${id.toLowerCase()}`} replace />;
+}
 
 const page = (el: JSX.Element) => <RequireMember><Suspense fallback={<Loader center />}>{el}</Suspense></RequireMember>;
 
@@ -30,6 +38,12 @@ const router = createBrowserRouter([
       { path: "/", element: page(<Home />) },
       { path: "/profiles/:id/edit", element: page(<Editor />) },
       { path: "/profiles/:id", element: page(<View />) },
+      // A printed card's QR code: /P/<ID IN CAPITALS> opens the profile.
+      { path: "/p/:id", element: <CardLink /> },
+      { path: "/P/:id", element: <CardLink /> },
+      { path: "/groups", element: page(<Groups />) },
+      { path: "/groups/new", element: page(<GroupScan />) },
+      { path: "/groups/:id", element: page(<Group />) },
       { path: "/gallery", element: page(<Gallery />) },
       { path: "/reading", element: page(<Reading />) },
       { path: "/tutorial", element: page(<Tutorial />) },

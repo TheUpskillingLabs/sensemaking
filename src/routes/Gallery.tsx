@@ -122,7 +122,8 @@ export default function Gallery() {
             <button type="button" className="btn btn-ghost btn-sm" disabled={!rows || shown.length === 0}
               onClick={() => downloadCsv(`stakeholder-profiles-${CYCLE}-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(shown, nameOf))}>Export CSV</button>
           )}
-          <Link className="btn btn-primary btn-sm" to={`/print${qs ? `?${qs}` : ""}`}>Print cards</Link>
+          <Link className="btn btn-quiet btn-sm" to={`/print${qs ? `?${qs}` : ""}`}>Print cards</Link>
+          <Link className="btn btn-primary btn-sm" to="/groups" viewTransition>Groups</Link>
         </div>
       </div>
 

@@ -25,8 +25,11 @@ function Bar() {
       u.style.transform = `translateX(${cur.offsetLeft + 12}px)`;
     };
     place();
+    // Re-measure once layout settles (fonts, a screen change's view transition) and whenever the tabs change size.
+    const raf = requestAnimationFrame(() => requestAnimationFrame(place));
+    const ro = new ResizeObserver(place); ro.observe(t);
     window.addEventListener("resize", place);
-    return () => window.removeEventListener("resize", place);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); window.removeEventListener("resize", place); };
   }, [loc.pathname, showGallery]);
 
   // On narrow screens the tabs fold into a menu behind an animated hamburger.
@@ -60,6 +63,7 @@ function Bar() {
     <>
       {membership?.member && <NavLink className={cls} to="/" end viewTransition>Your profiles</NavLink>}
       {showGallery && <NavLink className={cls} to="/gallery" viewTransition>Gallery</NavLink>}
+      {showGallery && <NavLink className={cls} to="/groups" viewTransition>Groups</NavLink>}
       {membership?.member && <NavLink className={cls} to="/reading" viewTransition>Reading</NavLink>}
     </>
   );

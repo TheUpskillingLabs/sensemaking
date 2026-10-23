@@ -191,3 +191,23 @@ export function LocalNav({ links, label, rail }: { links: { id: string; label: s
     </nav>
   );
 }
+
+/** The capitals' shape for a group: each member's shape faint behind, the average bold on top.
+    Values are means on the 1–3 scale (null for no ratings). */
+export function GroupShape({ means, members = [], size = 64, labels = false, title }: {
+  means: (number | null)[]; members?: (Level | null)[][]; size?: number; labels?: boolean; title?: string;
+}) {
+  const c = 60, r = labels ? 40 : 52;
+  const kOf = (m: number | null) => (m === null ? 0.08 : 0.4 + (m - 1) * 0.3);
+  const kLevel = (v: Level | null) => (v === "low" ? 0.4 : v === "medium" ? 0.7 : v === "high" ? 1 : 0.08);
+  const at = (i: number, k: number) => { const a = -Math.PI / 2 + (i * 2 * Math.PI) / CAPITALS.length; return `${(c + Math.cos(a) * r * k).toFixed(1)},${(c + Math.sin(a) * r * k).toFixed(1)}`; };
+  return (
+    <svg className="glyph gshape" viewBox="0 0 120 120" width={size} height={size} role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true}>
+      <polygon className="g-frame" points={CAPITALS.map((_, i) => at(i, 1)).join(" ")} />
+      {CAPITALS.map((_, i) => { const [x, y] = at(i, 1).split(","); return <line key={i} className="g-spoke" x1={c} y1={c} x2={x} y2={y} />; })}
+      {members.map((vals, j) => <polygon key={j} className="g-member" points={vals.map((v, i) => at(i, kLevel(v))).join(" ")} />)}
+      {means.some((m) => m !== null) && <polygon className="g-shape" points={means.map((m, i) => at(i, kOf(m))).join(" ")} />}
+      {labels && CAPITALS.map((cap, i) => { const [x, y] = at(i, 1.3).split(","); return <text key={cap.key} className="g-label" x={x} y={y} textAnchor="middle" dominantBaseline="middle">{cap.label.charAt(0)}</text>; })}
+    </svg>
+  );
+}
