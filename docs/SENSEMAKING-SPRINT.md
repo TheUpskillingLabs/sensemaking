@@ -1,7 +1,7 @@
 # The Sensemaking Sprint (working title) — a co-design brief
 
 **Status:** proposal for Pod Squad co-design — nothing here is a decree except the section marked "Fixed."
-**Owner:** hello@brendanwhitaker.com · **Drafted:** July 2026 · **Lives:** this doc is the Pod Squad's to rewrite (PRs welcome; ✨ sprint-idea issues for anything you want to discuss first).
+**Owner:** Brendan Whitaker · **Drafted:** July 2026 · **Lives:** this doc is the Pod Squad's to rewrite (PRs welcome; ✨ sprint-idea issues for anything you want to discuss first).
 
 ---
 
