@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Status** | Draft for owner review — 2026-07-07 |
-| **Owner** | hello@brendanwhitaker.com |
+| **Owner** | Brendan Whitaker |
 | **Scope** | Finalize the standalone Triangulator's design (4 areas) **and** spec the seams that connect it into the OLOS Build Cycle |
 | **Vessel** | The current standalone tool — `triangles/index.html` (single file, 9,806 lines, vanilla JS). No React port in this PRD. |
 | **Related** | `README.md` · OLOS `docs/SENSEMAKING_FLOW.md`, `docs/ORTELIUS_KNOWLEDGE_GRAPH.md`, `docs/SECTOR_MODEL.md` · the UX review artifact (session 2026-07-07) |
