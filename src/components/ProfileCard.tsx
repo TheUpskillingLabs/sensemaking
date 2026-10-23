@@ -47,6 +47,7 @@ export function ProfileCard({ p, author, headingLevel = 1, showStatus, variant =
           {showStatus && <span className={`state state-${p.status}`}>{p.status === "draft" ? "Draft" : "Submitted"}</span>}
           {showStatus && p.edited_at && <span className="state" title={new Date(p.edited_at).toLocaleString()}>Edited after submitting</span>}
           {author && <span className="author">Written by {author}</span>}
+          {variant === "page" && p.card_code && <span className="code-tag" title="The code on this profile's printed card">Card {p.card_code}</span>}
         </p>
       </header>
 

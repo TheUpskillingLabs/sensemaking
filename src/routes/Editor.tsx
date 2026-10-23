@@ -1,3 +1,5 @@
+import { QR } from "../components/QR";
+import { cardCode } from "../lib/group";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth";
@@ -229,6 +231,7 @@ export default function Editor() {
       <div className="form-layout">
       <aside className="form-rail">
         <div className="rail-shape" aria-hidden="true"><CapGlyph p={{ ...row, ...draft }} size={88} label={false} /><span>{isSubmitted ? "Submitted" : "Draft"}</span></div>
+        {row.card_code && <div className="rail-code" title="This profile's own code. It prints on the card, and the group scanner reads it."><QR text={cardCode(row)} size="56px" title={`Card code ${row.card_code}`} /><span>Card<b>{row.card_code}</b></span></div>}
         <LocalNav label="Sections of this profile" links={SECTIONS} rail />
       </aside>
       <form className="editor" noValidate onSubmit={(e) => { e.preventDefault(); trySubmit(); }} aria-describedby="save-state">

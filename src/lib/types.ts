@@ -37,6 +37,8 @@ export interface ProfileRow {
   tried_before: string | null;
   /** Where people come into contact with this player: places, moments, channels. */
   touchpoints: string | null;
+  /** Six-character code printed on the card as a QR code. Set by the database when the profile is made; never changes. */
+  card_code: string;
   ring: Ring | null;
 
   capital_natural_rating: Level | null;
@@ -69,7 +71,7 @@ export interface ProfileRow {
 }
 
 /** The fields an author can write. Everything else is set by the database. */
-export type EditableField = Exclude<keyof ProfileRow, "id" | "cycle" | "author_id" | "status" | "created_at" | "updated_at" | "submitted_at" | "edited_at">;
+export type EditableField = Exclude<keyof ProfileRow, "id" | "cycle" | "author_id" | "status" | "created_at" | "updated_at" | "submitted_at" | "edited_at" | "card_code">;
 export type ProfileDraft = Pick<ProfileRow, EditableField>;
 
 export const EDITABLE_FIELDS: EditableField[] = [

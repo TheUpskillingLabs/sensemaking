@@ -25,7 +25,6 @@ export default function GroupScan() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [nameError, setNameError] = useState(false);
 
-  const known = useMemo(() => new Set((rows ?? []).map((r) => r.id)), [rows]);
   const members = useMemo(() => (rows ?? []).filter((r) => selected.has(r.id)), [rows, selected]);
   const sum = useMemo(() => summarize(members), [members]);
 
@@ -54,7 +53,7 @@ export default function GroupScan() {
         <div className="gn-layout">
           <section className="gn-step" aria-labelledby="gn-1">
             <h2 className="h-section" id="gn-1">The cards</h2>
-            <PhotoReader known={known} onFound={(ids) => setSelected((s) => new Set([...s, ...ids]))} />
+            <PhotoReader rows={rows} onFound={(ids) => setSelected((s) => new Set([...s, ...ids]))} />
             <div className="gn-found">
               <p className="gn-count"><b>{selected.size}</b> {selected.size === 1 ? "profile" : "profiles"} in this group</p>
               {members.length > 0 && (

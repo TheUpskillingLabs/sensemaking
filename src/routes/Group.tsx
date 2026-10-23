@@ -90,7 +90,7 @@ export default function Group() {
           <div className="field"><label className="label" htmlFor="ge-name">Name</label><input id="ge-name" className="input" value={draftName} maxLength={120} onChange={(e) => setDraftName(e.target.value)} /></div>
           <div className="field"><label className="label" htmlFor="ge-note">Why these belong together <span className="opt">(optional)</span></label><textarea id="ge-note" className="textarea" value={draftNote} maxLength={2000} onChange={(e) => setDraftNote(e.target.value)} /></div>
           <p className="label">Profiles <span className="opt">({draftIds.size})</span></p>
-          <PhotoReader known={new Set(rows.map((r) => r.id))} onFound={(ids) => setDraftIds((s) => new Set([...s, ...ids]))} />
+          <PhotoReader rows={rows} onFound={(ids) => setDraftIds((s) => new Set([...s, ...ids]))} />
           <ProfilePicker rows={rows} selected={draftIds} onToggle={toggle} />
           {actionError && <ErrorNote title="Couldn't save" message={actionError} />}
           <div className="gn-act">

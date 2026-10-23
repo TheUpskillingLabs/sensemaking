@@ -23,8 +23,12 @@ const wait = (ms = 180) => new Promise((r) => setTimeout(r, ms));
 
 const config: ConfigRow = { cycle: CYCLE, required_profiles: 3, submissions_open: true, gallery_opens_at: new URLSearchParams(location.search).get("opens") === "later" ? "2026-10-24T12:00:00Z" : null };
 
+const CODE_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
+const usedCodes = new Set<string>();
+function newCode(): string { for (;;) { let c = ""; for (let i = 0; i < 6; i++) c += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)]; if (!usedCodes.has(c)) { usedCodes.add(c); return c; } } }
+
 const blankRow = (id: string, author: string): ProfileRow => ({
-  id, cycle: CYCLE, author_id: author, status: "draft", created_at: new Date().toISOString(), updated_at: new Date().toISOString(), submitted_at: null, edited_at: null,
+  id, card_code: newCode(), cycle: CYCLE, author_id: author, status: "draft", created_at: new Date().toISOString(), updated_at: new Date().toISOString(), submitted_at: null, edited_at: null,
   name: null, org_type: null, org_type_other: null, description: null, touchpoints: null, tried_before: null, ring: null,
   capital_natural_rating: null, capital_natural_note: null, capital_cultural_rating: null, capital_cultural_note: null,
   capital_human_rating: null, capital_human_note: null, capital_social_rating: null, capital_social_note: null,
@@ -49,7 +53,7 @@ seed.forEach((s, i) => {
 rows.push({ ...blankRow("seed-draft", others[0] as string), name: "Community college (draft)", org_type: "training_provider" });
 // ?many=N fills the field out to N submitted profiles, to check print layouts against the sheet allowance.
 { const many = Number(new URLSearchParams(location.search).get("many") ?? 0); const base = rows.filter((r) => r.status === "submitted");
-  for (let i = rows.length; base.length && i < many; i++) { const src = base[i % base.length] as ProfileRow; rows.push({ ...src, id: `seed-many-${i}`, name: `${src.name} (${i})` }); } }
+  for (let i = rows.length; base.length && i < many; i++) { const src = base[i % base.length] as ProfileRow; rows.push({ ...src, id: `seed-many-${i}`, card_code: newCode(), name: `${src.name} (${i})` }); } }
 // ?long=1 adds a profile with every answer at its longest, to check printed cards stay inside their margins.
 if (new URLSearchParams(location.search).get("long") === "1") {
   const L = (s: string, n: number) => Array.from({ length: n }, () => s).join(" ");

@@ -292,6 +292,23 @@ do $$ begin
 end $$;
 reset role;
 
-select 'All 12 RLS checks passed' as result;
+-- ── Test 13: every profile gets its own card code on insert, and it never changes ──
+update public.sensemaking_config set submissions_open = true where cycle = 'C04';
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000a","role":"authenticated"}', true);
+do $$ declare c text; c2 text; begin
+  insert into public.sensemaking_profiles (cycle, card_code) values ('C04', 'AAAAAA') returning card_code into c;
+  if c = 'AAAAAA' or c !~ '^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{6}$' then raise exception 'test 13 failed: card code not set by the database (%)', c; end if;
+  update public.sensemaking_profiles set card_code = 'BBBBBB', name = 'x' where card_code = c;
+  select card_code into c2 from public.sensemaking_profiles where card_code = c;
+  if c2 is distinct from c then raise exception 'test 13 failed: card code changed on update'; end if;
+end $$;
+reset role;
+do $$ begin
+  if exists (select 1 from public.sensemaking_profiles where card_code is null) then raise exception 'test 13 failed: a profile has no card code'; end if;
+  if (select count(distinct card_code) from public.sensemaking_profiles) <> (select count(*) from public.sensemaking_profiles) then raise exception 'test 13 failed: card codes repeat'; end if;
+end $$;
+
+select 'All 13 RLS checks passed' as result;
 
 rollback;

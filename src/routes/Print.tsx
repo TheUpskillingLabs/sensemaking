@@ -62,8 +62,8 @@ function PrintShape({ p, size, labels }: { p: ProfileRow; size: number; labels: 
 function Foot({ p, qr, children }: { p: ProfileRow; qr: string; children: ReactNode }) {
   return (
     <footer className="cc-foot">
-      <p>{children}<br /><span className="cc-scan">Group code</span></p>
-      <QR text={cardCode(p.id)} size={qr} />
+      <p>{children}<br /><span className="cc-scan">Card {p.card_code}</span></p>
+      <QR text={cardCode(p)} size={qr} />
     </footer>
   );
 }

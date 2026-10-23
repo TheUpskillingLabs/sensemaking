@@ -114,15 +114,26 @@ export function idFromCode(text: string): string | null {
   return u ? u[0].toLowerCase() : null;
 }
 
-/** The text a card's QR code carries: "SP:" and the first ten characters of the profile's id, in
-    capitals. That fits the smallest QR code there is (21 x 21 squares), so each square prints big and
-    reads from a photo of a whole cluster. Ten characters of a random id never collide in one cycle. */
+/** The text a card's QR code carries: "SP:" and the profile's six-character card code. The database
+    gives every profile its own code the moment it's made, and never changes it. Nine characters fit
+    the smallest QR code there is (21 x 21 squares), so each square prints big and reads from a photo
+    of a whole cluster. */
+export const cardCode = (p: Pick<ProfileRow, "card_code">) => `SP:${p.card_code}`;
+/** Early test prints used the first ten characters of the id instead. */
 export const shortId = (id: string) => id.replace(/-/g, "").slice(0, 10).toUpperCase();
-export const cardCode = (id: string) => `SP:${shortId(id)}`;
-/** Match a scanned code to one of the profiles this person can see. */
-export function matchCode(text: string, byShort: Map<string, string>): string | null {
-  const m = text.trim().match(/^SP:([0-9A-Z]+)$/i);
-  if (m && m[1]) return byShort.get(m[1].toUpperCase()) ?? null;
-  const id = idFromCode(text); // older cards carried the full address
-  return id && [...byShort.values()].includes(id) ? id : null;
+
+/** Look up table from anything a card might carry to the profile's id. */
+export function codeIndex(rows: Pick<ProfileRow, "id" | "card_code">[]): Map<string, string> {
+  const m = new Map<string, string>();
+  for (const r of rows) { m.set(shortId(r.id), r.id); m.set(r.id.toLowerCase(), r.id); }
+  for (const r of rows) if (r.card_code) m.set(r.card_code.toUpperCase(), r.id); // card codes win
+  return m;
+}
+/** Match a scanned (or typed) code to one of the profiles this person can see. */
+export function matchCode(text: string, index: Map<string, string>): string | null {
+  const t = text.trim();
+  const m = t.match(/^(?:SP:)?([0-9A-Z]{6,10})$/i);
+  if (m && m[1]) { const hit = index.get(m[1].toUpperCase()); if (hit) return hit; }
+  const id = idFromCode(t); // the oldest cards carried the full address
+  return id ? index.get(id) ?? null : null;
 }

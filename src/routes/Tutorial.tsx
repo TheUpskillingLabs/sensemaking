@@ -63,7 +63,7 @@ function draftAt(ex: Example, steps: Step[], done: number, chars: number): Profi
 }
 
 function asRow(ex: Example, d: ProfileDraft): ProfileRow {
-  return { id: `example-${ex.id}`, cycle: "example", author_id: "example", status: "submitted", created_at: "", updated_at: "", submitted_at: "", edited_at: null, ...d };
+  return { id: `example-${ex.id}`, cycle: "example", author_id: "example", status: "submitted", created_at: "", updated_at: "", submitted_at: "", edited_at: null, card_code: "EXAMP2", ...d };
 }
 
 export default function Tutorial() {

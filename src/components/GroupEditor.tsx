@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CapGlyph, ErrorNote, kindOf } from "./bits";
 import { api } from "../lib/api";
-import { matchCode, shortId } from "../lib/group";
+import { codeIndex, matchCode } from "../lib/group";
 import type { ProfileRow } from "../lib/types";
 
 /* Reading a photo of a cluster of printed cards, and picking profiles by hand.
@@ -68,13 +68,13 @@ function imageSize(url: string): Promise<{ width: number; height: number }> {
 }
 
 /** Add photos; returns the profile ids found. Shows each photo with a box on every code it read. */
-export function PhotoReader({ known, onFound }: { known: Set<string>; onFound: (ids: string[]) => void }) {
+export function PhotoReader({ rows, onFound }: { rows: ProfileRow[]; onFound: (ids: string[]) => void }) {
   const [shots, setShots] = useState<Shot[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const input = useRef<HTMLInputElement>(null);
   useEffect(() => () => shots.forEach((s) => URL.revokeObjectURL(s.url)), []); // eslint-disable-line react-hooks/exhaustive-deps
-  const byShort = useMemo(() => new Map([...known].map((id) => [shortId(id), id])), [known]);
+  const index = useMemo(() => codeIndex(rows), [rows]);
 
   async function read(files: FileList | null) {
     if (!files || !files.length) return;
@@ -87,7 +87,7 @@ export function PhotoReader({ known, onFound }: { known: Set<string>; onFound: (
         const found: Found[] = [];
         let k = 0, u = 0;
         for (const r of results) {
-          const id = r.isValid ? matchCode(r.text, byShort) : null;
+          const id = r.isValid ? matchCode(r.text, index) : null;
           const ok = Boolean(id);
           if (ok && id) { all.push(id); k += 1; } else u += 1;
           const p = r.position;
@@ -138,20 +138,20 @@ export function ProfilePicker({ rows, selected, onToggle }: { rows: ProfileRow[]
   const [q, setQ] = useState("");
   const shown = useMemo(() => {
     const t = q.trim().toLocaleLowerCase();
-    const list = t ? rows.filter((p) => `${p.name ?? ""} ${kindOf(p)}`.toLocaleLowerCase().includes(t)) : rows;
+    const list = t ? rows.filter((p) => `${p.name ?? ""} ${kindOf(p)} ${p.card_code ?? ""}`.toLocaleLowerCase().includes(t)) : rows;
     return [...list].sort((a, b) => Number(selected.has(b.id)) - Number(selected.has(a.id)) || (a.name ?? "").localeCompare(b.name ?? ""));
   }, [rows, q, selected]);
   return (
     <div className="picker">
       <label className="sr-only" htmlFor="pick-q">Find a profile</label>
-      <input id="pick-q" className="input" type="search" placeholder="Find a profile by name or type" value={q} onChange={(e) => setQ(e.target.value)} />
+      <input id="pick-q" className="input" type="search" placeholder="Find by name, type or card code" value={q} onChange={(e) => setQ(e.target.value)} />
       <ul className="pick-list">
         {shown.map((p) => (
           <li key={p.id}>
             <label className={`pick${selected.has(p.id) ? " on" : ""}`}>
               <input type="checkbox" checked={selected.has(p.id)} onChange={() => onToggle(p.id)} />
               <CapGlyph p={p} size={32} label={false} />
-              <span className="pick-main"><span className="pick-name">{p.name?.trim() || "Untitled player"}</span><span className="pick-kind">{kindOf(p)}</span></span>
+              <span className="pick-main"><span className="pick-name">{p.name?.trim() || "Untitled player"}</span><span className="pick-kind">{kindOf(p)}<span className="code-tag">{p.card_code}</span></span></span>
             </label>
           </li>
         ))}
