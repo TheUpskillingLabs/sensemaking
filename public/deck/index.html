@@ -178,7 +178,7 @@ body[data-slide="0"][data-step="0"] .brand { opacity: 0; transition-delay: 0s; }
 .ccf-viz { position: absolute; right: calc(var(--gut) * 0.6); top: 5vh; height: 90vh; width: auto; max-width: 54vw; overflow: visible; }
 /* the world steps back while the spiral is the picture */
 #gl { transition: opacity 1.4s ease; }
-body[data-slide="10"].gl #gl { opacity: 0.28; }
+body[data-slide="11"].gl #gl { opacity: 0.28; }
 .words .ccf-viz { opacity: 1 !important; transform: none !important; }
 .ccf-viz .ccf-lbl { font-size: 34px; font-weight: 600; letter-spacing: -0.01em; fill: rgba(255, 255, 255, 0.95); }
 .ccf-viz .ccf-sub { font-size: 24px; fill: rgba(255, 255, 255, 0.62); }
@@ -2238,6 +2238,19 @@ const SLIDES = [
     ],
   },
   {
+    label: "The vision", make: () => sys({ geo: { orbLift: (c) => ss(0.4, 2.6, c.t), lift: (c, j) => ss(1.1 + j * 0.3, 3.0 + j * 0.3, c.t) }, p: (c) => eio(c.sa[1]), dur: [0, 6.5],
+      cam: (c) => { const k = eio(ss(0.2, 5.0, c.t)), g = eio(c.sa[1] ?? 0), G = GEO_CAM(c); return { t: [lerp(DCP[0], G.t[0], k), lerp(0, G.t[1], k), lerp(DCP[2], G.t[2], k)], d: Math.exp(lerp(Math.log(3.3), Math.log(lerp(22, 29, g)), k)), yaw: lerp(0.2, G.yaw, k), pitch: lerp(34, 27, k) * DEG, fov: lerp(30, 34, k), sx: lerp(0.28, 0.31, k), sy: lerp(0.14, 0.16, k), zoom: lerp(1.5, 1, k) }; } }),
+    words: `<p class="kicker">The regional association · <span class="yr" data-yr>2027</span></p>
+      <h2 class="h">An association of practitioners and labs</h2>
+      <p class="lead dim">Members are contributors. Standing comes from what you add: a workshop module, a mentor training, a fix to the platform. Practitioners are trained and certified to run Labs programs; a lab forms when enough of them gather, with a host like a library.</p>
+      <p class="lead" data-at="1">DC is the anchor chapter and the proof point. New cities start from what we write down here.</p>`,
+    notes: [
+      "“Here’s the vision for the association. It’s an association of practitioners and labs. Members are contributors: your standing comes from what you add, not what you pay. Practitioners get trained and certified to run Labs programs. A lab forms when enough of them gather, with a host like a library.” The Labs rise out of the map, starting from the DC library.",
+      "“DC is the anchor chapter and the proof point. Every new city starts from what we write down here, this quarter.” New Labs light up across the country, then join the orbit.",
+    ],
+    hud(c, el) { const y = el.querySelector("[data-yr]"); if (y && c) y.textContent = String(Math.round(2027 + 9 * eio(c.sa[1] ?? 0))); },
+  },
+  {
     label: "Drucker", make: () => peersScene(),
     words: `<p class="kicker">Peter Drucker · the nonprofit's two customers</p>
       <h2 class="h">Who is our customer?</h2>
@@ -2338,33 +2351,53 @@ const SLIDES = [
     ],
   },
   {
-    label: "C04", make: () => clusterScene(false),
+    label: "C04", make: () => Object.assign(launchScene(), { dur: [0, 2.6] }),
     words: `<p class="kicker">Build Cycle C04 · October 13 to December 8</p>
-      <h2 class="h">This Cycle, The Labs is its own client</h2>
+      <h2 class="h">By December 8, everyone ships</h2>
       <ul class="spins plan">
         <li style="--d:0.6s"><span>Oct 13</span>Kickoff</li>
         <li style="--d:1.2s"><span>Oct 24</span>Pods form. Today.</li>
         <li style="--d:1.8s"><span>Nov 14</span>Projects form</li>
         <li style="--d:2.4s"><span>Dec 8</span>Cycle ends</li>
       </ul>
-      <p class="lead" data-at="1">The client's brief: OLOS as a turnkey kit, starting with what Greater Washington needs to run.</p>`,
+      <p class="lead" data-at="1">The end goal: everyone in C04 has shipped code and helped build a core feature of OLOS directly. The Labs is the client; the brief is the turnkey kit.</p>`,
     notes: [
-      "“We’re turning the method on ourselves. The Labs is C04’s client. Kickoff was the 13th. Today, pods form. On November 14, projects form around what the pods found. December 8 it ends.”",
-      "“The client’s brief is what you just saw: OLOS as a turnkey kit, starting with what Greater Washington needs to run. Today’s pods are the first step toward knowing what that is.”",
+      "“This Cycle, The Labs is its own client. Kickoff was the 13th. Today, pods form. On November 14, projects form around what the pods found. December 8 it ends.” Let the launch play behind you.",
+      "“And here’s the end goal. By December 8, everyone in C04 has shipped code, and helped build a core feature of OLOS, directly. Not watched it get built. Built it.” Pause, then advance.",
     ],
   },
   {
-    label: "The vision", make: () => sys({ geo: { orbLift: (c) => ss(0.4, 2.6, c.t), lift: (c, j) => ss(1.1 + j * 0.3, 3.0 + j * 0.3, c.t) }, p: (c) => eio(c.sa[1]), dur: [0, 6.5],
-      cam: (c) => { const k = eio(ss(0.2, 5.0, c.t)), g = eio(c.sa[1] ?? 0), G = GEO_CAM(c); return { t: [lerp(DCP[0], G.t[0], k), lerp(0, G.t[1], k), lerp(DCP[2], G.t[2], k)], d: Math.exp(lerp(Math.log(3.3), Math.log(lerp(22, 29, g)), k)), yaw: lerp(0.2, G.yaw, k), pitch: lerp(34, 27, k) * DEG, fov: lerp(30, 34, k), sx: lerp(0.28, 0.31, k), sy: lerp(0.14, 0.16, k), zoom: lerp(1.5, 1, k) }; } }),
-    words: `<p class="kicker">The regional association · <span class="yr" data-yr>2027</span></p>
-      <h2 class="h">An association of practitioners and labs</h2>
-      <p class="lead dim">Members are contributors. Standing comes from what you add: a workshop module, a mentor training, a fix to the platform. Practitioners are trained and certified to run Labs programs; a lab forms when enough of them gather, with a host like a library.</p>
-      <p class="lead" data-at="1">DC is the anchor chapter and the proof point. New cities start from what we write down here.</p>`,
+    label: "We have", make: () => peersScene(),
+    words: `<p class="kicker">How everyone ships</p>
+      <h2 class="h">Nobody builds alone</h2>
+      <ol class="rules">
+        <li>We have mentors.</li>
+        <li data-at="1">We have workshops.</li>
+        <li data-at="2">We have each other.</li>
+        <li data-at="3">We have the tools.</li>
+      </ol>`,
     notes: [
-      "“Here’s the vision for the association. It’s an association of practitioners and labs. Members are contributors: your standing comes from what you add, not what you pay. Practitioners get trained and certified to run Labs programs. A lab forms when enough of them gather, with a host like a library.” The Labs rise out of the map, starting from the DC library.",
-      "“DC is the anchor chapter and the proof point. Every new city starts from what we write down here, this quarter.” New Labs light up across the country, then join the orbit.",
+      "“If that sounds like a lot for people who’ve never written code, here’s what we have. We have mentors.”",
+      "“We have workshops, every week, in person and online.”",
+      "“We have each other: pods, and a whole cohort working on the same platform.”",
+      "“And we have the tools. AI coding tools mean you don’t need to be a developer to ship a real feature. You need to be willing to learn by building.” Advance.",
     ],
-    hud(c, el) { const y = el.querySelector("[data-yr]"); if (y && c) y.textContent = String(Math.round(2027 + 9 * eio(c.sa[1] ?? 0))); },
+  },
+  {
+    label: "Builders-in-Residence", make: () => clusterScene(false),
+    words: `<p class="kicker">New this Cycle · through December 8</p>
+      <h2 class="h">Builders-in-Residence</h2>
+      <ol class="cards plain">
+        <li><b>The commitment</b><p>4–6 focused hours a week: find our own problems, build on our real platforms, document it in public.</p></li>
+        <li><b>What you need</b><p>Willingness to learn by building. Not developer experience.</p></li>
+        <li data-at="1"><b>What we provide</b><p>Sponsored Claude Pro seats and workspaces.</p></li>
+      </ol>
+      <p class="lead" data-at="2">Not a separate team: an invitation to everyone eligible in C04.</p>`,
+    notes: [
+      "“Which is why we’re launching the Builder-in-Residence program. Builders-in-Residence commit four to six focused hours a week through December 8: finding problems inside our own organization, researching and building solutions on our actual platforms, and documenting the work in public. You don’t need to be an experienced developer. You need a real willingness to learn, build, and figure things out as you go.”",
+      "“We’re providing sponsored Claude Pro seats and the digital workspaces to make that possible.”",
+      "“This isn’t a separate class of participants with special skills, and it isn’t a separate team. It’s an invitation for everyone eligible in C04 to take on The Labs’ core: learning by building. Our goal is for pretty much everyone eligible to take it on. The specific projects come out of the research that starts today.” Advance.",
+    ],
   },
   {
     label: "Today", make: () => closeScene(),
