@@ -29,6 +29,41 @@ function Bar() {
     return () => window.removeEventListener("resize", place);
   }, [loc.pathname, showGallery]);
 
+  // On narrow screens the tabs fold into a menu behind an animated hamburger.
+  const [menuOpen, setMenuOpen] = useState(false);
+  const burger = useRef<HTMLButtonElement>(null);
+  const menu = useRef<HTMLDivElement>(null);
+  const close = (refocus = false) => { setMenuOpen(false); if (refocus) burger.current?.focus(); };
+  useEffect(() => { setMenuOpen(false); }, [loc.pathname]);
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle("menu-open", menuOpen);
+    if (!menuOpen) return;
+    menu.current?.querySelector<HTMLElement>("a, button")?.focus({ preventScroll: true });
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { e.preventDefault(); close(true); return; }
+      if (e.key !== "Tab" || !menu.current || !burger.current) return;
+      // Keep focus between the button and the menu while it's open.
+      const items = [burger.current, ...menu.current.querySelectorAll<HTMLElement>("a, button")];
+      const i = items.indexOf(document.activeElement as HTMLElement);
+      if (e.shiftKey && i <= 0) { e.preventDefault(); items[items.length - 1]?.focus(); }
+      else if (!e.shiftKey && i === items.length - 1) { e.preventDefault(); items[0]?.focus(); }
+    };
+    const wide = matchMedia("(min-width: 760px)");
+    const onWide = () => { if (wide.matches) setMenuOpen(false); };
+    document.addEventListener("keydown", onKey);
+    wide.addEventListener("change", onWide);
+    return () => { document.removeEventListener("keydown", onKey); wide.removeEventListener("change", onWide); root.classList.remove("menu-open"); };
+  }, [menuOpen]);
+
+  const links = (cls: string) => (
+    <>
+      {membership?.member && <NavLink className={cls} to="/" end viewTransition>Your profiles</NavLink>}
+      {showGallery && <NavLink className={cls} to="/gallery" viewTransition>Gallery</NavLink>}
+      {membership?.member && <NavLink className={cls} to="/reading" viewTransition>Reading</NavLink>}
+    </>
+  );
+
   return (
     <header className="bar">
       <Link className="brand" to="/" viewTransition aria-label="Stakeholder Profiles, The Upskilling Labs: home">
@@ -36,13 +71,28 @@ function Bar() {
         <span className="app">Stakeholder Profiles</span>
       </Link>
       {user && (
-        <nav className="tabs" ref={tabs} aria-label="Main">
-          {membership?.member && <NavLink className="tab" to="/" end viewTransition><span className="long">Your profiles</span><span className="short">Profiles</span></NavLink>}
-          {showGallery && <NavLink className="tab" to="/gallery" viewTransition>Gallery</NavLink>}
-          {membership?.member && <NavLink className="tab" to="/reading" viewTransition>Reading</NavLink>}
-          <button type="button" className="tab tab-out" onClick={() => void signOut()}>Sign out</button>
-          <span className="underline" ref={line} aria-hidden="true" />
-        </nav>
+        <>
+          <nav className="tabs" ref={tabs} aria-label="Main">
+            {links("tab")}
+            <button type="button" className="tab" onClick={() => void signOut()}>Sign out</button>
+            <span className="underline" ref={line} aria-hidden="true" />
+          </nav>
+          <button ref={burger} type="button" className="burger" aria-expanded={menuOpen} aria-controls="main-menu"
+            aria-label={menuOpen ? "Close menu" : "Open menu"} onClick={() => setMenuOpen((o) => !o)}>
+            <span className="burger-box" aria-hidden="true"><i /><i /><i /></span>
+          </button>
+          <div className="menu-scrim" aria-hidden="true" onClick={() => close()} />
+          <div id="main-menu" ref={menu} className="menu" hidden={!menuOpen}>
+            <nav aria-label="Main">
+              {links("menu-link")}
+              <Link className="menu-link menu-sub" to="/tutorial" viewTransition>How to write a profile</Link>
+            </nav>
+            <div className="menu-foot">
+              {user.email && <p className="menu-who">Signed in as {user.email}</p>}
+              <button type="button" className="btn btn-quiet btn-sm" onClick={() => void signOut()}>Sign out</button>
+            </div>
+          </div>
+        </>
       )}
     </header>
   );
@@ -62,7 +112,6 @@ function useScrolledFlag() {
 
 export function Shell() {
   useScrolledFlag();
-  const { user, signOut } = useAuth();
   return (
     <ReadingSheetProvider>
       <a className="skip" href="#main">Skip to content</a>
@@ -70,7 +119,6 @@ export function Shell() {
       <Bar />
       <main id="main" tabIndex={-1}><Outlet /></main>
       <footer className="foot">
-        {user && <button type="button" className="btn btn-quiet btn-sm foot-out" onClick={() => void signOut()}>Sign out</button>}
         <p>The Upskilling Labs, Build Cycle C04. Facilitators can read your profiles. Other participants can once the gallery opens and they've submitted their own.</p>
       </footer>
     </ReadingSheetProvider>

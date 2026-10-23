@@ -78,7 +78,10 @@ a:hover { text-decoration-thickness: 2px; }
 .fine { margin-top: 48px; font-size: var(--fs-small); color: var(--text-2); max-width: 60ch; }
 
 /* ── Header and footer ── */
-.bar { background: transparent; box-shadow: none; padding-inline: var(--g); isolation: isolate; }
+.bar { background: transparent; box-shadow: none; padding-inline: var(--g); isolation: isolate;
+  /* The blur lives on ::after. No filter or lasting transform on the bar itself, so the menu scrim can be fixed to the viewport. */
+  backdrop-filter: none; -webkit-backdrop-filter: none; animation-fill-mode: backwards; }
+.arrive .bar { animation-fill-mode: backwards; }
 .bar::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .3s ease;
   background: rgba(2, 26, 32, 0.92); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: inset 0 -1px 0 var(--rule); }
 html[data-scrolled="true"] .bar::after { opacity: 1; }
@@ -447,15 +450,56 @@ html.has-sheet { overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { .tut-form .field, .tut-form .cap, .tut-progress span { transition: none; } }
 
+/* ── The menu: tabs on wide screens; an animated hamburger and a drop-down below 760px ── */
+.burger { display: none; position: relative; z-index: 2; width: 48px; height: 48px; margin-right: -10px; padding: 0; border: 0; border-radius: var(--r-btn); background: none; color: var(--text); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.burger-box { position: absolute; inset: 0; margin: auto; width: 22px; height: 16px; }
+.burger-box i { position: absolute; left: 0; width: 100%; height: 2px; border-radius: 2px; background: currentColor;
+  transition: transform .42s var(--glide), opacity .2s ease, top .42s var(--glide), width .42s var(--glide); }
+.burger-box i:nth-child(1) { top: 0; }
+.burger-box i:nth-child(2) { top: 7px; width: 70%; left: auto; right: 0; }
+.burger-box i:nth-child(3) { top: 14px; }
+@media (hover: hover) { .burger:hover .burger-box i:nth-child(2) { width: 100%; } }
+.burger[aria-expanded="true"] .burger-box i:nth-child(1) { top: 7px; transform: rotate(45deg); }
+.burger[aria-expanded="true"] .burger-box i:nth-child(2) { opacity: 0; transform: translateX(8px); }
+.burger[aria-expanded="true"] .burger-box i:nth-child(3) { top: 7px; transform: rotate(-45deg); }
+.menu, .menu-scrim { display: none; }
+@media (max-width: 759px) {
+  .tabs { display: none; }
+  .burger { display: block; }
+  .brand .app { display: inline; }
+  .menu-scrim { display: block; position: fixed; inset: 0; z-index: -2; background: rgba(0, 10, 14, 0.6); opacity: 0; pointer-events: none; transition: opacity .35s ease; }
+  html.menu-open .menu-scrim { opacity: 1; pointer-events: auto; }
+  .menu { display: grid; position: absolute; left: 0; right: 0; top: 100%; z-index: -1; gap: 20px; padding: 8px var(--g) calc(24px + env(safe-area-inset-bottom, 0px));
+    background: var(--ink); box-shadow: inset 0 1px 0 var(--rule), 0 24px 48px -16px rgba(0, 0, 0, 0.7);
+    transform-origin: top; transition: clip-path .45s var(--glide), visibility 0s linear .45s; clip-path: inset(0 0 100% 0); visibility: hidden; }
+  .menu[hidden] { display: grid; }
+  html.menu-open .menu { clip-path: inset(0 0 0 0); visibility: visible; transition: clip-path .45s var(--glide), visibility 0s; }
+  html.menu-open .bar::after { opacity: 1; }
+  .menu nav { display: grid; }
+  .menu-link { display: flex; align-items: center; min-height: 60px; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; font-variation-settings: "SHRP" 60;
+    color: var(--text-2); text-decoration: none; box-shadow: inset 0 -1px 0 var(--rule); opacity: 0; transform: translateY(-8px); transition: opacity .3s ease, transform .4s var(--glide), color .2s; }
+  .menu-link[aria-current="page"] { color: var(--text); }
+  .menu-link[aria-current="page"]::before { content: ""; width: 8px; height: 8px; margin-right: 12px; border-radius: 2px; background: var(--shape); transform: rotate(45deg); }
+  .menu-link.menu-sub { font-size: 17px; font-weight: 500; min-height: 52px; font-variation-settings: normal; }
+  html.menu-open .menu-link { opacity: 1; transform: none; }
+  html.menu-open .menu-link:nth-child(1) { transition-delay: .08s; }
+  html.menu-open .menu-link:nth-child(2) { transition-delay: .13s; }
+  html.menu-open .menu-link:nth-child(3) { transition-delay: .18s; }
+  html.menu-open .menu-link:nth-child(4) { transition-delay: .23s; }
+  .menu-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  .menu-who { font-size: 13px; color: var(--text-3); overflow-wrap: anywhere; }
+  html.menu-open { overflow: hidden; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .burger-box i, .menu, .menu-link, .menu-scrim { transition: none !important; }
+}
+
 /* ── Phones: reach, touch targets, and no zoom-on-focus ── */
 .input, .textarea, .select, .note-input { font-size: 16px; }
 .why-toggle { min-height: 44px; }
 .fn a { display: inline-block; min-width: 24px; min-height: 24px; text-align: center; }
 .home-foot .btn-link { padding: 0; min-height: 0; text-decoration: underline; text-underline-offset: 3px; color: var(--link); font: inherit; }
 @media (max-width: 599px) {
-  .tab .long { display: none; }
-  .tab-out { display: none; }
-  .foot-out { display: inline-flex; }
   .intro { padding-top: 32px; margin-bottom: 32px; gap: 12px; }
   .lede { font-size: 18px; }
   .dock { bottom: 0; margin: 40px calc(-1 * var(--g)) 0; padding: 10px var(--g) calc(10px + env(safe-area-inset-bottom, 0px)); border-radius: 0; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; box-shadow: 0 -1px 0 var(--rule), 0 -12px 32px -16px rgba(0, 0, 0, 0.6); }
@@ -474,7 +518,6 @@ html.has-sheet { overflow: hidden; }
   .toolbar .act { width: 100%; }
   .toolbar .act .btn { flex: 1; }
 }
-@media (min-width: 600px) { .foot-out, .tab .short { display: none; } }
 
 /* ── Gate and loader ── */
 .gate .h2 { font-size: var(--fs-title); font-weight: 640; line-height: 1.06; letter-spacing: -0.03em; font-variation-settings: "SHRP" 100; }
