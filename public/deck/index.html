@@ -2173,6 +2173,19 @@ const SLIDES = [
     hud(c, el) { const y = el.querySelector("[data-yr]"); if (y && c) y.textContent = Math.floor(c.year); },
   },
   {
+    label: "CES", make: () => Object.assign(worldScene(), { dur: [0, 3.2] }),
+    words: `<p class="kicker">1914 · The Smith-Lever Act</p>
+      <h2 class="h">An agent in every county</h2>
+      <p class="lead dim">The Cooperative Extension System put a university office in nearly every one of the country's 3,000 counties. Agents carried research out to farms and kitchens, and carried the problems back.</p>
+      <p class="lead" data-at="1">Research at the centre, practice at the edge, and the road runs both ways. That's the shape we're borrowing.</p>
+      <p class="small" data-at="1"><span class="src">USDA National Institute of Food and Agriculture, Cooperative Extension History. The map is illustrative.</span></p>`,
+    notes: [
+      "“There’s a second model, a century newer. In 1914 the Smith-Lever Act created the Cooperative Extension System: a university office in nearly every county in the country. Extension agents carried research out to farms and kitchens, and carried the problems back to the university.” The map lights up county by county.",
+      "“Research at the centre, practice at the edge, and the road runs both ways. That’s the shape we’re borrowing: a national body that holds the method, and labs in every community that run it and send back what they learn.” Pause, then advance.",
+    ],
+    hud(c, el) { const y = el.querySelector("[data-yr]"); if (y && c) y.textContent = "1914"; },
+  },
+  {
     label: "Two bodies", make: () => Object.assign(headlineScene(), { dur: [0, 1] }),
     words: `<p class="kicker">How we're organizing</p>
       <h2 class="h">One mission, two bodies</h2>
@@ -2198,6 +2211,62 @@ const SLIDES = [
     notes: [
       "“The regional association is being founded this quarter. An interim steering committee holds it through December 31: three governance seats and two at-large. On January 1 the Board seats a non-interim team, through an open application you’ll hear about soon.”",
       "“The committee’s job is narrow: make sure this Cycle is facilitated, use it to make The Labs better, and write down how a chartered regional association works with the national nonprofit. That last one is the template every other city will start from.”",
+    ],
+  },
+  {
+    label: "Drucker", make: () => peersScene(),
+    words: `<p class="kicker">Peter Drucker · the nonprofit's two customers</p>
+      <h2 class="h">Who is our customer?</h2>
+      <ol class="cards plain">
+        <li><b>The primary customer</b><p>“The person whose life is changed through your work.”</p></li>
+        <li><b>Supporting customers</b><p>Everyone who has to be satisfied for the work to keep going: funders, hosts, partners, volunteers, referrers.</p></li>
+      </ol>
+      <p class="lead" data-at="1">A business sells; a nonprofit has to raise. The person helped and the person paying are different people, with different signals. Every tension on the wall sits in that gap.</p>`,
+    notes: [
+      "“Peter Drucker asked every organization one question: who is our customer? For a nonprofit he said there are two. The primary customer is the person whose life is changed through your work. The supporting customers are everyone who has to be satisfied for the work to keep going: funders, hosts, partners, volunteers, the people who refer.”",
+      "“Here’s the core paradox. A business sells; a nonprofit has to raise. The person being helped and the person paying are different people, and they send different signals: one stops showing up, the other stops giving. Every tension on the wall today sits in that gap. Our stakeholder cards ask which role each player plays: serving, contributing, sustaining.” Pause, then advance.",
+    ],
+    pocket: "Drucker, Managing the Nonprofit Organization (1990); The Five Most Important Questions. His two rules: the primary customer is never the only customer; and pick one primary customer, because serving everyone equally serves no one well. Hansmann (1980): donors pay for help that goes to someone else, so they can’t check it. That’s why the written record matters.",
+  },
+  {
+    label: "CCF", make: () => sys({ geo: {}, p: () => 1, cam: GEO36_CAM }),
+    words: `<p class="kicker">Community Capitals Framework · Flora &amp; Flora</p>
+      <h2 class="h">Seven capitals, spiraling up</h2>
+      <ul class="spins">
+        <li style="--d:0.5s"><span>N</span>Natural: land, water, place</li>
+        <li style="--d:0.9s"><span>C</span>Cultural: ways of knowing, who belongs</li>
+        <li style="--d:1.3s"><span>H</span>Human: skills, health, learning</li>
+        <li style="--d:1.7s"><span>S</span>Social: ties and trust</li>
+        <li style="--d:2.1s"><span>P</span>Political: access to power</li>
+        <li style="--d:2.5s"><span>F</span>Financial: money to invest</li>
+        <li style="--d:2.9s"><span>B</span>Built: buildings and infrastructure</li>
+      </ul>
+      <p class="lead" data-at="1">Every card rates a player on all seven. Investing in one grows the others: spiraling up. Starting that spiral is The Labs' job.</p>`,
+    notes: [
+      "“The cards on the table use the Community Capitals Framework, from Cornelia and Jan Flora. Seven kinds of capital a community holds: natural, cultural, human, social, political, financial, built.” The list builds; speak over it.",
+      "“Every card rates a player on all seven, so the shape on each card is that player’s capital. The point of the framework is spiraling up: invest in one capital, say human, and it grows social, which grows political, which unlocks financial. Starting that spiral in a community is The Labs’ job. The afternoon reads each group’s capitals as its currency: what it trades in.” Advance.",
+    ],
+    pocket: "Flora & Flora, Rural Communities: Legacy and Change; Emery & Flora, “Spiraling-Up: Mapping Community Transformation with Community Capitals Framework,” Community Development 37(1), 2006.",
+  },
+  {
+    label: "Frame Innovation", make: () => Object.assign(tomorrowScene(), { dur: [0, 2.4] }),
+    words: `<p class="kicker">Kees Dorst · Frame Innovation</p>
+      <h2 class="h">From tensions to pods</h2>
+      <ol class="rules">
+        <li>Archaeology: what's been tried, and what we won't change.</li>
+        <li data-at="1">Paradox: what makes this hard? Two things true at once.</li>
+        <li data-at="2">Context and field: the players, what they do, what they trade in.</li>
+        <li data-at="3">Themes: what sits underneath, that players share.</li>
+        <li data-at="4">Frames: “if we approached this as if it were …, then …”</li>
+      </ol>
+      <p class="lead" data-at="5">Today is the first four. Frames are the pods' homework for November 14.</p>`,
+    notes: [
+      "“The method for today is Kees Dorst’s frame creation. Five steps we’ll use. Archaeology: what’s been tried, and what we won’t change.”",
+      "“Paradox: what makes this hard? Written as two things that are both true.”",
+      "“Then we set the paradox aside and look at the players: what they do, what they trade in.”",
+      "“Themes: what sits underneath all of that, that players on both sides share. This is the step people skip, and it’s where the new ideas come from.”",
+      "“Frames: if we approached this as if it were something else, then what becomes possible.”",
+      "“Today is the first four. Frames are the pods’ homework for November 14.” Advance.",
     ],
   },
   {
