@@ -21,7 +21,7 @@ export interface Block {
 export const BLOCKS: Block[] = [
   {
     start: "10:00", end: "10:15", title: "Setup", who: "Facilitators",
-    what: ["Print the cards from the gallery (6 per sheet) the moment the room opens. Fifteen minutes is tight: early arrivals can help cut from 10:15.", "Lay the cards out on one shared table, grouped by organization type.", "Put the seven tension sheets on the wall, a blank sheet beside each, plus a \"new\" sheet and a holding sheet for the survey stickies."],
+    what: ["Bring the cards, printed at 8:00 am from the gallery (6 per sheet). Cut any that aren't cut yet; early arrivals can help from 10:15.", "Lay the cards out on one shared table, grouped by organization type.", "Put the seven tension sheets on the wall, a blank sheet beside each, plus a \"new\" sheet and a holding sheet for the survey stickies."],
     produces: "Cards on the table, tensions on the wall.",
     app: [{ text: "Print cards", to: "/print" }],
   },
