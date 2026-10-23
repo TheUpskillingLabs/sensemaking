@@ -111,7 +111,7 @@ export const mockApi: Api = {
     await wait(250);
     if (flaky()) throw new ApiError("We couldn't reach the server.", undefined, "network");
     const r = find(id);
-    if (r.author_id !== ME || !config.submissions_open) throw new ApiError("This profile can't be edited any more.", undefined, "locked");
+    if (!facilitator() && (r.author_id !== ME || !config.submissions_open)) throw new ApiError("This profile can't be edited any more.", undefined, "locked");
     Object.assign(r, patch, { updated_at: new Date().toISOString(), ...(r.status === "submitted" ? { edited_at: new Date().toISOString() } : {}) });
     return { ...r };
   },
@@ -124,6 +124,7 @@ export const mockApi: Api = {
     return { ...r };
   },
   async deleteDraft(id) { await wait(); const i = rows.findIndex((x) => x.id === id && x.author_id === ME && x.status === "draft"); if (i < 0) throw new ApiError("This draft couldn't be deleted.", undefined, "locked"); rows.splice(i, 1); },
+  async deleteProfile(id) { await wait(); const i = rows.findIndex((x) => x.id === id); if (i < 0 || !facilitator()) throw new ApiError("Only a facilitator can delete someone else's profile.", undefined, "denied"); rows.splice(i, 1); },
   async authorNames() {
     await wait();
     if (!facilitator()) return [];

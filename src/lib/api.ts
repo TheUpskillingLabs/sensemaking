@@ -30,6 +30,8 @@ export interface Api {
   saveDraft(id: string, patch: Partial<ProfileDraft>): Promise<ProfileRow>;
   submit(id: string, full: ProfileDraft): Promise<ProfileRow>;
   deleteDraft(id: string): Promise<void>;
+  /** Any profile, draft or submitted. The database allows it for facilitators only. */
+  deleteProfile(id: string): Promise<void>;
   authorNames(): Promise<AuthorName[]>;
   listGroups(): Promise<GroupRow[]>;
   getGroup(id: string): Promise<GroupRow>;
@@ -136,6 +138,11 @@ const realApi: Api = {
     const { data, error } = await supabase().from("sensemaking_profiles").delete().eq("id", id).eq("status", "draft").select("id");
     if (error) throw wrap(error);
     if (!data || data.length === 0) throw new ApiError("This draft couldn't be deleted.", undefined, "locked");
+  },
+  async deleteProfile(id) {
+    const { data, error } = await supabase().from("sensemaking_profiles").delete().eq("id", id).select("id");
+    if (error) throw wrap(error);
+    if (!data || data.length === 0) throw new ApiError("Only a facilitator can delete someone else's profile.", undefined, "denied");
   },
   async authorNames() {
     const { data, error } = await supabase().rpc("sensemaking_author_names", { p_cycle: CYCLE });

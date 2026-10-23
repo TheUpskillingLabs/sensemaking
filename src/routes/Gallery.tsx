@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth";
 import { DiscussionPrompts, ReadTheField } from "../components/Learn";
-import { CapGlyph, ErrorNote, GlyphKey, Loader, Words, kindOf, useTitle } from "../components/bits";
+import { CapGlyph, ConfirmDialog, ErrorNote, GlyphKey, Loader, Words, kindOf, useTitle } from "../components/bits";
 import { api } from "../lib/api";
 import { CAPITALS, LEVELS, ORG_TYPES, RINGS, ROLES, opensLabel, opensLater, rolesLabel } from "../lib/capitals";
 import { CYCLE } from "../lib/config";
@@ -35,6 +35,9 @@ export default function Gallery() {
   const { rows, names, error, reload } = useGalleryData(facilitator);
   const [q, setQ] = useState(f.q);
   const qTimer = useRef<number | undefined>(undefined);
+  const [doomed, setDoomed] = useState<ProfileRow | null>(null);
+  const [delBusy, setDelBusy] = useState(false);
+  const [delError, setDelError] = useState<string | null>(null);
 
   const update = (patch: Partial<Filters>) => setSp(writeFilters({ ...f, ...patch }), { replace: true });
   useEffect(() => () => window.clearTimeout(qTimer.current), []);
@@ -49,6 +52,13 @@ export default function Gallery() {
   }
 
   const nameOf = (id: string) => names.find((n) => n.author_id === id)?.display_name;
+  async function deleteDoomed() {
+    if (!doomed) return;
+    setDelBusy(true); setDelError(null);
+    try { await api.deleteProfile(doomed.id); setDoomed(null); await reload(); }
+    catch (e) { setDelError(e instanceof Error ? e.message : "We couldn't delete it."); }
+    finally { setDelBusy(false); }
+  }
   const filtered = Boolean(f.type || f.ring || f.role || (f.cap && f.level) || f.q.trim());
   const qs = sp.toString();
 
@@ -142,11 +152,22 @@ export default function Gallery() {
                   <p className="gkind">{kindOf(p)}{rolesLabel(p.roles) && <span>{rolesLabel(p.roles)}</span>}{p.status === "draft" && <span className="state state-draft">Draft</span>}{facilitator && p.edited_at && <span className="state">Edited</span>}</p>
                   <p className="gdesc">{p.description}</p>
                   {facilitator && nameOf(p.author_id) && <p className="gauthor">{nameOf(p.author_id)}</p>}
+                  {facilitator && (
+                    <p className="gact">
+                      <Link className="btn-link" to={`/profiles/${p.id}/edit`} viewTransition aria-label={`Edit ${p.name?.trim() || "this profile"}`}>Edit</Link>
+                      <button type="button" className="btn-link quiet" onClick={() => setDoomed(p)} aria-label={`Delete ${p.name?.trim() || "this profile"}`}>Delete</button>
+                    </p>
+                  )}
                 </div>
               </li>
             ))}
           </ul>
         )}
+      <ConfirmDialog open={Boolean(doomed)} title={`Delete ${doomed?.name?.trim() || "this profile"}?`} confirmLabel="Delete profile" danger busy={delBusy}
+        onConfirm={() => void deleteDoomed()} onCancel={() => { setDoomed(null); setDelError(null); }}>
+        <p>{doomed && nameOf(doomed.author_id) ? `It's ${nameOf(doomed.author_id)}'s.` : "It may not be yours."} It disappears for its author and from the gallery, and its printed card stops matching. This can't be undone.</p>
+        {delError && <p className="err-text" role="alert" style={{ marginTop: 8 }}>{delError}</p>}
+      </ConfirmDialog>
     </div>
   );
 }

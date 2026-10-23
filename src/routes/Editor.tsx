@@ -41,6 +41,8 @@ export default function Editor() {
   const { user, membership, reloadMembership } = useAuth();
 
   const [row, setRow] = useState<ProfileRow | null>(null);
+  // A facilitator editing someone else's profile.
+  const others = Boolean(row && user && row.author_id !== user.id);
   const [draft, setDraft] = useState<ProfileDraft | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [save, setSave] = useState<SaveState>("idle");
@@ -67,7 +69,7 @@ export default function Editor() {
     setLoadError(null);
     try {
       const r = await api.getProfile(id);
-      if (user && r.author_id !== user.id) { nav(`/profiles/${id}`, { replace: true }); return; }
+      if (user && r.author_id !== user.id && !membership?.facilitator) { nav(`/profiles/${id}`, { replace: true }); return; }
       submittedRef.current = r.status === "submitted";
       if (submittedRef.current) setShowErrors(true);
       let d = pickDraft(r);
@@ -188,9 +190,10 @@ export default function Editor() {
   }
 
   // Leaving a submitted profile: save what's there (if it's complete), then back to the read-only view.
+  // A facilitator leaving someone else's draft doesn't need it complete.
   async function done() {
     setActionError(null);
-    if (missing.length) { setShowErrors(true); setShakeKey((k) => k + 1); const first = missing[0]; if (first) focusField(first.field); return; }
+    if (missing.length && !(others && row?.status === "draft")) { setShowErrors(true); setShakeKey((k) => k + 1); const first = missing[0]; if (first) focusField(first.field); return; }
     setBusy(true);
     await flush();
     if (dirty.current.size) { setBusy(false); setActionError("We couldn't save your last changes yet. They're kept in this browser; try Done again in a moment."); return; }
@@ -202,9 +205,10 @@ export default function Editor() {
     try {
       window.clearTimeout(timer.current);
       if (inflight.current) await inflight.current.catch(() => undefined);
-      await api.deleteDraft(id);
+      if (others || row?.status === "submitted") await api.deleteProfile(id); else await api.deleteDraft(id);
       dirty.current.clear(); clearMirror(id);
-      nav("/", { replace: true, viewTransition: true, state: { flash: "Draft deleted." } });
+      if (others) nav("/gallery", { replace: true, viewTransition: true });
+      else nav("/", { replace: true, viewTransition: true, state: { flash: "Draft deleted." } });
     } catch (e) {
       setBusy(false);
       setActionError(e instanceof Error ? e.message : "We couldn't delete this draft.");
@@ -213,7 +217,7 @@ export default function Editor() {
 
   if (loadError) return <div className="page page-narrow"><ErrorNote message={loadError} onRetry={() => void load()} /><p style={{ marginTop: 16 }}><Link to="/" viewTransition>Your profiles</Link></p></div>;
   if (!draft || !row) return <Loader center label="Opening your profile" />;
-  const closed = membership ? !membership.config.submissions_open : false;
+  const closed = membership ? !membership.config.submissions_open && !membership.facilitator : false;
   const readOnly = save === "locked" || closed;
   const isSubmitted = row.status === "submitted";
 
@@ -227,19 +231,20 @@ export default function Editor() {
 
   return (
     <div className="page page-form">
-      <nav className="crumb" aria-label="Back"><Link to="/" viewTransition>Your profiles</Link></nav>
+      <nav className="crumb" aria-label="Back">{others ? <Link to="/gallery" viewTransition>Gallery</Link> : <Link to="/" viewTransition>Your profiles</Link>}</nav>
       <div className="form-layout">
       <aside className="form-rail">
         <div className="rail-shape" aria-hidden="true"><CapGlyph p={{ ...row, ...draft }} size={88} label={false} /><span>{isSubmitted ? "Submitted" : "Draft"}</span></div>
         {row.card_code && <div className="rail-code" title="This profile's own code. It prints on the card, and the group scanner reads it."><QR text={cardCode(row)} size="56px" title={`Card code ${row.card_code}`} /><span>Card<b>{row.card_code}</b></span></div>}
         <LocalNav label="Sections of this profile" links={SECTIONS} rail />
       </aside>
-      <form className="editor" noValidate onSubmit={(e) => { e.preventDefault(); trySubmit(); }} aria-describedby="save-state">
+      <form className="editor" noValidate onSubmit={(e) => { e.preventDefault(); if (!others) trySubmit(); }} aria-describedby="save-state">
         <div className="form-head">
           <h1 className="h-title">{draft.name?.trim() || "A new player"}</h1>
           <p className="lede">{isSubmitted
             ? "This profile is submitted. Changes save as you type, and it stays submitted. Facilitators can see that it was edited afterward."
             : "Start in your own words, then give it some structure. Everything saves as you type. Nobody else sees this until the gallery opens."}{!isSubmitted && <> <Link to="/tutorial" viewTransition>Watch an example first</Link>.</>}</p>
+          {others && <p className="notice">You're editing someone else's profile as a facilitator. Changes save as you type and its author will see them{isSubmitted ? "; it's marked as edited" : ""}.</p>}
           {readOnly && <p className="note note-error" role="alert">{closed ? "Submissions are closed, so this profile can't be changed." : lockedMsg}</p>}
         </div>
 
@@ -410,9 +415,9 @@ export default function Editor() {
             {save === "saved" && <Tick key={row.updated_at} />}{saveLabel}
           </span>
           <div className="act">
-            {!readOnly && !isSubmitted && <button type="button" className="btn-link quiet" onClick={() => setConfirm("delete")}>Delete draft</button>}
-            {!readOnly && !isSubmitted && <button type="submit" className="btn btn-primary">Submit profile</button>}
-            {isSubmitted && <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void done()}>Done</button>}
+            {!readOnly && (others || !isSubmitted) && <button type="button" className="btn-link quiet" onClick={() => setConfirm("delete")}>{others ? "Delete profile" : "Delete draft"}</button>}
+            {!readOnly && !others && !isSubmitted && <button type="submit" className="btn btn-primary">Submit profile</button>}
+            {(isSubmitted || others) && <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void done()}>Done</button>}
           </div>
         </div>
       </form>
@@ -423,9 +428,9 @@ export default function Editor() {
         <p>Once it's submitted, it counts toward your three. You can still come back and edit it while submissions are open.</p>
         {actionError && <p className="err-text" role="alert" style={{ marginTop: 8 }}>{actionError}</p>}
       </ConfirmDialog>
-      <ConfirmDialog open={confirm === "delete"} title="Delete this draft?" confirmLabel="Delete draft" danger busy={busy}
+      <ConfirmDialog open={confirm === "delete"} title={others ? "Delete this profile?" : "Delete this draft?"} confirmLabel={others ? "Delete profile" : "Delete draft"} danger busy={busy}
         onConfirm={() => void doDelete()} onCancel={() => { setConfirm(null); setActionError(null); }}>
-        <p>This can't be undone.</p>
+        <p>{others ? "It isn't yours: it disappears for its author and from the gallery, and its printed card stops matching. This can't be undone." : "This can't be undone."}</p>
         {actionError && <p className="err-text" role="alert" style={{ marginTop: 8 }}>{actionError}</p>}
       </ConfirmDialog>
     </div>

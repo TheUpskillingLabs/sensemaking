@@ -203,6 +203,9 @@ a.prow-name:hover { text-decoration: underline; text-decoration-color: var(--tex
 .gkind { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: var(--fs-small); color: var(--text-2); }
 .gdesc { margin-top: 6px; font-size: 15px; line-height: 1.55; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .gauthor { margin-top: 6px; font-size: var(--fs-meta); color: var(--text-3); }
+.gact { position: relative; z-index: 1; display: flex; gap: 18px; margin-top: 8px; font-size: var(--fs-small); }
+.gact a, .gact button { min-height: 32px; }
+.crumb-act { display: inline-flex; gap: 8px; }
 .empty { padding: 32px 0; color: var(--text-2); }
 
 /* ── A profile ── */

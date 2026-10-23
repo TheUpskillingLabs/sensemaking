@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth";
-import { ErrorNote, Loader, Tick, useTitle } from "../components/bits";
+import { ConfirmDialog, ErrorNote, Loader, Tick, useTitle } from "../components/bits";
 import { ProfileCard } from "../components/ProfileCard";
 import { api } from "../lib/api";
 import type { ProfileRow } from "../lib/types";
@@ -14,6 +14,10 @@ export default function View() {
   const [p, setP] = useState<ProfileRow | null>(null);
   const [author, setAuthor] = useState<string | undefined>();
   const [error, setError] = useState<string | null>(null);
+  const [confirm, setConfirm] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [delError, setDelError] = useState<string | null>(null);
+  const nav = useNavigate();
   useTitle(p?.name?.trim() || "Profile");
 
   const load = useCallback(async () => {
@@ -35,7 +39,13 @@ export default function View() {
   return (
     <div className="page page-doc">
       <nav className="crumb" aria-label="Back"><Link to={back.to} viewTransition>{back.label}</Link>
-        {p && mine && p.status === "submitted" && membership?.config.submissions_open && <Link className="btn btn-ghost btn-sm" to={`/profiles/${p.id}/edit`} viewTransition>Edit this profile</Link>}</nav>
+        {p && mine && p.status === "submitted" && membership?.config.submissions_open && <Link className="btn btn-ghost btn-sm" to={`/profiles/${p.id}/edit`} viewTransition>Edit this profile</Link>}
+        {p && !mine && membership?.facilitator && (
+          <span className="crumb-act">
+            <Link className="btn btn-ghost btn-sm" to={`/profiles/${p.id}/edit`} viewTransition>Edit</Link>
+            <button type="button" className="btn btn-quiet btn-sm" onClick={() => setConfirm(true)}>Delete</button>
+          </span>
+        )}</nav>
       {error ? <ErrorNote message={error} onRetry={() => void load()} />
         : !p ? <Loader label="Opening the profile" />
         : (
@@ -49,6 +59,12 @@ export default function View() {
               <p className="notice">This is still a draft. <Link to={`/profiles/${p.id}/edit`} viewTransition>Keep editing</Link>.</p>
             )}
             <ProfileCard p={p} author={membership?.facilitator ? author : undefined} showStatus={Boolean(mine) || p.status === "draft"} />
+            <ConfirmDialog open={confirm} title="Delete this profile?" confirmLabel="Delete profile" danger busy={busy}
+              onConfirm={() => { setBusy(true); setDelError(null); api.deleteProfile(p.id).then(() => nav("/gallery", { replace: true, viewTransition: true })).catch((e) => { setBusy(false); setDelError(e instanceof Error ? e.message : "We couldn't delete it."); }); }}
+              onCancel={() => { setConfirm(false); setDelError(null); }}>
+              <p>{author ? `It's ${author}'s.` : "It isn't yours."} It disappears for its author and from the gallery, and its printed card stops matching. This can't be undone.</p>
+              {delError && <p className="err-text" role="alert" style={{ marginTop: 8 }}>{delError}</p>}
+            </ConfirmDialog>
           </>
         )}
     </div>

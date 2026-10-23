@@ -145,16 +145,10 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-0000000
 do $$
 declare n int;
 begin
-  -- 5. A facilitator sees every row, drafts included, and can't edit others' rows.
+  -- 5. A facilitator sees every row, drafts included. (Editing others' rows is test 14.)
   if not public.sensemaking_is_facilitator() then raise exception 'test 5 failed: F is not a facilitator'; end if;
   select count(*) into n from public.sensemaking_profiles;
   if n <> 6 then raise exception 'test 5 failed: F sees % rows, expected 6', n; end if;
-  update public.sensemaking_profiles set name = 'facilitator edit';
-  get diagnostics n = row_count;
-  if n <> 0 then raise exception 'test 5 failed: F updated % rows', n; end if;
-  delete from public.sensemaking_profiles;
-  get diagnostics n = row_count;
-  if n <> 0 then raise exception 'test 5 failed: F deleted % rows', n; end if;
   select count(*) into n from public.sensemaking_author_names('C04');
   if n <> 2 then raise exception 'test 5 failed: F got % author names, expected 2', n; end if;
 end $$;
@@ -309,6 +303,31 @@ do $$ begin
   if (select count(distinct card_code) from public.sensemaking_profiles) <> (select count(*) from public.sensemaking_profiles) then raise exception 'test 13 failed: card codes repeat'; end if;
 end $$;
 
-select 'All 13 RLS checks passed' as result;
+-- ── Test 14: facilitators can edit or delete anyone's profile; others still can't ──
+reset role;
+insert into public.sensemaking_profiles (cycle, author_id, name) values ('C04', '00000000-0000-4000-a000-00000000000b', 'B draft for test 14');
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000a","role":"authenticated"}', true);
+do $$ declare n int; begin
+  update public.sensemaking_profiles set name = 'A was here' where name = 'B draft for test 14';
+  get diagnostics n = row_count;
+  if n <> 0 then raise exception 'test 14 failed: A edited a profile A did not write'; end if;
+end $$;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000f","role":"authenticated"}', true);
+do $$ declare n int; a uuid; begin
+  update public.sensemaking_profiles set name = 'Fixed by F' where name = 'B draft for test 14' returning author_id into a;
+  get diagnostics n = row_count;
+  if n <> 1 then raise exception 'test 14 failed: facilitator could not edit'; end if;
+  if a <> '00000000-0000-4000-a000-00000000000b' then raise exception 'test 14 failed: author changed'; end if;
+  delete from public.sensemaking_profiles where name = 'Fixed by F';
+  get diagnostics n = row_count;
+  if n <> 1 then raise exception 'test 14 failed: facilitator could not delete'; end if;
+  update public.sensemaking_profiles set stake = stake where status = 'submitted' and author_id <> auth.uid();
+  get diagnostics n = row_count;
+  if n = 0 then raise exception 'test 14 failed: facilitator could not edit a submitted profile'; end if;
+end $$;
+reset role;
+
+select 'All 14 RLS checks passed' as result;
 
 rollback;
