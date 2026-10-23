@@ -37,10 +37,10 @@ function Bar() {
       </Link>
       {user && (
         <nav className="tabs" ref={tabs} aria-label="Main">
-          {membership?.member && <NavLink className="tab" to="/" end viewTransition>Your profiles</NavLink>}
+          {membership?.member && <NavLink className="tab" to="/" end viewTransition><span className="long">Your profiles</span><span className="short">Profiles</span></NavLink>}
           {showGallery && <NavLink className="tab" to="/gallery" viewTransition>Gallery</NavLink>}
           {membership?.member && <NavLink className="tab" to="/reading" viewTransition>Reading</NavLink>}
-          <button type="button" className="tab" onClick={() => void signOut()}>Sign out</button>
+          <button type="button" className="tab tab-out" onClick={() => void signOut()}>Sign out</button>
           <span className="underline" ref={line} aria-hidden="true" />
         </nav>
       )}
@@ -62,6 +62,7 @@ function useScrolledFlag() {
 
 export function Shell() {
   useScrolledFlag();
+  const { user, signOut } = useAuth();
   return (
     <ReadingSheetProvider>
       <a className="skip" href="#main">Skip to content</a>
@@ -69,6 +70,7 @@ export function Shell() {
       <Bar />
       <main id="main" tabIndex={-1}><Outlet /></main>
       <footer className="foot">
+        {user && <button type="button" className="btn btn-quiet btn-sm foot-out" onClick={() => void signOut()}>Sign out</button>}
         <p>The Upskilling Labs, Build Cycle C04. Facilitators can read your profiles. Other participants can once the gallery opens and they've submitted their own.</p>
       </footer>
     </ReadingSheetProvider>

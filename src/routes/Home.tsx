@@ -1,17 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
 import { CapGlyph, ErrorNote, Loader, Words, kindOf, useTitle } from "../components/bits";
 import { opensLabel, opensLater } from "../lib/capitals";
 import { api } from "../lib/api";
 import type { ProfileRow } from "../lib/types";
+import { markTutorialSeen, tutorialSeen } from "../components/TutorialDialog";
+
+const TutorialDialog = lazy(() => import("../components/TutorialDialog"));
 
 const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 const inWords = (n: number) => words[n] ?? String(n);
 
 export default function Home() {
   useTitle("My profiles");
-  const { membership, reloadMembership } = useAuth();
+  const { user, membership, reloadMembership } = useAuth();
+  const [showTutorial, setShowTutorial] = useState(() => Boolean(user && !tutorialSeen(user.id)));
+  const closeTutorial = () => { if (user) markTutorialSeen(user.id); setShowTutorial(false); };
   const nav = useNavigate();
   const loc = useLocation();
   const flash = (loc.state as { flash?: string } | null)?.flash;
@@ -53,6 +58,11 @@ export default function Home() {
 
   return (
     <div className="page page-home">
+      {showTutorial && rows && (
+        <Suspense fallback={null}>
+          <TutorialDialog onClose={closeTutorial} onStart={() => { closeTutorial(); if (open && rows.length === 0) void create(); }} />
+        </Suspense>
+      )}
       <header className="intro">
         <h1 className="h-display"><Words text="Your stakeholder profiles" /></h1>
         <p className="lede">Write one profile for each of three players around The Labs in DC: a library, an employer, an agency, a community group, a training provider, anyone who matters here.</p>
@@ -137,7 +147,7 @@ export default function Home() {
         {rows && !unlocked && !membership.facilitator && (
           <p>{later && opens ? `Until ${opens}, nobody sees yours and you don't see theirs.` : `Until you've submitted your ${inWords(required)}, nobody sees yours and you don't see theirs.`} That keeps everyone's view independent.</p>
         )}
-        <p>New to this? <Link to="/tutorial" viewTransition>Watch two example profiles get written</Link>. About two minutes each.</p>
+        <p>New to this? <button type="button" className="btn-link" onClick={() => setShowTutorial(true)}>Watch two example profiles get written</button>. About two minutes each.</p>
         <p><Link to="/reading" viewTransition>Background reading</Link>: where these questions come from, in plain words.</p>
       </aside>
     </div>

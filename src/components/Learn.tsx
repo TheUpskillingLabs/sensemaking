@@ -101,7 +101,7 @@ function useRemembered(key: string, initial: boolean): [boolean, (v: boolean) =>
 
 /** Above the gallery: three ways to read the field. Folded away once someone has closed it. */
 export function ReadTheField() {
-  const [open, setOpen] = useRemembered("sp.guide.gallery", true);
+  const [open, setOpen] = useRemembered("sp.guide.gallery", typeof window === "undefined" || window.matchMedia("(min-width: 760px)").matches);
   return (
     <details className="guide" open={open} onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}>
       <summary><span className="guide-title">How to read the field</span><span className="guide-sub">Three things to look for</span></summary>

@@ -68,13 +68,26 @@ function asRow(ex: Example, d: ProfileDraft): ProfileRow {
 
 export default function Tutorial() {
   useTitle("How to write a profile");
+  return (
+    <div className="page tutorial">
+      <header className="intro">
+        <h1 className="h-display">How to write a profile</h1>
+        <p className="lede">{CASE.blurb}</p>
+      </header>
+      <TutorialPlayer />
+    </div>
+  );
+}
+
+/** The player itself, used by the tutorial page and the first-visit popup. */
+export function TutorialPlayer({ onStart, autoplay = true, focusPlay = false }: { onStart?: () => void; autoplay?: boolean; focusPlay?: boolean }) {
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const [exIndex, setExIndex] = useState(0);
   const ex = EXAMPLES[exIndex] as Example;
   const steps = useMemo(() => stepsFor(ex), [ex]);
   const [done, setDone] = useState(0);        // steps fully applied
   const [chars, setChars] = useState(0);      // of the current step
-  const [playing, setPlaying] = useState(!reduced);
+  const [playing, setPlaying] = useState(!reduced && autoplay);
   const [finished, setFinished] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -108,42 +121,48 @@ export default function Tutorial() {
   const live = (k: string) => (!finished && liveKey === k ? " is-live" : "");
   const liveCap = (k: string) => (!finished && liveKey === ratingField(k as never) ? " is-live" : "");
 
-  return (
-    <div className="page tutorial">
-      <header className="intro">
-        <h1 className="h-display">How to write a profile</h1>
-        <p className="lede">{CASE.blurb}</p>
-      </header>
+  const pct = (Math.min(done + (chars >= targetLen ? 1 : chars / Math.max(targetLen, 1)), steps.length) / steps.length) * 100;
+  const skip = () => { setFinished(true); setPlaying(false); setDone(steps.length); };
 
+  return (
+    <>
       <div className="tut-layout">
-        <aside className="tut-side">
-          <p className="tut-ex">Example {exIndex + 1} of {EXAMPLES.length}</p>
+        <div className="tut-head">
+          <p className="tut-ex">Example {exIndex + 1} of {EXAMPLES.length}<span className="tut-step" aria-hidden="true">{finished ? "Finished" : `Step ${done + 1} of ${steps.length}`}</span></p>
           <p className="tut-intro">{ex.intro}</p>
           <div className="tut-caption" role="status" aria-live="polite" aria-atomic="true">
             {finished ? <p><b>That's one profile.</b> Three of these, written on your own, and you're done.</p> : <p key={done}>{current?.caption}</p>}
           </div>
-          <p className="tut-progress" aria-hidden="true"><span style={{ width: `${(Math.min(done + (chars >= targetLen ? 1 : chars / Math.max(targetLen, 1)), steps.length) / steps.length) * 100}%` }} /></p>
-          <div className="tut-controls">
-            {!finished && <button type="button" className="btn btn-primary btn-sm" onClick={() => setPlaying((p) => !p)} aria-pressed={playing}>{playing ? "Pause" : "Play"}</button>}
-            <button type="button" className="btn btn-quiet btn-sm" onClick={back} disabled={done === 0 && !finished}>Back</button>
-            {!finished && <button type="button" className="btn btn-quiet btn-sm" onClick={next}>Next</button>}
-            {!finished && <button type="button" className="btn-link quiet" onClick={() => { setFinished(true); setPlaying(false); setDone(steps.length); }}>Skip to the finished profile</button>}
-          </div>
+          <p className="tut-progress" aria-hidden="true"><span style={{ width: `${pct}%` }} /></p>
+        </div>
+
+        <div className="tut-bar">
+          {!finished ? (
+            <div className="tut-controls">
+              <button type="button" className="btn btn-quiet btn-sm tut-back" onClick={back} disabled={done === 0} aria-label="Back one step">Back</button>
+              <button type="button" className="btn btn-primary btn-sm tut-play" autoFocus={focusPlay} onClick={() => setPlaying((p) => !p)} aria-pressed={playing}>{playing ? "Pause" : "Play"}</button>
+              <button type="button" className="btn btn-quiet btn-sm tut-next" onClick={next} aria-label="Next step">Next</button>
+            </div>
+          ) : (
+            <div className="tut-controls tut-controls-done">
+              {exIndex + 1 < EXAMPLES.length && <button type="button" className="btn btn-primary btn-sm" onClick={() => restart(exIndex + 1)}>Watch the second example</button>}
+              {onStart ? <button type="button" className={`btn btn-sm ${exIndex + 1 < EXAMPLES.length ? "btn-quiet" : "btn-primary"}`} onClick={onStart}>Start your own</button>
+                : <Link className={`btn btn-sm ${exIndex + 1 < EXAMPLES.length ? "btn-quiet" : "btn-primary"}`} to="/" viewTransition>Start your own</Link>}
+            </div>
+          )}
           <div className="tut-after">
-            {finished && exIndex + 1 < EXAMPLES.length && <button type="button" className="btn btn-primary" onClick={() => restart(exIndex + 1)}>Watch the second example</button>}
-            {finished && <Link className="btn btn-quiet" to="/" viewTransition>Start your own</Link>}
-            {!finished && exIndex + 1 < EXAMPLES.length && <button type="button" className="btn-link quiet" onClick={() => restart(exIndex + 1)}>Jump to the second example</button>}
-            {exIndex > 0 && <button type="button" className="btn-link quiet" onClick={() => restart(0)}>Back to the first</button>}
+            {!finished && <button type="button" className="btn-link quiet" onClick={skip}>Skip to the end</button>}
+            {!finished && exIndex + 1 < EXAMPLES.length && <button type="button" className="btn-link quiet" onClick={() => restart(exIndex + 1)}>Example 2</button>}
+            {(finished || exIndex > 0) && <button type="button" className="btn-link quiet" onClick={() => restart(exIndex > 0 && !finished ? 0 : exIndex)}>{exIndex > 0 && !finished ? "Example 1" : "Watch again"}</button>}
           </div>
-          <p className="tut-step" aria-hidden="true">{finished ? "Finished" : `Step ${done + 1} of ${steps.length}`}</p>
-        </aside>
+        </div>
 
         {finished ? (
-          <div className="tut-done">
+          <div className="tut-done" key={`done-${exIndex}`}>
             <ProfileCard p={asRow(ex, draft)} headingLevel={2} centre={CASE.short} />
           </div>
         ) : (
-          <div className="tut-form" ref={formRef} aria-hidden="true" {...{ inert: "" }}>
+          <div className="tut-form" key={`form-${exIndex}`} ref={formRef} aria-hidden="true" {...{ inert: "" }}>
             <div className="editor">
               <div className="form-head"><p className="rail-shape tut-shape"><CapGlyph p={asRow(ex, draft)} size={64} label={false} /></p><h2 className="h-title">{draft.name?.trim() || "A new player"}</h2></div>
               <div className="part">
@@ -193,6 +212,6 @@ export default function Tutorial() {
         <summary>Every step, as text</summary>
         <ol>{steps.map((s) => <li key={s.key}>{s.caption}</li>)}</ol>
       </details>
-    </div>
+    </>
   );
 }
