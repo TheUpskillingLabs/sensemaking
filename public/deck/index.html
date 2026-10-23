@@ -197,6 +197,7 @@ body[data-slide="15"].gl #gl { opacity: 0.28; }
 }
 @media (prefers-reduced-motion: reduce) { .ccf-viz * { transition: none !important; } }
 .quote.big p { font-size: max(24px, calc(62 * var(--u))); font-weight: 700; line-height: 1.02; letter-spacing: -0.035em; text-wrap: balance; color: var(--teal-hi); }
+.spins.plan.fields li { grid-template-columns: calc(150 * var(--u)) 1fr; }
 </style>
 
 </head>
@@ -2387,8 +2388,154 @@ const SLIDES = [
       <p class="lead" data-at="1">What's missing? Which two are really one? A new tension needs a name and a sentence.</p>`,
     notes: [
       "“The retreat named these seven. They’re on the wall, one sheet each. Walk them with me.” Read each one aloud, one line, no commentary.",
-      "“Two questions. Does anyone see a tension that isn’t here? It goes on the ‘new’ sheet with a name and one sentence. And are any two really the same thing?” The clock runs 13 minutes. Hard stop: arguing whether a tension is real is what the pods are for. Then: “Everyone up. Survey wall and card table.”",
+      "“Two questions. Does anyone see a tension that isn’t here? It goes on the ‘new’ sheet with a name and one sentence. And are any two really the same thing?” The clock runs 13 minutes. Hard stop: arguing whether a tension is real is what the pods are for. Then advance: “Everyone up. Survey wall and card table.”",
     ],
+  },
+  {
+    label: "11:00 · Archaeology together", make: () => sys({ geo: {}, p: () => 1, cam: GEO36_CAM }), timer: { secs: 2700, at: 0, cap: "Archaeology" },
+    words: `<p class="kicker">11:00 to 11:45 · everyone, on your feet</p>
+      <h2 class="h">Archaeology, together</h2>
+      <ol class="cards plain">
+        <li><b>The survey wall</b><p>Put each response under the tension it supports. How Might Wes go beside, not under.</p></li>
+        <li><b>The card table</b><p>Group the cards into players who act alike. We photograph each cluster into the app.</p></li>
+      </ol>
+      <p class="lead" data-at="1">11:22: swap. Wall people to the table, table people to the wall.</p>`,
+    notes: [
+      "“Everyone up. Two things at once, and you move between them. The survey wall: every response is a sticky on the holding sheet. Take one, read it, and put it under the tension it supports. If it fits none, it goes on ‘new.’ How Might Wes are prompts, not evidence: they go beside the tension. The card table: group the cards into players who act alike toward The Labs, whatever their type. Argue out loud. When a cluster settles, call me over and we photograph it into the app.” The clock runs 45 minutes.",
+      "At 11:22: “Swap. If you’ve been at the wall, go to the table.” At 11:38 read the counts aloud: which tensions have evidence, which have none, what’s on ‘new’, the names of the groups.",
+    ],
+  },
+  {
+    label: "11:45 · Form pods", make: () => clusterScene(false), timer: { secs: 300, at: 0, cap: "Form pods" },
+    words: `<p class="kicker">11:45 · five minutes</p>
+      <h2 class="h">Pick a tension</h2>
+      <ol class="rules">
+        <li>Stand by the tension you want to work on.</li>
+        <li>Below today's minimum? Merge with a neighbour, or park it.</li>
+        <li>A crowd? Split in two.</li>
+        <li>Pods are provisional. You can move at 2:50.</li>
+      </ol>
+      <p class="lead">Take your sheet, its stickies and a laptop to a table. Then lunch.</p>`,
+    notes: ["“Stand by the tension you want to work on.” Set today’s minimum out loud from the headcount, usually three. Merge or park anything below it; split anything that draws a crowd. “Take your tension sheet, its stickies, two flipchart sheets, the third colour of stickies and a laptop to a table. Then lunch: back at 12:30.”"],
+  },
+  {
+    label: "11:50 · Lunch", make: () => Object.assign(headlineScene(), { dur: [0, 1] }), timer: { secs: 2400, at: 0, cap: "Back at 12:30" },
+    words: `<p class="kicker">11:50 to 12:30</p>
+      <h2 class="h h-xl">Lunch</h2>
+      <p class="lead dim">Not provided today. Bring your own or head out. Back at your pod's table at 12:30.</p>`,
+    notes: ["Leave this up through lunch. At 12:25, a two-minute warning."],
+  },
+  {
+    label: "12:30 · The paradox", make: () => Object.assign(printScene(), { dur: [0, 1.4] }), timer: { secs: 1800, at: 0, cap: "The paradox" },
+    words: `<p class="kicker">12:30 to 1:00 · pods</p>
+      <h2 class="h">The paradox</h2>
+      <ol class="rules">
+        <li>From the wall: what's been tried, what could have been, what won't change.</li>
+        <li>Write it as two things that are both true.</li>
+        <li>Count the evidence. None? Write “untested.”</li>
+        <li>Turn the sheet face down until 2:05.</li>
+      </ol>
+      <blockquote class="quote" data-at="1"><p>“The Labs needs X, because… The Labs also needs Y, because… Both are true.”</p></blockquote>`,
+    notes: [
+      "“Pods, thirty minutes. First, archaeology from the wall: what The Labs has already tried on your tension, what else it could have tried, and what it won’t do. Then write the tension as a paradox: two things, both true.”",
+      "Leave the template up. Walk the tables at 12:50 and read each paradox back to the pod; a because clause that names no one means they haven’t found the second rationale yet. At 1:00: “Turn it face down. We come back to it at 2:05.”",
+    ],
+  },
+  {
+    label: "1:00 · Context and field", make: () => peersScene(), timer: { secs: 2400, at: 0, cap: "Context and field" },
+    words: `<p class="kicker">1:00 to 1:40 · pods · the paradox stays face down</p>
+      <h2 class="h">The players</h2>
+      <ul class="spins plan">
+        <li style="--d:0.5s"><span>1:00</span>Open Groups in the app. Pick the two to five groups caught in your tension.</li>
+        <li style="--d:1.0s"><span>1:10</span>Context: what each group does when things get hard, the strategy it's running, what it would never do.</li>
+        <li style="--d:1.5s"><span>1:25</span>Field: its currency. Read its capitals in the app: what does it trade in, hold power over, want?</li>
+      </ul>`,
+    notes: ["“For the next forty minutes your paradox stays face down. This is about the players, not the problem. Open Groups in the app and pick the stakeholder groups caught in your tension, two to five. One column each. Then, for every group: what they do when things get hard, the strategy they’re running now, what they’d never do. At 1:25, their currency: read the group’s averaged capitals in the app. What do they trade in, what do they hold power over, what do they want?” Watch for pods drifting into solutions: the question is what players do now."],
+  },
+  {
+    label: "1:40 · Themes", make: () => Object.assign(tomorrowScene(), { dur: [0, 2.4] }), timer: { secs: 1500, at: 0, cap: "Themes" },
+    words: `<p class="kicker">1:40 to 2:05 · pods · the step people skip</p>
+      <h2 class="h">What sits underneath</h2>
+      <ol class="rules">
+        <li>Read every sticky together. For each: what deeper factor sits under this?</li>
+        <li>Write themes on their own sheet, in the third colour.</li>
+        <li>Merge the ones that are the same thing in different words.</li>
+        <li>Circle the themes groups share that otherwise have little in common.</li>
+      </ol>
+      <p class="lead dim" data-at="1">A need is “more volunteers.” A theme is “being asked for the same thing twice.” Dorst's example: friction.</p>`,
+    notes: [
+      "“Twenty-five minutes, and it’s the one people skip. Read every sticky together and ask what sits underneath it. Write those on their own sheet. Merge the duplicates. Then circle the ones that hold for groups that otherwise have little in common. Those are what your frames will grow from.”",
+      "“If a theme sounds like a need, push it down a level. ‘More volunteers’ is a need. ‘Being asked for the same thing twice’ is a theme. Dorst’s favourite is ‘friction’: it’s a traffic jam and a feeling at once.” Walk the tables at 1:45 and have each pod read its circled themes aloud.",
+    ],
+  },
+  {
+    label: "2:05 · Uncover the paradox", make: () => clusterScene(true), timer: { secs: 2700, at: 0, cap: "The proposal" },
+    words: `<p class="kicker">2:05 to 2:50 · pods</p>
+      <h2 class="h">Turn it over</h2>
+      <ol class="rules">
+        <li>Groups left and right: who pulls toward each side?</li>
+        <li>Rewrite the because clauses with their names.</li>
+        <li>Which circled themes bear on it?</li>
+        <li>Now check the retreat readout.</li>
+        <li>Write the proposal page. Name a maintainer and the repo.</li>
+        <li>Swap pages with the next pod: one hard question each.</li>
+      </ol>`,
+    notes: ["“Turn your paradox over. Put the stakeholder groups left and right of it: who pulls toward each side? Groups on both sides means it’s a paradox worth a pod. No outside player on either side means it’s housekeeping; say so. Rewrite the because clauses with the groups’ names. Connect the circled themes. Only now, check the retreat readout: same clusters is confirmation, a split or merge is a finding. Then write the proposal page, fifteen minutes, with a maintainer and the repo’s name. At 2:45, swap pages with the pod next to you for one hard question each.”"],
+  },
+  {
+    label: "The proposal page", make: () => Object.assign(headlineScene(), { dur: [0, 1] }),
+    words: `<p class="kicker">One sheet per pod</p>
+      <h2 class="h">The Research Pod proposal</h2>
+      <ul class="spins plan fields">
+        <li><span>Name</span>Three or four words, named for the paradox</li>
+        <li><span>Paradox</span>X, because… Y, because… Both are true.</li>
+        <li><span>Evidence</span>How many survey responses, and one quote</li>
+        <li><span>Players</span>The stakeholder groups on each side</li>
+        <li><span>Themes</span>What they share underneath</li>
+        <li><span>Questions</span>Two or three to answer in three weeks</li>
+        <li><span>Nov 14</span>The frames you expect to bring</li>
+        <li><span>Who</span>Names, a maintainer, the repo</li>
+      </ul>`,
+    notes: ["Leave this up while pods write. Every field has to be filled; “untested” is an honest answer for evidence."],
+  },
+  {
+    label: "2:50 · Pitch, challenge, sign up", make: () => Object.assign(launchScene(), { dur: [0, 2.6] }), timer: { secs: 2400, at: 0, cap: "Pitches" },
+    words: `<p class="kicker">2:50 to 3:30 · everyone</p>
+      <h2 class="h">Pitch, challenge, sign up</h2>
+      <p class="lead dim">Three minutes per pod, from the page. Two questions from the room. Then three tests:</p>
+      <ol class="rules">
+        <li>Is there a player on each side?</li>
+        <li>Is there evidence, or an honest “untested”?</li>
+        <li>Is there at least one circled theme?</li>
+      </ol>
+      <p class="lead" data-at="1">Write your name on the page of the pod you'd join. Moving is expected.</p>`,
+    notes: [
+      "“Three minutes each, from the page, no slides. Two questions from the room after each. Then I’ll ask three tests out loud.” Pods that share a paradox merge on the spot. A pod below today’s minimum is parked; its page still gets posted.",
+      "“Now write your name on the page of the pod you’d join. Moving is expected and nobody owes an explanation. Names are a seed; recruiting goes on in the community for a week.”",
+    ],
+  },
+  {
+    label: "3:30 · Wrap", make: () => sys({ geo: {}, p: () => 1, cam: GEO36_CAM }), timer: { secs: 900, at: 0, cap: "Wrap" },
+    words: `<p class="kicker">3:30 to 3:45</p>
+      <h2 class="h">Before we go</h2>
+      <ol class="rules">
+        <li>Each pod's maintainer.</li>
+        <li>The repo each creates on our GitHub, by Monday.</li>
+        <li>Pages posted: the README, OLOS, #c04-all.</li>
+        <li>When each pod first meets.</li>
+      </ol>
+      <p class="lead" data-at="1">Homework, by November 14: frames, “if we approached this as if it were…, then…”, and what players said about them.</p>`,
+    notes: [
+      "Go pod by pod and agree each of the four out loud. Write them on the pod’s page.",
+      "“Your homework for November 14: frames. ‘If we approached this as if it were…, then…’ Three or more, each from a theme you circled today, written in your repo, then taken to the players to see which ones hold.”",
+    ],
+  },
+  {
+    label: "3:45 · Close", make: () => closeScene(),
+    words: `<p class="kicker">Sensemaking day · October 24, 2026</p>
+      <h2 class="h h-xl">Pods, go.</h2>
+      <p class="lead dim">By December 8, everyone ships. Thank you for today.</p>`,
+    notes: ["Close while there’s still energy (Parker). Thank people now, not at the start. Read each pod’s name aloud, one last time, as the shared moment. “Photos of every page and the wall go up tonight. By December 8, everyone ships.” Then photograph everything before it comes down."],
   },
 ];
 
