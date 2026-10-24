@@ -21,7 +21,7 @@ export interface Block {
 export const BLOCKS: Block[] = [
   {
     start: "10:00", end: "10:15", title: "Setup", who: "Facilitators",
-    what: ["Bring the cards, printed at 8:00 am from the gallery (6 per sheet). Cut any that aren't cut yet; early arrivals can help from 10:15.", "Lay the cards out on one shared table, grouped by organization type.", "Put the seven tension sheets on the wall, a blank sheet beside each, plus a \"new\" sheet and a holding sheet for the survey stickies."],
+    what: ["Bring the cards, printed at 8:00 am from the gallery (6 per sheet). Cut any that aren't cut yet; early arrivals can help from 10:15.", "Lay the cards out on one shared table, grouped by organization type.", "Put the eight tension sheets on the wall, a blank sheet beside each, plus a \"new\" sheet and a holding sheet for the survey stickies."],
     produces: "Cards on the table, tensions on the wall.",
     app: [{ text: "Print cards", to: "/print" }],
   },
@@ -38,7 +38,7 @@ export const BLOCKS: Block[] = [
   },
   {
     start: "10:47", end: "11:00", title: "The tensions", who: "Everyone",
-    what: ["The seven tensions from the October 3 retreat are on the wall, one sheet each.", "Is one missing? Add it to the \"new\" sheet with a name and one sentence. Are two the same? Merge them.", "Name the nonnegotiables: what The Labs won't change this cycle. They go on the sheet by the door.", "Thirteen minutes, then everyone up."],
+    what: ["The eight tensions from the October 3 retreat are on the wall, one sheet each.", "Is one missing? Add it to the \"new\" sheet with a name and one sentence. Are two the same? Merge them.", "Name the nonnegotiables: what The Labs won't change this cycle. They go on the sheet by the door.", "Thirteen minutes, then everyone up."],
     produces: "The tensions everyone will test today.",
   },
   {

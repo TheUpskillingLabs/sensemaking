@@ -19,7 +19,7 @@ export default function Today() {
     <div className="page today">
       <header className="intro">
         <h1 className="h-display"><Words text="Saturday, step by step" /></h1>
-        <p className="lede">October 24 at DC Public Library. Doors at 10:15, we start at 10:30 and finish at 3:45. Seven tensions from the retreat, tested against what people said in the survey and the players on the cards, ending with Research Pods to recruit for.</p>
+        <p className="lede">October 24 at DC Public Library. Doors at 10:15, we start at 10:30 and finish at 3:45. Eight tensions from the retreat, tested against what people said in the survey and the players on the cards, ending with Research Pods to recruit for.</p>
         <p className="muted small">Lunch isn't provided. The break is 11:50 to 12:30.</p>
       </header>
 

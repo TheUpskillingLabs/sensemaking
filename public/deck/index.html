@@ -196,6 +196,31 @@ body[data-slide="15"].gl #gl { opacity: 0.28; }
   .words .ccf-viz { left: 50%; right: auto; transform: translateX(-50%) !important; top: calc(var(--gut) * 2.4); height: 42vh; max-width: calc(100vw - 2 * var(--gut)); }
 }
 @media (prefers-reduced-motion: reduce) { .ccf-viz * { transition: none !important; } }
+
+/* the survey slide's picture: word counts across the 111 How Might Wes, inside words tall, outside words near zero. */
+.svy-viz { position: absolute; right: calc(var(--gut) * 0.6); top: 5vh; height: 90vh; width: auto; max-width: 54vw; overflow: visible; }
+body[data-slide="16"].gl #gl { opacity: 0.28; }
+.words .svy-viz { opacity: 1 !important; transform: none !important; }
+.svy-viz [data-at] { transform: none !important; }
+.svy-viz .svy-h { font-size: 34px; font-weight: 600; letter-spacing: -0.01em; fill: rgba(255, 255, 255, 0.95); }
+.svy-viz .svy-sub { font-size: 24px; fill: rgba(255, 255, 255, 0.62); }
+.svy-viz .svy-cap { font-size: 20px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; fill: rgba(255, 255, 255, 0.5); }
+.svy-viz .svy-lbl { font-size: 26px; font-weight: 500; fill: rgba(255, 255, 255, 0.88); }
+.svy-viz .svy-n { font-size: 24px; font-weight: 600; fill: var(--teal-hi); font-variant-numeric: tabular-nums; }
+.svy-viz .svy-bar { fill: url(#ccf-g); transform: scaleX(0); transform-box: fill-box; transform-origin: left center; transition: transform 1.1s cubic-bezier(0.32, 0.72, 0, 1); }
+.svy-viz .svy-nil { fill: rgba(255, 255, 255, 0.4); }
+.svy-viz .svy-grp.in .svy-bar { transform: scaleX(1); transition-delay: var(--nd); }
+.svy-viz .svy-row .svy-n, .svy-viz .svy-row .svy-lbl, .svy-viz .svy-row .svy-nil { opacity: 0; transition: opacity 0.5s ease; }
+.svy-viz .svy-grp.in .svy-row .svy-lbl { opacity: 1; transition-delay: var(--nd); }
+.svy-viz .svy-grp.in .svy-row .svy-n, .svy-viz .svy-grp.in .svy-row .svy-nil { opacity: 1; transition-delay: calc(var(--nd) + 0.7s); }
+.svy-viz .svy-zero .svy-lbl { fill: #e8d4a6; font-weight: 600; }
+.svy-viz .svy-zero .svy-n0 { fill: #cfab67; font-size: 30px; font-weight: 700; }
+.svy-viz .svy-zero .svy-nil { fill: #cfab67; }
+.slide:not(.on) .svy-viz * { transition-duration: 0s !important; transition-delay: 0s !important; }
+@media (max-aspect-ratio: 21/20) {
+  .words .svy-viz { left: 50%; right: auto; transform: translateX(-50%) !important; top: calc(var(--gut) * 2.4); height: 48vh; max-width: calc(100vw - 2 * var(--gut)); }
+}
+@media (prefers-reduced-motion: reduce) { .svy-viz * { transition: none !important; } }
 .quote.big p { font-size: max(24px, calc(62 * var(--u))); font-weight: 700; line-height: 1.02; letter-spacing: -0.035em; text-wrap: balance; color: var(--teal-hi); }
 .spins.plan.fields li { grid-template-columns: calc(150 * var(--u)) 1fr; }
 </style>
@@ -2357,6 +2382,20 @@ const SLIDES = [
     pocket: "Flora & Flora, Rural Communities: Legacy and Change; Emery & Flora, “Spiraling-Up: Mapping Community Transformation with Community Capitals Framework,” Community Development 37(1), 2006.",
   },
   {
+    label: "The survey", make: () => Object.assign(tomorrowScene(), { dur: [0, 2.4] }),
+    words: `<p class="kicker">The field survey · 111 How Might Wes, October 9 to 23</p>
+      <h2 class="h">What we see when we look at ourselves</h2>
+      <p class="lead" data-at="1">The machinery is in sharp focus. The world it runs in is barely there.</p>
+      <p class="lead" data-at="2">Underneath nearly every tension, two wants: to see the whole, and a fair return for what you give. Hold onto both; they're the themes your pods will test.</p>
+      <svg class="svy-viz" viewBox="0 0 820 1000" role="img" aria-label="Mentions across 111 How Might We responses. Inside words are frequent: the Cycle 24, Upskillers 18, volunteers 15, mentors 9, workshops 9, pods 7. Outside words are rare: funding 13, jobs 3, AI 3, employers 2, community 1, DC 0, the library 0."><text x="0" y="60" class="svy-h">111 times, we asked how to get better</text><text x="0" y="96" class="svy-sub">Words used, across every How Might We</text><text x="0" y="160" class="svy-cap">Inside: how we run</text><g data-at="0" class="svy-grp svy-in"><g class="svy-row" style="--nd:0.15s"><text x="230" y="204" text-anchor="end" class="svy-lbl">The Cycle</text><rect class="svy-bar" x="250" y="184" width="400.0" height="28" rx="4"/><text class="svy-n" x="664.0" y="205">24</text></g><g class="svy-row" style="--nd:0.33s"><text x="230" y="260" text-anchor="end" class="svy-lbl">Upskillers</text><rect class="svy-bar" x="250" y="240" width="300.0" height="28" rx="4"/><text class="svy-n" x="564.0" y="261">18</text></g><g class="svy-row" style="--nd:0.51s"><text x="230" y="316" text-anchor="end" class="svy-lbl">Volunteers</text><rect class="svy-bar" x="250" y="296" width="250.0" height="28" rx="4"/><text class="svy-n" x="514.0" y="317">15</text></g><g class="svy-row" style="--nd:0.69s"><text x="230" y="372" text-anchor="end" class="svy-lbl">Mentors</text><rect class="svy-bar" x="250" y="352" width="150.0" height="28" rx="4"/><text class="svy-n" x="414.0" y="373">9</text></g><g class="svy-row" style="--nd:0.87s"><text x="230" y="428" text-anchor="end" class="svy-lbl">Workshops</text><rect class="svy-bar" x="250" y="408" width="150.0" height="28" rx="4"/><text class="svy-n" x="414.0" y="429">9</text></g><g class="svy-row" style="--nd:1.05s"><text x="230" y="484" text-anchor="end" class="svy-lbl">Pods</text><rect class="svy-bar" x="250" y="464" width="116.7" height="28" rx="4"/><text class="svy-n" x="380.7" y="485">7</text></g></g><text x="0" y="586" class="svy-cap">Outside: the world we run in</text><g data-at="1" class="svy-grp svy-out"><g class="svy-row" style="--nd:0.15s"><text x="230" y="630" text-anchor="end" class="svy-lbl">Funding</text><rect class="svy-bar" x="250" y="610" width="216.7" height="28" rx="4"/><text class="svy-n" x="480.7" y="631">13</text></g><g class="svy-row" style="--nd:0.33s"><text x="230" y="686" text-anchor="end" class="svy-lbl">Jobs</text><rect class="svy-bar" x="250" y="666" width="50.0" height="28" rx="4"/><text class="svy-n" x="314.0" y="687">3</text></g><g class="svy-row" style="--nd:0.51s"><text x="230" y="742" text-anchor="end" class="svy-lbl">AI</text><rect class="svy-bar" x="250" y="722" width="50.0" height="28" rx="4"/><text class="svy-n" x="314.0" y="743">3</text></g><g class="svy-row" style="--nd:0.69s"><text x="230" y="798" text-anchor="end" class="svy-lbl">Employers</text><rect class="svy-bar" x="250" y="778" width="33.3" height="28" rx="4"/><text class="svy-n" x="297.3" y="799">2</text></g><g class="svy-row" style="--nd:0.87s"><text x="230" y="854" text-anchor="end" class="svy-lbl">Community</text><rect class="svy-bar" x="250" y="834" width="16.7" height="28" rx="4"/><text class="svy-n" x="280.7" y="855">1</text></g><g class="svy-row svy-zero" style="--nd:1.05s"><text x="230" y="910" text-anchor="end" class="svy-lbl">DC</text><rect class="svy-nil" x="250" y="903" width="16" height="2"/><text class="svy-n svy-n0" x="280" y="911">0</text></g><g class="svy-row svy-zero" style="--nd:1.23s"><text x="230" y="966" text-anchor="end" class="svy-lbl">The library</text><rect class="svy-nil" x="250" y="959" width="16" height="2"/><text class="svy-n svy-n0" x="280" y="967">0</text></g></g></svg>`,
+    notes: [
+      "“Since October 9, you’ve answered one question 111 times: how might we improve The Labs. Here’s a count of the words you used.” The inside bars grow. “The Cycle, Upskillers, volunteers, mentors, workshops, pods. The machinery. It’s in sharp focus, and it should be: that’s what we run.” Advance.",
+      "“Now the outside.” The second group grows, mostly to nothing. “Funding, because the retreat talked money. Then jobs three times, AI three times, employers twice, community once. DC: zero. The library we’re sitting in: zero.” Pause on the two gold zeros. “When The Labs looks at itself, it sees itself. That’s not a criticism; it’s what every organization does. It’s why the cards are on the table: they are the only outside view in the room.” Advance.",
+      "“Two more things the survey says, if you read under the tensions. First: again and again, you ask to see the whole. Who’s still here, who wants to help, what’s going on, what worked. An organization that can’t see itself can’t be seen by anyone else either, and OLOS is the instrument for both. Second: you keep asking what people get back for what they give. A clear ask, a bounded commitment, a visible return. Hold onto those two. This afternoon, when your pod looks for themes, see whether they hold across groups that have nothing else in common.” Advance to the rules.",
+    ],
+    pocket: "Counts are substring matches across the 111 answers (e.g. ‘funding’ covers funding, grants, sponsors and donors; ‘AI’ excludes ‘Claude’, which appears zero times). 43 came in before the retreat, 45 were transcribed from the retreat boards, 23 are new since the cycle opened. One is a duplicate. All are in the organizer’s voice: ‘we’, never ‘I as a participant’. That gap is a legitimate ‘new’ sheet.",
+  },
+  {
     label: "Rules for today", make: () => Object.assign(headlineScene(), { dur: [0, 1] }),
     words: `<h2 class="h">Rules for today</h2>
       <ol class="rules">
@@ -2375,7 +2414,7 @@ const SLIDES = [
   {
     label: "The tensions · exercise", make: () => sys({ geo: {}, p: () => 1, cam: GEO36_CAM }), timer: { secs: 780, at: 1, cap: "The tensions" },
     words: `<p class="kicker">From the October 3 retreat</p>
-      <h2 class="h">Seven tensions</h2>
+      <h2 class="h">Eight tensions</h2>
       <ul class="spins">
         <li style="--d:0.4s"><span>01</span>Guidance vs. autonomy</li>
         <li style="--d:0.7s"><span>02</span>Designed connection vs. organic momentum</li>
@@ -2384,10 +2423,11 @@ const SLIDES = [
         <li style="--d:1.6s"><span>05</span>Cohort ends vs. community continues</li>
         <li style="--d:1.9s"><span>06</span>Volunteer goodwill vs. what we ask of it</li>
         <li style="--d:2.2s"><span>07</span>What we do vs. what we can prove</li>
+        <li style="--d:2.5s"><span>08</span>Grant dependence vs. diversified revenue</li>
       </ul>
       <p class="lead" data-at="1">What's missing? Which two are really one? A new tension needs a name and a sentence.</p>`,
     notes: [
-      "“The retreat named these seven. They’re on the wall, one sheet each. Walk them with me.” Read each one aloud, one line, no commentary.",
+      "“The retreat named these eight. They’re on the wall, one sheet each. Walk them with me.” Read each one aloud, one line, no commentary.",
       "“Two questions. Does anyone see a tension that isn’t here? It goes on the ‘new’ sheet with a name and one sentence. And are any two really the same thing?” The clock runs 13 minutes. Hard stop: arguing whether a tension is real is what the pods are for. Then advance: “Everyone up. Survey wall and card table.”",
     ],
   },
