@@ -269,7 +269,7 @@ function setMode(m) { mode = m; document.getElementById("mMap").setAttribute("ar
 document.getElementById("mMap").addEventListener("click", () => setMode("map"));
 document.getElementById("mGrid").addEventListener("click", () => setMode("grid"));
 
-fetch("./data.json").then((r) => r.json()).then((d) => {
+fetch("/themes/data.json", { cache: "no-cache" }).then((r) => r.json()).then((d) => {
   D = d; T = byK(D.tensions); P = byK(D.patterns); TH = byK(D.themes);
   D.hmw.forEach((h) => { h.themes = P[h.p].themes; });
   const m = /^#(theme|pattern|tension|cell)=(.+)$/.exec(location.hash);

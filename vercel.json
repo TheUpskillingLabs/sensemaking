@@ -3,5 +3,22 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "rewrites": [{ "source": "/((?!assets/|fonts/|favicon|deck/|themes/).*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/((?!assets/|fonts/|favicon|deck/|themes/).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/themes",
+      "destination": "/themes/",
+      "permanent": false
+    },
+    {
+      "source": "/deck",
+      "destination": "/deck/",
+      "permanent": false
+    }
+  ]
 }
