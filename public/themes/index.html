@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>The survey, in layers</title>
+<meta name="description" content="111 How Might Wes from the C04 field survey, read the way Kees Dorst reads a field: what was said, the patterns under it, and the themes under those.">
+<style>
+@font-face { font-family: "Geologica Variable"; font-weight: 100 900; font-display: swap; src: url(/fonts/Geologica-VariableFont.ttf) format("truetype"); }
+:root { color-scheme: dark;
+  --ink:#00141b; --navy:#03232a; --teal:#0094a0; --teal-hi:#00a8b8; --metal:#cfab67; --red:#e11d2a;
+  --t1:rgba(255,255,255,.95); --t2:rgba(255,255,255,.66); --t3:rgba(255,255,255,.44); --rule:rgba(255,255,255,.16);
+  --font:"Geologica Variable","Geologica",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+* { box-sizing:border-box; }
+html,body { margin:0; background:var(--ink); color:var(--t1); font-family:var(--font); -webkit-font-smoothing:antialiased; }
+body { background: radial-gradient(120% 80% at 70% 0%, #05303a 0%, var(--ink) 60%); min-height:100vh; }
+a { color:var(--teal-hi); }
+header { padding:22px 24px 10px; display:flex; flex-wrap:wrap; gap:12px 24px; align-items:flex-end; justify-content:space-between; }
+.kicker { margin:0 0 6px; font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--teal-hi); }
+h1 { margin:0; font-size:clamp(24px,3.2vw,38px); font-weight:700; letter-spacing:-.03em; line-height:1.02; }
+.sub { margin:8px 0 0; color:var(--t2); font-size:15px; max-width:62ch; line-height:1.4; text-wrap:pretty; }
+.ctl { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.seg { display:inline-flex; border:1px solid var(--rule); border-radius:999px; overflow:hidden; }
+.seg button { background:none; border:0; color:var(--t2); font:inherit; font-size:13px; font-weight:600; padding:8px 14px; cursor:pointer; }
+.seg button[aria-pressed="true"] { background:rgba(0,168,184,.18); color:var(--t1); }
+.legend { display:flex; gap:14px; font-size:12px; color:var(--t2); align-items:center; flex-wrap:wrap; }
+.legend i { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:-1px; }
+.legend .wa{background:var(--teal-hi)} .legend .wb{background:#dfe9ea} .legend .wc{background:var(--metal)}
+main { display:grid; grid-template-columns: minmax(0,1fr) 400px; gap:0; min-height:calc(100vh - 120px); }
+#viz { padding:8px 12px 24px 24px; overflow:hidden; }
+#viz svg { width:100%; height:auto; display:block; max-height:calc(100vh - 150px); }
+aside { border-left:1px solid var(--rule); padding:18px 22px 40px; overflow:auto; max-height:calc(100vh - 120px); position:sticky; top:0; }
+.band-lbl { font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; fill:var(--t3); }
+.band-sub { font-size:12px; fill:var(--t3); }
+.tcol text { font-size:11.5px; fill:var(--t2); }
+.dot { cursor:pointer; transition:opacity .25s, r .2s; }
+.dot.wa{fill:var(--teal-hi)} .dot.wb{fill:#dfe9ea} .dot.wc{fill:var(--metal)}
+.link { fill:none; stroke:rgba(255,255,255,.1); stroke-width:1; transition:stroke .25s, opacity .25s; }
+.plink { fill:none; stroke:rgba(0,168,184,.32); stroke-linecap:round; transition:stroke .25s, opacity .25s; }
+.node { cursor:pointer; }
+.node rect { fill:rgba(255,255,255,.05); stroke:rgba(255,255,255,.22); transition:fill .25s, stroke .25s, opacity .25s; }
+.node text { fill:var(--t1); font-size:12.5px; font-weight:500; pointer-events:none; }
+.node .n { fill:var(--teal-hi); font-weight:700; font-variant-numeric:tabular-nums; }
+.theme rect { fill:rgba(0,148,160,.14); stroke:rgba(0,168,184,.55); }
+.theme text { font-size:15px; font-weight:600; }
+.theme .n { font-size:13px; }
+.theme.universal rect { stroke:var(--metal); }
+.theme .uni { fill:var(--metal); font-size:10.5px; font-weight:600; letter-spacing:.1em; }
+.tcol rect.hit { fill:transparent; cursor:pointer; }
+.tcol rect.hit:hover { fill:rgba(255,255,255,.03); }
+svg.focus .dot:not(.lit), svg.focus .link:not(.lit), svg.focus .plink:not(.lit) { opacity:.08; }
+svg.focus .node:not(.lit) { opacity:.3; }
+svg.focus .link.lit { stroke:rgba(0,168,184,.7); }
+svg.focus .plink.lit { stroke:rgba(0,168,184,.85); }
+svg.focus .node.lit rect { fill:rgba(0,168,184,.22); stroke:var(--teal-hi); }
+svg.focus .dot.lit { r:5.6; }
+.node.sel rect { stroke-width:2; }
+.pane-k { font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--t3); margin:0 0 6px; }
+.pane h2 { margin:0 0 6px; font-size:22px; letter-spacing:-.02em; line-height:1.1; }
+.pane .blurb { margin:0 0 10px; color:var(--t2); font-size:14px; line-height:1.45; }
+.span { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 16px; }
+.chip { font-size:11px; border:1px solid var(--rule); border-radius:999px; padding:4px 9px; color:var(--t2); }
+.chip.on { border-color:var(--teal-hi); color:var(--t1); background:rgba(0,168,184,.14); }
+.chip.gold { border-color:var(--metal); color:var(--metal); }
+.grp { margin:0 0 14px; }
+.grp h3 { margin:0 0 6px; font-size:12px; font-weight:600; color:var(--t3); letter-spacing:.04em; }
+.hm { margin:0 0 8px; padding:8px 10px 8px 12px; border-left:2px solid var(--rule); font-size:13.5px; line-height:1.4; color:var(--t1); position:relative; }
+.hm.wa{border-color:var(--teal-hi)} .hm.wb{border-color:#dfe9ea} .hm.wc{border-color:var(--metal)}
+.hm small { display:block; margin-top:3px; color:var(--t3); font-size:11px; }
+.hm.dup small::after { content:" · duplicate"; }
+.howto p { color:var(--t2); font-size:14px; line-height:1.5; margin:0 0 10px; }
+.howto b { color:var(--t1); font-weight:600; }
+button.clr { background:none; border:1px solid var(--rule); color:var(--t2); border-radius:999px; font:inherit; font-size:12px; padding:5px 10px; cursor:pointer; margin-bottom:12px; }
+table { border-collapse:collapse; width:100%; font-size:13px; margin-top:6px; }
+th, td { padding:8px 6px; text-align:center; border-bottom:1px solid var(--rule); }
+th { font-weight:600; color:var(--t2); font-size:11.5px; }
+th.rowh, td.rowh { text-align:left; font-weight:600; color:var(--t1); white-space:nowrap; }
+td.c { cursor:pointer; border-radius:6px; font-variant-numeric:tabular-nums; }
+td.c:hover { outline:1px solid var(--teal-hi); }
+td.tot { color:var(--metal); font-weight:700; }
+.grid-note { color:var(--t2); font-size:13px; line-height:1.45; margin:14px 0 0; max-width:70ch; }
+th.colh span { writing-mode:vertical-rl; transform:rotate(180deg); display:inline-block; max-height:150px; text-align:left; font-weight:500; }
+.err { padding:24px; color:var(--t2); }
+@media (max-width: 980px) {
+  main { grid-template-columns:1fr; }
+  aside { border-left:0; border-top:1px solid var(--rule); position:static; max-height:none; }
+  #viz { padding:6px 8px 8px; overflow-x:auto; -webkit-overflow-scrolling:touch; } #viz svg { max-height:none; min-width:980px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <p class="kicker">C04 field survey · 111 How Might Wes · October 9 to 23</p>
+    <h1>The survey, in layers</h1>
+    <p class="sub">Read the way Kees Dorst reads a field: what was said on the surface, the patterns underneath, and the themes under those. Themes that cut across many tensions are the candidates for universals. Tap anything.</p>
+  </div>
+  <div class="ctl">
+    <div class="seg" role="tablist"><button id="mMap" aria-pressed="true">Map</button><button id="mGrid" aria-pressed="false">Grid</button></div>
+    <div class="legend"><span><i class="wa"></i>Before the retreat, Oct 9 (43)</span><span><i class="wb"></i>Retreat boards, Oct 12 (45)</span><span><i class="wc"></i>New since the cycle opened (23)</span></div>
+  </div>
+</header>
+<main>
+  <section id="viz" aria-label="Map"></section>
+  <aside class="pane" id="pane"></aside>
+</main>
+<script>
+/* The 111 answers, each coded to a tension, a pattern and (through the pattern) one or two themes, live in data.json beside this page. */
+let D, T, P, TH;
+const WAVE = { a: "Oct 9, before the retreat", b: "Oct 12, retreat boards", c: "New since the cycle opened" };
+const DUP = new Set([154]);
+const UNIVERSAL_AT = 5; // a theme reaching this many of the eight retreat tensions is a candidate universal
+const viz = document.getElementById("viz"), pane = document.getElementById("pane");
+let mode = "map", sel = null;
+const byK = (arr) => Object.fromEntries(arr.map((x) => [x.k, x]));
+const cnt = (f) => D.hmw.filter(f).length;
+const span = (f) => new Set(D.hmw.filter(f).map((h) => h.t));
+const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const reach8 = (set) => set.size - (set.has("J") ? 1 : 0);
+
+/* ---------- layout ---------- */
+function layout() {
+  const W = 1200, H = 720, L = 24, R = 24, inner = W - L - R;
+  const ts = D.tensions.map((t) => ({ ...t, n: cnt((h) => h.t === t.k) }));
+  const wts = ts.map((t) => Math.max(1.4, Math.sqrt(t.n)));
+  const gap = 16, sumw = wts.reduce((a, b) => a + b, 0), avail = inner - gap * (ts.length - 1);
+  let x = L;
+  ts.forEach((t, i) => { t.w = avail * wts[i] / sumw; t.x = x; x += t.w + gap; });
+  const dotR = 4.6, pitch = 12.5, top = 124, dots = [];
+  ts.forEach((t) => {
+    const rows = D.hmw.filter((h) => h.t === t.k).sort((a, b) => a.w.localeCompare(b.w) || a.id - b.id);
+    const ncol = Math.max(2, Math.floor((t.w - 6) / pitch));
+    const used = Math.min(ncol, rows.length) * pitch, x0 = t.x + (t.w - used) / 2 + pitch / 2;
+    rows.forEach((h, i) => dots.push({ h, cx: x0 + (i % ncol) * pitch, cy: top + Math.floor(i / ncol) * pitch }));
+  });
+  const dotsBottom = Math.max(...dots.map((d) => d.cy)) + dotR;
+  const pw = (name) => Math.max(96, name.length * 7.3 + 54);
+  const ps = D.patterns.map((p) => { const ds = dots.filter((d) => d.h.p === p.k); return { ...p, n: ds.length, w: pw(p.name), x: ds.reduce((a, d) => a + d.cx, 0) / Math.max(1, ds.length) }; });
+  const py = 352, ph = 30, prow = 42;
+  // four staggered rows, so nineteen labels fit without colliding; each pattern keeps its own y
+  ps.sort((a, b) => a.x - b.x);
+  const rowsP = [[], [], [], []];
+  ps.forEach((p, i) => { p.row = i % 4; p.y = py + p.row * prow; rowsP[p.row].push(p); });
+  rowsP.forEach((r) => deoverlap(r, L, W - R, 12));
+  const tys = D.themes.map((t) => { const rel = ps.filter((p) => p.themes.includes(t.k)); const wsum = rel.reduce((a, p) => a + p.n / p.themes.length, 0);
+    return { ...t, n: cnt((h) => h.themes.includes(t.k)), w: Math.max(150, t.name.length * 9 + 70), x: rel.reduce((a, p) => a + p.x * (p.n / p.themes.length), 0) / Math.max(1e-6, wsum), reach: span((h) => h.themes.includes(t.k)) }; });
+  const thy = 620, thh = 44;
+  deoverlap(tys, L, W - R, 18);
+  return { W, H, ts, dots, dotR, top, dotsBottom, ps, py, ph, prow, tys, thy, thh };
+}
+function deoverlap(nodes, lo, hi, gap) {
+  nodes.sort((a, b) => a.x - b.x);
+  for (let it = 0; it < 80; it++) {
+    let moved = false;
+    for (let i = 1; i < nodes.length; i++) { const a = nodes[i - 1], b = nodes[i], need = (a.w + b.w) / 2 + gap, d = b.x - a.x; if (d < need) { const s = (need - d) / 2; a.x -= s; b.x += s; moved = true; } }
+    nodes.forEach((n) => { n.x = Math.max(lo + n.w / 2, Math.min(hi - n.w / 2, n.x)); });
+    if (!moved) break;
+  }
+}
+function wrap(str, n) { const out = []; let line = ""; str.split(" ").forEach((w) => { if ((line + " " + w).trim().length > n && line) { out.push(line); line = w; } else line = (line + " " + w).trim(); }); if (line) out.push(line); return out; }
+
+/* ---------- map ---------- */
+function drawMap() {
+  const { W, H, ts, dots, dotR, top, dotsBottom, ps, py, ph, prow, tys, thy, thh } = layout();
+  const bandY = 44;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Three layers: 111 How Might Wes grouped by tension, the patterns under them, and the themes under those, with lines between the layers.">`;
+  s += `<text x="24" y="${bandY - 18}" class="band-lbl">What was said</text><text x="140" y="${bandY - 18}" class="band-sub">111 How Might Wes, under the retreat's eight tensions, plus one new</text>`;
+  s += `<text x="24" y="${py - 28}" class="band-lbl">Patterns</text><text x="100" y="${py - 28}" class="band-sub">${ps.length} recurring wants, read across the tensions</text>`;
+  s += `<text x="24" y="${thy - 30}" class="band-lbl">Themes</text><text x="92" y="${thy - 30}" class="band-sub">the deeper factors; gold = reaches ${UNIVERSAL_AT}+ of the eight tensions, a candidate universal</text>`;
+  const pById = Object.fromEntries(ps.map((p) => [p.k, p]));
+  dots.forEach((d) => { const p = pById[d.h.p], y1 = d.cy + dotR, y2 = p.y - 1, my = (y1 + y2) / 2;
+    s += `<path class="link" data-h="${d.h.id}" data-p="${p.k}" data-t="${d.h.t}" d="M${d.cx.toFixed(1)} ${y1.toFixed(1)} C${d.cx.toFixed(1)} ${my.toFixed(1)} ${p.x.toFixed(1)} ${my.toFixed(1)} ${p.x.toFixed(1)} ${y2}"/>`; });
+  const thById = Object.fromEntries(tys.map((t) => [t.k, t]));
+  ps.forEach((p) => p.themes.forEach((tk) => { const t = thById[tk], w = Math.max(1.2, (p.n / p.themes.length) * 1.1), y1 = p.y + ph, y2 = thy - 1, my = (y1 + y2) / 2;
+    s += `<path class="plink" data-p="${p.k}" data-th="${tk}" stroke-width="${w.toFixed(1)}" d="M${p.x.toFixed(1)} ${y1} C${p.x.toFixed(1)} ${my} ${t.x.toFixed(1)} ${my} ${t.x.toFixed(1)} ${y2}"/>`; }));
+  ts.forEach((t) => {
+    const lbl = wrap(t.name, Math.max(10, Math.floor(t.w / 6.2))), cx = (t.x + t.w / 2).toFixed(1);
+    s += `<g class="tcol" data-t="${t.k}"><rect class="hit" x="${t.x.toFixed(1)}" y="${bandY - 4}" width="${t.w.toFixed(1)}" height="${dotsBottom - bandY + 12}" rx="8"/>`;
+    s += `<text x="${cx}" y="${bandY + 12}" text-anchor="middle">${lbl.map((l, i) => `<tspan x="${cx}" dy="${i ? 13 : 0}">${esc(l)}</tspan>`).join("")}</text>`;
+    s += `<text x="${cx}" y="${top - 14}" text-anchor="middle" style="fill:var(--teal-hi);font-weight:700">${t.n}</text></g>`;
+  });
+  dots.forEach((d) => { s += `<circle class="dot w${d.h.w}" r="${dotR}" cx="${d.cx.toFixed(1)}" cy="${d.cy.toFixed(1)}" data-h="${d.h.id}" data-p="${d.h.p}" data-t="${d.h.t}"><title>${esc(d.h.x)}</title></circle>`; });
+  ps.forEach((p) => { const x0 = p.x - p.w / 2; s += `<g class="node pattern" data-p="${p.k}" data-th="${p.themes.join(" ")}"><rect x="${x0.toFixed(1)}" y="${p.y}" width="${p.w.toFixed(1)}" height="${ph}" rx="15"/><text x="${(x0 + 14).toFixed(1)}" y="${p.y + 19.5}">${esc(p.name)}</text><text class="n" x="${(x0 + p.w - 14).toFixed(1)}" y="${p.y + 19.5}" text-anchor="end">${p.n}</text></g>`; });
+  tys.forEach((t) => { const x0 = t.x - t.w / 2, n8 = reach8(t.reach), uni = n8 >= UNIVERSAL_AT;
+    s += `<g class="node theme${uni ? " universal" : ""}" data-th="${t.k}"><rect x="${x0.toFixed(1)}" y="${thy}" width="${t.w.toFixed(1)}" height="${thh}" rx="22"/><text x="${(x0 + 18).toFixed(1)}" y="${thy + 27}">${esc(t.name)}</text><text class="n" x="${(x0 + t.w - 18).toFixed(1)}" y="${thy + 27}" text-anchor="end">${t.n}</text>${uni ? `<text class="uni" x="${t.x.toFixed(1)}" y="${thy + thh + 20}" text-anchor="middle">UNIVERSAL · ${n8} OF 8</text>` : ""}</g>`; });
+  s += `</svg>`;
+  viz.innerHTML = s;
+  const svg = viz.querySelector("svg");
+  svg.addEventListener("click", (e) => {
+    const th = e.target.closest(".theme"), pt = e.target.closest(".pattern"), dt = e.target.closest(".dot"), tc = e.target.closest(".tcol");
+    if (th) select({ kind: "theme", k: th.dataset.th });
+    else if (pt) select({ kind: "pattern", k: pt.dataset.p });
+    else if (dt) select({ kind: "pattern", k: dt.dataset.p, h: +dt.dataset.h });
+    else if (tc) select({ kind: "tension", k: tc.dataset.t });
+    else select(null);
+  });
+  svg.addEventListener("mouseover", (e) => { if (sel) return; const th = e.target.closest(".theme"), pt = e.target.closest(".pattern"), tc = e.target.closest(".tcol"); if (th) light({ kind: "theme", k: th.dataset.th }); else if (pt) light({ kind: "pattern", k: pt.dataset.p }); else if (tc) light({ kind: "tension", k: tc.dataset.t }); });
+  svg.addEventListener("mouseleave", () => { if (!sel) light(null); });
+  light(sel);
+}
+function match(f, el) {
+  if (!f) return false;
+  const ds = el.dataset;
+  const isTheme = el.classList.contains("theme"), isPattern = el.classList.contains("pattern"), isPlink = el.classList.contains("plink");
+  if (f.kind === "theme") { if (isTheme) return ds.th === f.k; if (isPlink) return ds.th === f.k; if (ds.p) return P[ds.p].themes.includes(f.k); if (ds.t) return D.hmw.some((h) => h.t === ds.t && h.themes.includes(f.k)); return false; }
+  if (f.kind === "pattern") { if (isTheme) return P[f.k].themes.includes(ds.th); if (ds.p) return ds.p === f.k; if (ds.t) return D.hmw.some((h) => h.t === ds.t && h.p === f.k); return false; }
+  if (f.kind === "tension") { if (isTheme) return D.hmw.some((h) => h.t === f.k && h.themes.includes(ds.th)); if (isPlink) return D.hmw.some((h) => h.t === f.k && h.p === ds.p); if (ds.t) return ds.t === f.k; if (ds.p) return D.hmw.some((h) => h.t === f.k && h.p === ds.p); return false; }
+  if (f.kind === "cell") { if (ds.h) { const h = D.hmw.find((x) => x.id === +ds.h); return h.t === f.t && h.themes.includes(f.th); } if (isTheme) return ds.th === f.th; if (isPlink) return ds.th === f.th && D.hmw.some((h) => h.t === f.t && h.p === ds.p); if (ds.p) return P[ds.p].themes.includes(f.th) && D.hmw.some((h) => h.t === f.t && h.p === ds.p); if (ds.t) return ds.t === f.t; }
+  return false;
+}
+function light(f) {
+  const svg = viz.querySelector("svg"); if (!svg) return;
+  svg.classList.toggle("focus", !!f);
+  svg.querySelectorAll(".dot,.link,.plink,.node,.tcol").forEach((el) => {
+    el.classList.toggle("lit", match(f, el));
+    el.classList.toggle("sel", !!sel && f === sel && ((f.kind === "theme" && el.classList.contains("theme") && el.dataset.th === f.k) || (f.kind === "pattern" && el.classList.contains("pattern") && el.dataset.p === f.k)));
+  });
+}
+function select(f) { sel = f; light(f); renderPane(); try { history.replaceState(null, "", f ? "#" + f.kind + "=" + (f.kind === "cell" ? f.th + "," + f.t : f.k) : location.pathname); } catch (e) {} }
+
+/* ---------- pane ---------- */
+const SHORT = { G: "Guidance vs. autonomy", C: "Connection vs. momentum", M: "Manual vs. systems", T: "Tailored vs. scalable", E: "Ends vs. continues", V: "Volunteer goodwill", P: "Do vs. prove", R: "Grants vs. revenue", J: "Employers (new)" };
+function hmwList(rows) {
+  const groups = D.tensions.filter((t) => rows.some((h) => h.t === t.k));
+  return groups.map((t) => `<div class="grp"><h3>${esc(t.name)} · ${rows.filter((h) => h.t === t.k).length}</h3>${rows.filter((h) => h.t === t.k).map((h) => `<p class="hm w${h.w}${DUP.has(h.id) ? " dup" : ""}">${esc(h.x)}<small>${WAVE[h.w]}${sel && sel.kind !== "pattern" ? " · " + esc(P[h.p].name) : ""}</small></p>`).join("")}</div>`).join("");
+}
+function chips(reach) { return `<div class="span">${D.tensions.map((t) => `<span class="chip${reach.has(t.k) ? " on" : ""}${t.k === "J" && reach.has("J") ? " gold" : ""}">${esc(SHORT[t.k])}</span>`).join("")}</div>`; }
+function renderPane() {
+  if (!sel) {
+    pane.innerHTML = `<div class="howto"><p class="pane-k">How to read this</p>
+      <p><b>Top:</b> every How Might We, one dot, under the tension it speaks to. Colour is when it arrived. The columns are the retreat's eight tensions; the ninth is the only outward-facing thread, and it's new.</p>
+      <p><b>Middle:</b> the patterns, the wants that recur across different tensions once you stop sorting by tension and read for what people keep asking for.</p>
+      <p><b>Bottom:</b> the themes, the deeper factors under the patterns. In Dorst's method these are the layer frames get built from. A theme that reaches five or more of the eight tensions is a candidate <b>universal</b>: something players with little else in common share.</p>
+      <p>Tap a theme, a pattern or a column to read the responses behind it. The grid view shows which theme meets which tension, with counts.</p>
+      <p style="color:var(--t3);font-size:12.5px">The coding is one reading, done the night before, to be argued with. Every response is in the organizer's voice (“we”); none is written from the participant's seat. That gap is itself a finding.</p></div>`;
+    return;
+  }
+  let head = "", rows = [];
+  if (sel.kind === "theme") { const t = TH[sel.k]; rows = D.hmw.filter((h) => h.themes.includes(sel.k)); const reach = span((h) => h.themes.includes(sel.k)), n8 = reach8(reach);
+    head = `<p class="pane-k">Theme</p><h2>${esc(t.name)}</h2><p class="blurb">${esc(t.blurb)}</p><p class="blurb"><b style="color:var(--t1)">${rows.length}</b> responses · reaches <b style="color:${n8 >= UNIVERSAL_AT ? "var(--metal)" : "var(--t1)"}">${n8} of 8</b> tensions${n8 >= UNIVERSAL_AT ? " · candidate universal" : ""}<br>Through: ${D.patterns.filter((p) => p.themes.includes(sel.k)).map((p) => esc(p.name)).join(", ")}.</p>${chips(reach)}`; }
+  else if (sel.kind === "pattern") { const p = P[sel.k]; rows = D.hmw.filter((h) => h.p === sel.k); const reach = span((h) => h.p === sel.k);
+    head = `<p class="pane-k">Pattern</p><h2>${esc(p.name)}</h2><p class="blurb"><b style="color:var(--t1)">${rows.length}</b> responses across ${reach.size} tension${reach.size === 1 ? "" : "s"} · sits under ${p.themes.map((k) => `<b style="color:var(--teal-hi)">${esc(TH[k].name)}</b>`).join(" and ")}.</p>${chips(reach)}`;
+    if (sel.h) rows = [...rows.filter((h) => h.id === sel.h), ...rows.filter((h) => h.id !== sel.h)]; }
+  else if (sel.kind === "tension") { const t = T[sel.k]; rows = D.hmw.filter((h) => h.t === sel.k); const ths = D.themes.filter((th) => rows.some((h) => h.themes.includes(th.k)));
+    head = `<p class="pane-k">Tension</p><h2>${esc(t.name)}</h2><p class="blurb"><b style="color:var(--t1)">${rows.length}</b> responses · themes underneath: ${ths.map((th) => `<b style="color:var(--teal-hi)">${esc(th.name)}</b> (${rows.filter((h) => h.themes.includes(th.k)).length})`).join(", ")}.</p>`; }
+  else if (sel.kind === "cell") { rows = D.hmw.filter((h) => h.t === sel.t && h.themes.includes(sel.th));
+    head = `<p class="pane-k">Theme × tension</p><h2>${esc(TH[sel.th].name)}<br><span style="color:var(--t2);font-size:16px;font-weight:500">under ${esc(T[sel.t].name)}</span></h2><p class="blurb"><b style="color:var(--t1)">${rows.length}</b> response${rows.length === 1 ? "" : "s"}.</p>`; }
+  pane.innerHTML = `<button class="clr" type="button">← Back to the overview</button>${head}${hmwList(rows)}`;
+  pane.querySelector(".clr").addEventListener("click", () => select(null));
+  pane.scrollTop = 0;
+}
+
+/* ---------- grid ---------- */
+function drawGrid() {
+  const ts = D.tensions;
+  let s = `<table><thead><tr><th class="rowh">Theme</th>${ts.map((t) => `<th class="colh" title="${esc(t.name)}"><span>${esc(t.name)}</span></th>`).join("")}<th>Reach<br>of 8</th><th>All</th></tr></thead><tbody>`;
+  D.themes.forEach((th) => { const reach = span((h) => h.themes.includes(th.k)), n8 = reach8(reach), uni = n8 >= UNIVERSAL_AT;
+    s += `<tr><td class="rowh" style="${uni ? "color:var(--metal)" : ""}">${esc(th.name)}${uni ? " ★" : ""}</td>`;
+    ts.forEach((t) => { const n = cnt((h) => h.t === t.k && h.themes.includes(th.k)), a = Math.min(0.75, n / 12); s += `<td class="c" data-th="${th.k}" data-t="${t.k}" style="background:rgba(0,168,184,${n ? (0.08 + a).toFixed(2) : 0});color:${n ? "var(--t1)" : "var(--t3)"}">${n || "·"}</td>`; });
+    s += `<td class="tot">${n8}</td><td>${cnt((h) => h.themes.includes(th.k))}</td></tr>`; });
+  s += `<tr><td class="rowh" style="color:var(--t2)">Responses</td>${ts.map((t) => `<td style="color:var(--t2)">${cnt((h) => h.t === t.k)}</td>`).join("")}<td></td><td style="color:var(--t2)">111</td></tr></tbody></table>`;
+  s += `<p class="grid-note">Rows are themes, columns are tensions, cells count the responses where both meet (a response under a pattern with two themes counts for both). <span style="color:var(--metal)">★</span> marks a theme that reaches ${UNIVERSAL_AT} or more of the eight retreat tensions: a candidate universal, worth testing this afternoon against stakeholder groups that have little else in common. Tap a cell to read those responses.</p>`;
+  viz.innerHTML = s;
+  viz.querySelectorAll("td.c").forEach((td) => td.addEventListener("click", () => select({ kind: "cell", th: td.dataset.th, t: td.dataset.t })));
+}
+function setMode(m) { mode = m; document.getElementById("mMap").setAttribute("aria-pressed", m === "map"); document.getElementById("mGrid").setAttribute("aria-pressed", m === "grid"); if (m === "map") drawMap(); else drawGrid(); renderPane(); }
+document.getElementById("mMap").addEventListener("click", () => setMode("map"));
+document.getElementById("mGrid").addEventListener("click", () => setMode("grid"));
+
+fetch("./data.json").then((r) => r.json()).then((d) => {
+  D = d; T = byK(D.tensions); P = byK(D.patterns); TH = byK(D.themes);
+  D.hmw.forEach((h) => { h.themes = P[h.p].themes; });
+  const m = /^#(theme|pattern|tension|cell)=(.+)$/.exec(location.hash);
+  if (m) { if (m[1] === "cell") { const [th, t] = m[2].split(","); sel = { kind: "cell", th, t }; } else sel = { kind: m[1], k: m[2] }; }
+  setMode("map");
+  addEventListener("resize", () => { if (mode === "map") drawMap(); });
+}).catch(() => { viz.innerHTML = `<p class="err">The survey data didn't load. Try again in a moment.</p>`; });
+</script>
+</body>
+</html>

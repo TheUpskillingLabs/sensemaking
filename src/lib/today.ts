@@ -45,7 +45,7 @@ export const BLOCKS: Block[] = [
     start: "11:00", end: "11:45", title: "Archaeology together", who: "Everyone",
     what: ["On your feet. Two things happen at once; move between them.", "The survey wall: take a sticky from the holding sheet (one per survey response), read the response, and put it under the tension it supports. None of them? The \"new\" sheet. A How Might We is a prompt, not evidence: it goes beside the tension, not under it.", "The card table: group the cards into stakeholder groups, players who act alike toward The Labs, whatever their type. Argue out loud. As each cluster settles, a facilitator photographs it into the app and the room names it.", "At 11:22, swap: if you've been at the wall, go to the table."],
     produces: "Every survey response under a tension. Every card in a stakeholder group, in the app.",
-    app: [{ text: "Make a group from a photo", to: "/groups/new" }, { text: "See the groups so far", to: "/groups" }],
+    app: [{ text: "Make a group from a photo", to: "/groups/new" }, { text: "See the groups so far", to: "/groups" }, { text: "The survey, in layers: every response under its tension", href: "/themes/" }],
   },
   {
     start: "11:45", end: "11:50", title: "Pick a tension, form pods", who: "Everyone",
@@ -66,7 +66,7 @@ export const BLOCKS: Block[] = [
     start: "13:00", end: "14:05", title: "Context, field, themes", who: "Pods",
     what: ["The paradox stays face down. This hour is about the players, not the problem.", "1:00 Pick your groups. Open Groups in the app and choose the two to five stakeholder groups caught in your tension. One column each on the second flipchart. Groups are shared; another pod can use the same one.", "1:10 What each group does. One sticky each: what they do when things get hard, the strategy they're running now, what they'd never do. Inner-circle groups first.", "1:25 What each group's currency is. Read the group's averaged capitals in the app. What do they trade in, what do they have power over, what do they want? Two or three stickies per group.", "1:40 Themes. Read all the stickies together. For each: what deeper factor sits under this? Write themes in the third colour on a separate sheet. Merge duplicates. Circle any theme that holds for groups that have little else in common. Those are the universals."],
     produces: "A themes sheet with the universals circled.",
-    app: [{ text: "Open the groups", to: "/groups" }],
+    app: [{ text: "Open the groups", to: "/groups" }, { text: "The survey, in layers: patterns and themes to test", href: "/themes/#theme=seeing" }],
   },
   {
     start: "14:05", end: "14:50", title: "Uncover the paradox, write the proposal", who: "Pods",
