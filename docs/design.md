@@ -43,3 +43,32 @@ Read from `theupskillinglabs/ambassadors` (`src/scripts/orbnet.ts`, `smooth.ts`,
 - Ink: `#021a20` here against the brand's `#00141b`. One line to change; do it with the radius pass.
 - Marks: the capitals shape (`CapGlyph`) is this app's signature and it should stay. But the world's four marks map onto the app's data: profiles are places and people (square, dot), the connections between them are ties, and a stakeholder group is a dense cluster. The planned field visualization should be drawn in the world's language (marks, ties, gold dust for a group's orbit) so the app's picture of the ecosystem and the site's picture of The Labs are one picture.
 - The deck at `/deck/` already uses the engine, so it inherits all of this. Keep slide words to one column, left, at the foot; the picture is right of centre; nothing is laid over the picture.
+
+## The deck's grid
+
+The deck (`public/deck/index.html`) is authored at 1920 × 1080. One authored pixel is `--u`, so everything below scales with the screen. Measured against every slide at its final step with `pw/audit.mjs`; the rules are what made all thirty fit.
+
+**Baseline.** 4u, with type on 8u wherever it can be: kicker 22/28, heading 92/96, large heading 124/128, lead 35/44, quote 36/44, list items 32–34/40, small 22/28. Line heights are set in `u`, not as ratios, so lines land on the grid at every size.
+
+**Spacing scale.** `--s0` 4 · `--s1` 8 · `--s15` 12 · `--s2` 16 · `--s3` 24 · `--s4` 32 · `--s5` 48 · `--s6` 64.
+
+**Columns.** Gutter `--gut` is 112u each side; the content field is 1696u. The words column is 720u at the left edge. The picture zone starts one full gutter to the right of the words (x = 944u) and runs to the right gutter: 864u wide (`--pic-w`). Nothing drawn crosses the gutter between them.
+
+**Rows.** Lockup at the top left, 44u tall under a 63u margin; its safe zone ends at `--top` = 152u. When the clock is on (timer slides), the picture zone starts at `--top-clock` = 236u instead. The foot (`--foot`, 124u) holds the pager and the progress rule. The words column is anchored at the foot and grows upward; it must never reach `--top`. If it does, cut copy, not spacing.
+
+**Minimum space between kinds of element.**
+
+| From → to | Space | Why |
+| --- | --- | --- |
+| Kicker → heading | 12u | One unit; the kicker labels the heading |
+| Heading → anything | 24u | A block break |
+| Lead → lead, lead → small | 16u | One passage |
+| Block → block (lead → list, list → lead, cards → lead) | 24u | The column's rhythm |
+| List item → list item (rules, spins) | 12u | Items read as one list |
+| Card → card | 16u | Each card has its own rule and padding |
+| Words → picture | ≥ 112u | One gutter; never less |
+| Lockup → any content | ≥ 45u | Below 152u |
+| Clock → picture | ≥ 24u | Picture starts at 236u when the clock is on |
+| Picture → foot | 0 | Pictures end at the foot line |
+
+**Pictures.** One per slide at most, in the picture zone, `right: var(--gut)`, height to the zone, width auto, `max-width: var(--pic-w)`. One hue plus one accent: dots and lines in soft white and teal, gold for the single thing to notice. Every unit chart carries its key (one dot, one answer). Numbers live in the app, not on the slide.
